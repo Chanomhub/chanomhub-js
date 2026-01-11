@@ -25,7 +25,7 @@ export function createFavoritesRepository(fetcher: RestFetcher): FavoritesReposi
     async function add(slug: string): Promise<FavoriteResponse | null> {
         const { data, error } = await fetcher<FavoriteResponse>(
             `/api/articles/${encodeURIComponent(slug)}/favorite`,
-            { method: 'POST' },
+            { method: 'POST', body: {} },
         );
 
         if (error) {
@@ -39,7 +39,7 @@ export function createFavoritesRepository(fetcher: RestFetcher): FavoritesReposi
     async function remove(slug: string): Promise<FavoriteResponse | null> {
         const { data, error } = await fetcher<FavoriteResponse>(
             `/api/articles/${encodeURIComponent(slug)}/favorite`,
-            { method: 'DELETE' },
+            { method: 'DELETE', body: {} },
         );
 
         if (error) {
