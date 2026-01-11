@@ -161,8 +161,15 @@ export function createRestClient(config: ChanomhubConfig) {
 
             const json = await res.json();
 
+            // Handle API responses that wrap data in a 'data' field
+            // e.g., { data: { profile: {...} }, statusCode: 200, timestamp: "..." }
+            const responseData =
+                json && typeof json === 'object' && 'data' in json && 'statusCode' in json
+                    ? json.data
+                    : json;
+
             // Transform image URLs if present
-            const transformedData = transformImageUrlsDeep(json, config.cdnUrl) as T;
+            const transformedData = transformImageUrlsDeep(responseData, config.cdnUrl) as T;
 
             return { data: transformedData };
         } catch (error) {
