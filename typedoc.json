@@ -1,0 +1,32 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": [
+        "./index.ts",
+        "./next.ts",
+        "./native.ts"
+    ],
+    "out": "./docs",
+    "plugin": [
+        "typedoc-plugin-markdown"
+    ],
+    "outputFileStrategy": "members",
+    "fileExtension": ".mdx",
+    "entryFileName": "index",
+    "modulesFileName": "modules",
+    "flattenOutputFiles": false,
+    "hidePageHeader": true,
+    "hideBreadcrumbs": true,
+    "hidePageTitle": false,
+    "useCodeBlocks": true,
+    "expandObjects": true,
+    "parametersFormat": "table",
+    "propertiesFormat": "table",
+    "enumMembersFormat": "table",
+    "typeDeclarationFormat": "table",
+    "indexFormat": "table",
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "excludeInternal": true,
+    "readme": "none",
+    "tsconfig": "./tsconfig.json"
+}

@@ -330,7 +330,15 @@ export const handlers = [
             return new HttpResponse(null, { status: 404 });
         }
         return HttpResponse.json({
-            profile: { username, bio: 'User bio', image: 'profile.jpg', following: false },
+            profile: {
+                id: 1,
+                name: username as string,
+                bio: 'User bio',
+                image: 'profile.jpg',
+                backgroundImage: 'bg.jpg',
+                following: false,
+                socialMediaLinks: [],
+            },
         });
     }),
 
@@ -338,7 +346,15 @@ export const handlers = [
     http.post(`${BASE_URL}/api/profiles/:username/follow`, ({ params }) => {
         const { username } = params;
         return HttpResponse.json({
-            profile: { username, bio: 'User bio', image: 'profile.jpg', following: true },
+            profile: {
+                id: 1,
+                name: username as string,
+                bio: 'User bio',
+                image: 'profile.jpg',
+                backgroundImage: 'bg.jpg',
+                following: true,
+                socialMediaLinks: [],
+            },
         });
     }),
 
@@ -346,7 +362,15 @@ export const handlers = [
     http.delete(`${BASE_URL}/api/profiles/:username/follow`, ({ params }) => {
         const { username } = params;
         return HttpResponse.json({
-            profile: { username, bio: 'User bio', image: 'profile.jpg', following: false },
+            profile: {
+                id: 1,
+                name: username as string,
+                bio: 'User bio',
+                image: 'profile.jpg',
+                backgroundImage: 'bg.jpg',
+                following: false,
+                socialMediaLinks: [],
+            },
         });
     }),
 ];

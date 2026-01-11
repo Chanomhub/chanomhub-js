@@ -105,7 +105,7 @@ describe('Repositories Integration Tests', () => {
             const profile = await client.users.getProfile('testuser');
 
             expect(profile).not.toBeNull();
-            expect(profile?.username).toBe('testuser');
+            expect(profile?.name).toBe('testuser');
             expect(profile?.following).toBe(false);
         });
 
