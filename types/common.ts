@@ -25,7 +25,10 @@ export interface GraphQLResponse<T> {
 /** Author type */
 export interface Author {
     id?: number;
+    /** Display name */
     name: string;
+    /** Username for profile linking */
+    username?: string;
     bio: string | null;
     image: string | null;
     backgroundImage: string | null;
