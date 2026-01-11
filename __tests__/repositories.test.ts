@@ -81,6 +81,13 @@ describe('Repositories Integration Tests', () => {
             expect(result).not.toBeNull();
             expect(result?.article.favorited).toBe(false);
         });
+
+        it('should throw AuthenticationError when not authenticated', async () => {
+            const client = createChanomhubClient(); // No token
+            await expect(client.favorites.add('test-article')).rejects.toThrow(
+                'Authentication required for favorites',
+            );
+        });
     });
 
     describe('UsersRepository', () => {
