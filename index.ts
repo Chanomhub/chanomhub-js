@@ -100,7 +100,7 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
 
     const graphql = createGraphQLClient(fullConfig);
     const rest = createRestClient(fullConfig);
-    const articles = createArticleRepository(graphql);
+    const articles = createArticleRepository(graphql, rest);
     const favorites = createFavoritesRepository(rest, fullConfig);
     const users = createUsersRepository(rest);
     const search = createSearchRepository(graphql);

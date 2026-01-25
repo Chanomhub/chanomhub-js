@@ -132,6 +132,48 @@ export interface ArticleListOptions {
     fields?: ArticleField[];
 }
 
+
+/** DTO for creating a new article */
+export interface NewArticleDTO {
+    title: string;
+    slug: string;
+    description: string;
+    body: string;
+    language: string;
+    /** Game version */
+    ver?: string;
+    status?: ArticleStatus;
+    /** Engine ID or name */
+    engine?: string;
+    mainImage?: string | null;
+    backgroundImage?: string | null;
+    coverImage?: string | null;
+    otherImages?: string[];
+    tags?: string[];
+    categories?: string[];
+    platforms?: string[];
+    creator?: string | null;
+}
+
+/** DTO for updating an article */
+export interface UpdateArticleDTO {
+    title?: string;
+    slug?: string;
+    description?: string;
+    body?: string;
+    ver?: string;
+    status?: ArticleStatus;
+    engine?: string;
+    mainImage?: string | null;
+    backgroundImage?: string | null;
+    coverImage?: string | null;
+    otherImages?: string[];
+    tags?: string[];
+    categories?: string[];
+    platforms?: string[];
+    creator?: string | null;
+}
+
 /** Article with downloads response */
 export interface ArticleWithDownloads {
     article: Article | null;

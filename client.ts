@@ -124,7 +124,6 @@ export function createRestClient(config: ChanomhubConfig) {
         const { method = 'GET', body } = options;
 
         const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
             Accept: 'application/json',
         };
 
@@ -139,6 +138,7 @@ export function createRestClient(config: ChanomhubConfig) {
         };
 
         if (body) {
+            headers['Content-Type'] = 'application/json';
             fetchOptions.body = JSON.stringify(body);
         }
 

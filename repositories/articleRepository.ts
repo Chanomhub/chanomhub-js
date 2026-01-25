@@ -2,12 +2,14 @@
  * Chanomhub SDK - Article Repository
  */
 
-import type { GraphQLFetcher } from '../client';
+import type { GraphQLFetcher, RestFetcher } from '../client';
 import type {
     Article,
     ArticleListItem,
     ArticleListOptions,
     ArticleWithDownloads,
+    NewArticleDTO,
+    UpdateArticleDTO,
 } from '../types/article';
 import type { PaginatedResponse } from '../types/common';
 import { buildFieldsQuery } from '../utils/fields';
@@ -33,12 +35,60 @@ export interface ArticleRepository {
 
     /** Get article with downloads */
     getWithDownloads(slug: string, language?: string): Promise<ArticleWithDownloads>;
+
+    /** Create a new article */
+    create(data: NewArticleDTO): Promise<Article>;
+
+    /** Update an article */
+    update(slug: string, data: UpdateArticleDTO): Promise<Article>;
+
+    /** Delete an article */
+    delete(slug: string): Promise<void>;
 }
 
 /**
  * Creates an article repository with the given GraphQL client
  */
-export function createArticleRepository(fetcher: GraphQLFetcher): ArticleRepository {
+export function createArticleRepository(
+    fetcher: GraphQLFetcher,
+    rest: RestFetcher,
+): ArticleRepository {
+    async function create(data: NewArticleDTO): Promise<Article> {
+        const res = await rest<{ article: Article }>('/api/articles', {
+            method: 'POST',
+            body: data as unknown as Record<string, unknown>,
+        });
+
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to create article');
+        }
+
+        return res.data.article;
+    }
+
+    async function update(slug: string, data: UpdateArticleDTO): Promise<Article> {
+        const res = await rest<{ article: Article }>(`/api/articles/${slug}`, {
+            method: 'PUT',
+            body: { article: data } as unknown as Record<string, unknown>,
+        });
+
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to update article');
+        }
+
+        return res.data.article;
+    }
+
+    async function remove(slug: string): Promise<void> {
+        const res = await rest<void>(`/api/articles/${slug}`, {
+            method: 'DELETE',
+        });
+
+        if (res.error) {
+            throw new Error(res.error || 'Failed to delete article');
+        }
+    }
+
     async function getAll(options: ArticleListOptions = {}): Promise<ArticleListItem[]> {
         const {
             limit = 12,
@@ -318,5 +368,8 @@ export function createArticleRepository(fetcher: GraphQLFetcher): ArticleReposit
         getByCategory,
         getBySlug,
         getWithDownloads,
+        create,
+        update,
+        delete: remove,
     };
 }
