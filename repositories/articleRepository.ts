@@ -10,6 +10,9 @@ import type {
     ArticleWithDownloads,
     NewArticleDTO,
     UpdateArticleDTO,
+    Revision,
+    RevisionDetail,
+    CompareResult,
 } from '../types/article';
 import type { PaginatedResponse } from '../types/common';
 import { buildFieldsQuery } from '../utils/fields';
@@ -44,6 +47,18 @@ export interface ArticleRepository {
 
     /** Delete an article */
     delete(slug: string): Promise<void>;
+
+    /** Get revisions for an article */
+    getRevisions(slug: string): Promise<PaginatedResponse<Revision>>;
+
+    /** Get specific revision details */
+    getRevision(slug: string, version: number): Promise<RevisionDetail>;
+
+    /** Compare two versions */
+    compareVersions(slug: string, v1: number, v2: number): Promise<CompareResult>;
+
+    /** Restore article to a specific version */
+    restoreRevision(slug: string, version: number): Promise<RevisionDetail>;
 }
 
 /**
@@ -87,6 +102,70 @@ export function createArticleRepository(
         if (res.error) {
             throw new Error(res.error || 'Failed to delete article');
         }
+    }
+
+    async function getRevisions(slug: string): Promise<PaginatedResponse<Revision>> {
+        const res = await rest<{ revisions: Revision[]; total: number }>(
+            `/api/articles/${slug}/revisions`,
+        );
+
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to get revisions');
+        }
+
+        return {
+            items: res.data.revisions,
+            total: res.data.total,
+            page: 1,
+            pageSize: res.data.total,
+        };
+    }
+
+    async function getRevision(slug: string, version: number): Promise<RevisionDetail> {
+        const res = await rest<RevisionDetail>(`/api/articles/${slug}/revisions/${version}`);
+
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to get revision');
+        }
+
+        return res.data;
+    }
+
+    async function compareVersions(
+        slug: string,
+        v1: number,
+        v2: number,
+    ): Promise<CompareResult> {
+        // Note: query parameters should be handled, but rest client is simple string concatenation for now
+        // Assuming rest client doesn't support query params in options yet, appending manually
+        const res = await rest<CompareResult>(
+            `/api/articles/${slug}/revisions/compare?v1=${v1}&v2=${v2}`,
+        );
+
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to compare versions');
+        }
+
+        return res.data;
+    }
+
+    async function restoreRevision(slug: string, version: number): Promise<RevisionDetail> {
+        const res = await rest<RevisionDetail>(
+            `/api/articles/${slug}/revisions/${version}/restore`,
+            {
+                method: 'POST',
+                body: { message: `Restored from version ${version}` } as unknown as Record<
+                    string,
+                    unknown
+                >,
+            },
+        );
+
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to restore revision');
+        }
+
+        return res.data;
     }
 
     async function getAll(options: ArticleListOptions = {}): Promise<ArticleListItem[]> {
@@ -371,5 +450,9 @@ export function createArticleRepository(
         create,
         update,
         delete: remove,
+        getRevisions,
+        getRevision,
+        compareVersions,
+        restoreRevision,
     };
 }

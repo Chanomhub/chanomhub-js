@@ -179,3 +179,49 @@ export interface ArticleWithDownloads {
     article: Article | null;
     downloads: Download[] | null;
 }
+
+/** Diff statistics */
+export interface DiffStats {
+    additions: number;
+    deletions: number;
+}
+
+/** Revision author */
+export interface RevisionAuthor {
+    id: number;
+    name: string;
+}
+
+/** Revision summary */
+export interface Revision {
+    version: number;
+    author: RevisionAuthor;
+    message?: string;
+    createdAt: string;
+    stats: DiffStats;
+    summary: string;
+}
+
+/** Diff line for parsed body diff */
+export interface DiffLine {
+    type: 'add' | 'remove' | 'context';
+    content: string;
+    lineNumber?: number;
+}
+
+/** Detailed revision with diffs */
+export interface RevisionDetail extends Revision {
+    titleDiff?: string;
+    descriptionDiff?: string;
+    bodyDiff?: string;
+    parsedBodyDiff?: DiffLine[];
+}
+
+/** Comparison result between two versions */
+export interface CompareResult {
+    stats: DiffStats;
+    titleDiff?: string;
+    descriptionDiff?: string;
+    bodyDiff?: string;
+    parsedBodyDiff?: DiffLine[];
+}
