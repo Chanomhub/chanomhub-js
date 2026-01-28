@@ -7,6 +7,8 @@ export interface ChanomhubConfig {
     apiUrl: string;
     /** CDN base URL for images */
     cdnUrl: string;
+    /** Original storage base URL (fallback) */
+    storageUrl?: string;
     /** Authentication token (optional) */
     token?: string;
     /** Default cache duration in seconds (0 = no cache) */
@@ -20,6 +22,7 @@ export interface ChanomhubConfig {
 export const DEFAULT_CONFIG: ChanomhubConfig = {
     apiUrl: 'https://api.chanomhub.com',
     cdnUrl: 'https://cdn.chanomhub.com/cdn-cgi/image/format=auto',
+    storageUrl: 'https://cdn.chanomhub.com', // Fallback to raw CDN URL
     defaultCacheSeconds: 3600,
 };
 

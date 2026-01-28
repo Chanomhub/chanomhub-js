@@ -25,6 +25,45 @@ export function resolveImageUrl(
     return `${cdnUrl}/${imageUrl}`;
 }
 
+/**
+ * Generates a fallback URL (original source) for an image.
+ * Useful when the CDN is unavailable or fails to load.
+ *
+ * @param imageUrl - The full image URL (potentially from CDN) or filename
+ * @param cdnUrl - The CDN base URL to strip (if present)
+ * @param storageUrl - The original storage base URL to prepend
+ */
+export function getFallbackUrl(
+    imageUrl: string | null | undefined,
+    cdnUrl: string,
+    storageUrl?: string,
+): string | null {
+    if (!imageUrl) return null;
+
+    let filename = imageUrl;
+
+    // If it's a full CDN URL, strip the CDN prefix
+    if (imageUrl.startsWith(cdnUrl)) {
+        // Remove cdnUrl and any leading slash
+        const relativePath = imageUrl.slice(cdnUrl.length);
+        filename = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+    } else if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+        // If it's another full URL (not our CDN), return as-is or null?
+        // Assume if it's not our CDN, we can't fallback easily unless it's just a filename
+        // But if the input was already just a filename, we use it.
+        // If it is some other external URL, we probably just return it as is or null.
+        // For safety, if it doesn't start with CDN url, and is a full url, we assume it might already be the fallback or external.
+        return imageUrl;
+    }
+
+    // Prepend storage URL if available
+    if (storageUrl) {
+        return `${storageUrl}/${filename}`;
+    }
+
+    return filename;
+}
+
 /** Known image field names */
 const IMAGE_FIELDS = new Set(['mainImage', 'backgroundImage', 'coverImage', 'image']);
 

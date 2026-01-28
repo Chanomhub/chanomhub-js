@@ -21,10 +21,11 @@ async function main() {
         ver: '1.0.0',
         status: 'DRAFT',
         engine: 'RENPY',
-        tags: ['test'],
-        categories: ['game'],
-        platforms: ['windows'],
-        creator: 'Test Studio',
+        // Metadata fields
+        tags: ['Hentai', 'Visual Novel'],
+        categories: ['Game'],
+        platforms: ['Windows', 'Android'],
+        creator: 'Awesome Studio', // Creator / Studio name
     };
 
     try {
@@ -37,6 +38,22 @@ async function main() {
             description: 'Updated description',
         });
         console.log('Updated article:', JSON.stringify(updated, null, 2));
+
+        console.log('Fetching full article details (what you get on web page load)...');
+        const fullArticle = await client.articles.getBySlug(created.slug);
+
+        if (fullArticle) {
+            console.log('Full Article Data:');
+            console.log('- Title:', fullArticle.title);
+            console.log('- Tags:', fullArticle.tags);
+            console.log('- Categories:', fullArticle.categories);
+            console.log('- Platforms:', fullArticle.platforms);
+            console.log('- Creators:', fullArticle.creators);
+            console.log('- Engine:', fullArticle.engine);
+            console.log('- Author:', fullArticle.author);
+        } else {
+            console.error('Failed to fetch full article');
+        }
 
         console.log('Deleting article...');
         await client.articles.delete(created.slug);

@@ -50,7 +50,7 @@ import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
 export * from './types';
 export * from './config';
 export * from './errors';
-export { resolveImageUrl } from './transforms/imageUrl';
+export { resolveImageUrl, getFallbackUrl } from './transforms/imageUrl';
 
 /** Chanomhub SDK Client interface */
 export interface ChanomhubClient {
