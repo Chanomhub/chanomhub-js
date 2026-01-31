@@ -15,3 +15,4 @@ export {
     type SearchOptions,
 } from './searchRepository';
 export { createAuthRepository, type AuthRepository } from './authRepository';
+export { createDownloadsRepository, type DownloadsRepository } from './downloadsRepository';

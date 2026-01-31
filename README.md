@@ -117,6 +117,28 @@ const sdk = createChanomhubClient({
 });
 ```
 
+### Safely Handling Images (CDN Fallback)
+
+The SDK provides a `getFallbackUrl` utility to handle cases where the CDN image fails to load. This allows your application to gracefully degrade to the original storage URL.
+
+```typescript
+import { getFallbackUrl } from '@chanomhub/sdk';
+
+// In your image component (e.g., React/Next.js)
+<img
+  src={article.mainImage}
+  onError={(e) => {
+    // Falls back to direct storage URL (e.g., skips cdn-cgi optimization)
+    // You can pass specific config.storageUrl if configured, otherwise it defaults to stripped CDN path
+    const fallback = getFallbackUrl(e.currentTarget.src, config.cdnUrl);
+    
+    if (fallback && fallback !== e.currentTarget.src) {
+       e.currentTarget.src = fallback;
+    }
+  }}
+/>
+```
+
 ### Next.js Server Components
 
 For Next.js Server Components, use the special helper:

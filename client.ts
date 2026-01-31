@@ -117,7 +117,7 @@ export function createRestClient(config: ChanomhubConfig) {
     return async function restFetch<T>(
         endpoint: string,
         options: {
-            method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
+            method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
             body?: Record<string, unknown>;
         } = {},
     ): Promise<RestResponse<T>> {
