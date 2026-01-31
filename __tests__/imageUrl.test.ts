@@ -1,15 +1,71 @@
 import { describe, it, expect } from 'vitest';
-import { resolveImageUrl, transformImageUrlsDeep, getFallbackUrl } from '../transforms/imageUrl';
+import { resolveImageUrl, transformImageUrlsDeep, getFallbackUrl, buildImgproxyPath } from '../transforms/imageUrl';
+import { ImgproxyOptions } from '../config';
 
 const CDN_URL = 'https://imgproxy.chanomhub.com';
 const STORAGE_URL = 'https://cdn.chanomhub.com';
 
-// Helper to build expected imgproxy URL
-const buildImgproxyUrl = (filename: string) => {
+// Helper to build expected imgproxy URL (default format: webp)
+const buildImgproxyUrl = (filename: string, optionsPath?: string) => {
     const sourceUrl = `${STORAGE_URL}/${filename}`;
     const encodedUrl = encodeURIComponent(sourceUrl);
+    if (optionsPath) {
+        return `${CDN_URL}/insecure/${optionsPath}/plain/${encodedUrl}@webp`;
+    }
     return `${CDN_URL}/insecure/plain/${encodedUrl}@webp`;
 };
+
+describe('buildImgproxyPath', () => {
+    it('should return empty string for empty options', () => {
+        expect(buildImgproxyPath({})).toBe('');
+    });
+
+    it('should build resize options', () => {
+        const options: ImgproxyOptions = { width: 300, height: 200 };
+        expect(buildImgproxyPath(options)).toBe('rs:fit:300:200:0');
+    });
+
+    it('should build resize with type and enlarge', () => {
+        const options: ImgproxyOptions = { resizeType: 'fill', width: 400, enlarge: true };
+        expect(buildImgproxyPath(options)).toBe('rs:fill:400:0:1');
+    });
+
+    it('should build quality option', () => {
+        const options: ImgproxyOptions = { quality: 80 };
+        expect(buildImgproxyPath(options)).toBe('q:80');
+    });
+
+    it('should build gravity option', () => {
+        const options: ImgproxyOptions = { gravity: 'sm' };
+        expect(buildImgproxyPath(options)).toBe('g:sm');
+    });
+
+    it('should build dpr option', () => {
+        const options: ImgproxyOptions = { dpr: 2 };
+        expect(buildImgproxyPath(options)).toBe('dpr:2');
+    });
+
+    it('should build blur option', () => {
+        const options: ImgproxyOptions = { blur: 10 };
+        expect(buildImgproxyPath(options)).toBe('bl:10');
+    });
+
+    it('should build sharpen option', () => {
+        const options: ImgproxyOptions = { sharpen: 0.5 };
+        expect(buildImgproxyPath(options)).toBe('sh:0.5');
+    });
+
+    it('should combine multiple options', () => {
+        const options: ImgproxyOptions = {
+            resizeType: 'fill',
+            width: 300,
+            height: 200,
+            quality: 85,
+            gravity: 'ce',
+        };
+        expect(buildImgproxyPath(options)).toBe('rs:fill:300:200:0/q:85/g:ce');
+    });
+});
 
 describe('resolveImageUrl', () => {
     it('should return null for null input', () => {

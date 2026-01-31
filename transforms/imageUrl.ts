@@ -1,11 +1,60 @@
 /**
  * Image URL Transformation
  *
- * Transforms filename-only URLs to full CDN URLs
+ * Transforms filename-only URLs to imgproxy URLs with processing options
  */
+
+import { ImgproxyOptions, DEFAULT_IMGPROXY_OPTIONS } from '../config';
 
 /** Default storage URL for source images */
 const DEFAULT_STORAGE_URL = 'https://cdn.chanomhub.com';
+
+/**
+ * Builds the imgproxy processing options path from ImgproxyOptions
+ * @see https://docs.imgproxy.net/usage/processing
+ */
+export function buildImgproxyPath(options: ImgproxyOptions = {}): string {
+    const parts: string[] = [];
+
+    // Resize: rs:%type:%width:%height:%enlarge
+    if (options.resizeType || options.width || options.height || options.enlarge !== undefined) {
+        const rs = [
+            'rs',
+            options.resizeType || 'fit',
+            options.width ?? 0,
+            options.height ?? 0,
+            options.enlarge ? 1 : 0,
+        ];
+        parts.push(rs.join(':'));
+    }
+
+    // Quality: q:%quality
+    if (options.quality && options.quality > 0) {
+        parts.push(`q:${options.quality}`);
+    }
+
+    // Gravity: g:%gravity
+    if (options.gravity) {
+        parts.push(`g:${options.gravity}`);
+    }
+
+    // DPR: dpr:%dpr
+    if (options.dpr && options.dpr > 1) {
+        parts.push(`dpr:${options.dpr}`);
+    }
+
+    // Blur: bl:%sigma
+    if (options.blur && options.blur > 0) {
+        parts.push(`bl:${options.blur}`);
+    }
+
+    // Sharpen: sh:%sigma
+    if (options.sharpen && options.sharpen > 0) {
+        parts.push(`sh:${options.sharpen}`);
+    }
+
+    return parts.join('/');
+}
 
 /**
  * Resolves an image URL using imgproxy format.
@@ -13,12 +62,18 @@ const DEFAULT_STORAGE_URL = 'https://cdn.chanomhub.com';
  * - If it's already a full URL, returns it as-is
  * - Handles null/undefined gracefully
  * 
- * imgproxy URL format: {cdnUrl}/insecure/plain/{sourceUrl}@webp
+ * imgproxy URL format: {cdnUrl}/insecure/{options}/plain/{sourceUrl}@{format}
+ * 
+ * @param imageUrl - Image filename or full URL
+ * @param cdnUrl - Imgproxy base URL
+ * @param storageUrl - Source image storage URL
+ * @param options - Imgproxy processing options
  */
 export function resolveImageUrl(
     imageUrl: string | null | undefined,
     cdnUrl: string,
     storageUrl: string = DEFAULT_STORAGE_URL,
+    options: ImgproxyOptions = DEFAULT_IMGPROXY_OPTIONS,
 ): string | null {
     if (!imageUrl) return null;
 
@@ -30,12 +85,20 @@ export function resolveImageUrl(
     // Build the source URL
     const sourceUrl = `${storageUrl}/${imageUrl}`;
 
-    // Build imgproxy URL: /insecure/plain/{sourceUrl}@webp
-    // - insecure: no signature (configure imgproxy to allow this or use signed URLs)
-    // - plain: source URL is provided as-is (URL-encoded)
-    // - @webp: convert to webp format for better compression
+    // Build processing options path
+    const optionsPath = buildImgproxyPath(options);
+
+    // Get format (default: webp)
+    const format = options.format || 'webp';
+
+    // Build imgproxy URL: /insecure/{options}/plain/{sourceUrl}@{format}
     const encodedSourceUrl = encodeURIComponent(sourceUrl);
-    return `${cdnUrl}/insecure/plain/${encodedSourceUrl}@webp`;
+
+    if (optionsPath) {
+        return `${cdnUrl}/insecure/${optionsPath}/plain/${encodedSourceUrl}@${format}`;
+    }
+
+    return `${cdnUrl}/insecure/plain/${encodedSourceUrl}@${format}`;
 }
 
 /**
