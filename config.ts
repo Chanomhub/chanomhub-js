@@ -21,7 +21,7 @@ export interface ChanomhubConfig {
 
 export const DEFAULT_CONFIG: ChanomhubConfig = {
     apiUrl: 'https://api.chanomhub.com',
-    cdnUrl: 'https://cdn.chanomhub.com/cdn-cgi/image/format=auto',
+    cdnUrl: 'https://imgproxy.chanomhub.com',
     storageUrl: 'https://cdn.chanomhub.com', // Fallback to raw CDN URL
     defaultCacheSeconds: 3600,
 };

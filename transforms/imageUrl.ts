@@ -4,15 +4,21 @@
  * Transforms filename-only URLs to full CDN URLs
  */
 
+/** Default storage URL for source images */
+const DEFAULT_STORAGE_URL = 'https://cdn.chanomhub.com';
+
 /**
- * Resolves an image URL.
- * - If it's just a filename (e.g., "abc.jpg"), prepends the CDN base URL
+ * Resolves an image URL using imgproxy format.
+ * - If it's just a filename (e.g., "abc.jpg"), creates an imgproxy URL
  * - If it's already a full URL, returns it as-is
  * - Handles null/undefined gracefully
+ * 
+ * imgproxy URL format: {cdnUrl}/insecure/plain/{sourceUrl}@webp
  */
 export function resolveImageUrl(
     imageUrl: string | null | undefined,
     cdnUrl: string,
+    storageUrl: string = DEFAULT_STORAGE_URL,
 ): string | null {
     if (!imageUrl) return null;
 
@@ -21,47 +27,64 @@ export function resolveImageUrl(
         return imageUrl;
     }
 
-    // Filename only - prepend CDN base URL
-    return `${cdnUrl}/${imageUrl}`;
+    // Build the source URL
+    const sourceUrl = `${storageUrl}/${imageUrl}`;
+
+    // Build imgproxy URL: /insecure/plain/{sourceUrl}@webp
+    // - insecure: no signature (configure imgproxy to allow this or use signed URLs)
+    // - plain: source URL is provided as-is (URL-encoded)
+    // - @webp: convert to webp format for better compression
+    const encodedSourceUrl = encodeURIComponent(sourceUrl);
+    return `${cdnUrl}/insecure/plain/${encodedSourceUrl}@webp`;
 }
 
 /**
  * Generates a fallback URL (original source) for an image.
  * Useful when the CDN is unavailable or fails to load.
+ * 
+ * For imgproxy URLs, extracts the original source URL from the path.
+ * imgproxy URL format: {cdnUrl}/insecure/plain/{encodedSourceUrl}@{format}
  *
- * @param imageUrl - The full image URL (potentially from CDN) or filename
- * @param cdnUrl - The CDN base URL to strip (if present)
- * @param storageUrl - The original storage base URL to prepend
+ * @param imageUrl - The full image URL (potentially from imgproxy) or filename
+ * @param cdnUrl - The imgproxy base URL to detect
+ * @param storageUrl - The original storage base URL (optional, used for filename-only inputs)
  */
 export function getFallbackUrl(
     imageUrl: string | null | undefined,
     cdnUrl: string,
-    storageUrl?: string,
+    storageUrl: string = DEFAULT_STORAGE_URL,
 ): string | null {
     if (!imageUrl) return null;
 
-    let filename = imageUrl;
-
-    // If it's a full CDN URL, strip the CDN prefix
+    // If it's an imgproxy URL, extract the source URL
     if (imageUrl.startsWith(cdnUrl)) {
-        // Remove cdnUrl and any leading slash
-        const relativePath = imageUrl.slice(cdnUrl.length);
-        filename = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
-    } else if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
-        // If it's another full URL (not our CDN), return as-is or null?
-        // Assume if it's not our CDN, we can't fallback easily unless it's just a filename
-        // But if the input was already just a filename, we use it.
-        // If it is some other external URL, we probably just return it as is or null.
-        // For safety, if it doesn't start with CDN url, and is a full url, we assume it might already be the fallback or external.
+        // Parse imgproxy URL: {cdnUrl}/insecure/plain/{encodedSourceUrl}@{format}
+        const plainMatch = imageUrl.match(/\/plain\/([^@]+)(?:@\w+)?$/);
+        if (plainMatch) {
+            // Decode the source URL
+            return decodeURIComponent(plainMatch[1]);
+        }
+
+        // If it's a base64 encoded URL (no /plain/), try to decode
+        const base64Match = imageUrl.match(/\/insecure\/([^.]+)(?:\.\w+)?$/);
+        if (base64Match) {
+            try {
+                return Buffer.from(base64Match[1], 'base64url').toString('utf-8');
+            } catch {
+                // Failed to decode, return as-is
+            }
+        }
+
         return imageUrl;
     }
 
-    // Prepend storage URL if available
-    if (storageUrl) {
-        return `${storageUrl}/${filename}`;
+    // If it's another full URL (not our CDN), return as-is
+    if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+        return imageUrl;
     }
 
-    return filename;
+    // Filename only - prepend storage URL
+    return `${storageUrl}/${imageUrl}`;
 }
 
 /** Known image field names */

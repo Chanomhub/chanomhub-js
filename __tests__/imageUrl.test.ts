@@ -1,8 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { resolveImageUrl, transformImageUrlsDeep, getFallbackUrl } from '../transforms/imageUrl';
 
-const CDN_URL = 'https://cdn.chanomhub.com/cdn-cgi/image/format=auto';
+const CDN_URL = 'https://imgproxy.chanomhub.com';
 const STORAGE_URL = 'https://cdn.chanomhub.com';
+
+// Helper to build expected imgproxy URL
+const buildImgproxyUrl = (filename: string) => {
+    const sourceUrl = `${STORAGE_URL}/${filename}`;
+    const encodedUrl = encodeURIComponent(sourceUrl);
+    return `${CDN_URL}/insecure/plain/${encodedUrl}@webp`;
+};
 
 describe('resolveImageUrl', () => {
     it('should return null for null input', () => {
@@ -23,14 +30,22 @@ describe('resolveImageUrl', () => {
         expect(resolveImageUrl(url, CDN_URL)).toBe(url);
     });
 
-    it('should prepend CDN URL for filename only', () => {
-        expect(resolveImageUrl('abc.jpg', CDN_URL)).toBe(`${CDN_URL}/abc.jpg`);
+    it('should create imgproxy URL for filename only', () => {
+        const result = resolveImageUrl('abc.jpg', CDN_URL);
+        expect(result).toBe(buildImgproxyUrl('abc.jpg'));
     });
 
     it('should handle filenames with paths', () => {
-        expect(resolveImageUrl('uploads/abc.jpg', CDN_URL)).toBe(
-            `${CDN_URL}/uploads/abc.jpg`,
-        );
+        const result = resolveImageUrl('uploads/abc.jpg', CDN_URL);
+        expect(result).toBe(buildImgproxyUrl('uploads/abc.jpg'));
+    });
+
+    it('should allow custom storage URL', () => {
+        const customStorage = 'https://custom-storage.com';
+        const result = resolveImageUrl('abc.jpg', CDN_URL, customStorage);
+        const sourceUrl = `${customStorage}/abc.jpg`;
+        const encodedUrl = encodeURIComponent(sourceUrl);
+        expect(result).toBe(`${CDN_URL}/insecure/plain/${encodedUrl}@webp`);
     });
 });
 
@@ -51,10 +66,10 @@ describe('transformImageUrlsDeep', () => {
 
         const result = transformImageUrlsDeep(data, CDN_URL);
 
-        expect(result.mainImage).toBe(`${CDN_URL}/main.jpg`);
-        expect(result.coverImage).toBe(`${CDN_URL}/cover.jpg`);
-        expect(result.backgroundImage).toBe(`${CDN_URL}/bg.jpg`);
-        expect(result.image).toBe(`${CDN_URL}/profile.jpg`);
+        expect(result.mainImage).toBe(buildImgproxyUrl('main.jpg'));
+        expect(result.coverImage).toBe(buildImgproxyUrl('cover.jpg'));
+        expect(result.backgroundImage).toBe(buildImgproxyUrl('bg.jpg'));
+        expect(result.image).toBe(buildImgproxyUrl('profile.jpg'));
         expect(result.title).toBe('Test Article'); // Non-image field unchanged
     });
 
@@ -74,8 +89,8 @@ describe('transformImageUrlsDeep', () => {
 
         const result = transformImageUrlsDeep(data, CDN_URL);
 
-        expect(result.images[0].url).toBe(`${CDN_URL}/image1.jpg`);
-        expect(result.images[1].url).toBe(`${CDN_URL}/image2.jpg`);
+        expect(result.images[0].url).toBe(buildImgproxyUrl('image1.jpg'));
+        expect(result.images[1].url).toBe(buildImgproxyUrl('image2.jpg'));
     });
 
     it('should recursively transform nested objects', () => {
@@ -90,8 +105,8 @@ describe('transformImageUrlsDeep', () => {
 
         const result = transformImageUrlsDeep(data, CDN_URL);
 
-        expect(result.article.mainImage).toBe(`${CDN_URL}/article.jpg`);
-        expect(result.article.author.image).toBe(`${CDN_URL}/author.jpg`);
+        expect(result.article.mainImage).toBe(buildImgproxyUrl('article.jpg'));
+        expect(result.article.author.image).toBe(buildImgproxyUrl('author.jpg'));
     });
 
     it('should handle arrays at root level', () => {
@@ -99,8 +114,8 @@ describe('transformImageUrlsDeep', () => {
 
         const result = transformImageUrlsDeep(data, CDN_URL);
 
-        expect(result[0].mainImage).toBe(`${CDN_URL}/img1.jpg`);
-        expect(result[1].mainImage).toBe(`${CDN_URL}/img2.jpg`);
+        expect(result[0].mainImage).toBe(buildImgproxyUrl('img1.jpg'));
+        expect(result[1].mainImage).toBe(buildImgproxyUrl('img2.jpg'));
     });
 });
 
@@ -110,26 +125,28 @@ describe('getFallbackUrl', () => {
         expect(getFallbackUrl(undefined, CDN_URL)).toBeNull();
     });
 
-    it('should return filename as-is if just filename', () => {
-        expect(getFallbackUrl('abc.jpg', CDN_URL)).toBe('abc.jpg');
+    it('should return storage URL for filename', () => {
+        expect(getFallbackUrl('abc.jpg', CDN_URL)).toBe(`${STORAGE_URL}/abc.jpg`);
     });
 
-    it('should strip CDN URL from full URL', () => {
-        const fullUrl = `${CDN_URL}/abc.jpg`;
-        expect(getFallbackUrl(fullUrl, CDN_URL)).toBe('abc.jpg');
+    it('should extract source URL from imgproxy URL', () => {
+        // Build an imgproxy URL and verify we can extract the original
+        const imgproxyUrl = buildImgproxyUrl('abc.jpg');
+        expect(getFallbackUrl(imgproxyUrl, CDN_URL)).toBe(`${STORAGE_URL}/abc.jpg`);
     });
 
-    it('should handle optional storageUrl', () => {
-        const fullUrl = `${CDN_URL}/abc.jpg`;
-        expect(getFallbackUrl(fullUrl, CDN_URL, STORAGE_URL)).toBe(`${STORAGE_URL}/abc.jpg`);
+    it('should handle imgproxy URL with path', () => {
+        const imgproxyUrl = buildImgproxyUrl('uploads/abc.jpg');
+        expect(getFallbackUrl(imgproxyUrl, CDN_URL)).toBe(`${STORAGE_URL}/uploads/abc.jpg`);
     });
 
     it('should return other external URLs as-is', () => {
         const url = 'https://other-cdn.com/image.jpg';
-        expect(getFallbackUrl(url, CDN_URL, STORAGE_URL)).toBe(url);
+        expect(getFallbackUrl(url, CDN_URL)).toBe(url);
     });
 
-    it('should prepend storageUrl to filename if provided', () => {
-        expect(getFallbackUrl('abc.jpg', CDN_URL, STORAGE_URL)).toBe(`${STORAGE_URL}/abc.jpg`);
+    it('should use custom storage URL for filename', () => {
+        const customStorage = 'https://custom-storage.com';
+        expect(getFallbackUrl('abc.jpg', CDN_URL, customStorage)).toBe(`${customStorage}/abc.jpg`);
     });
 });

@@ -3,6 +3,14 @@ import { createChanomhubClient } from '../index';
 import { DEFAULT_CONFIG } from '../config';
 
 const CDN_URL = DEFAULT_CONFIG.cdnUrl;
+const STORAGE_URL = DEFAULT_CONFIG.storageUrl;
+
+// Helper to build expected imgproxy URL
+const buildImgproxyUrl = (filename: string) => {
+    const sourceUrl = `${STORAGE_URL}/${filename}`;
+    const encodedUrl = encodeURIComponent(sourceUrl);
+    return `${CDN_URL}/insecure/plain/${encodedUrl}@webp`;
+};
 
 describe('Chanomhub SDK Integration Tests (MSW)', () => {
     it('should fetch and transform articles correctly', async () => {
@@ -11,8 +19,8 @@ describe('Chanomhub SDK Integration Tests (MSW)', () => {
 
         expect(articles).toHaveLength(2);
 
-        // Check transformation locally (filename only -> full URL)
-        expect(articles[0].mainImage).toBe(`${CDN_URL}/article1.jpg`);
+        // Check transformation locally (filename only -> imgproxy URL)
+        expect(articles[0].mainImage).toBe(buildImgproxyUrl('article1.jpg'));
 
         // Check no double transformation (full URL stays full URL)
         expect(articles[1].mainImage).toBe('https://external.com/image.jpg');
@@ -26,14 +34,14 @@ describe('Chanomhub SDK Integration Tests (MSW)', () => {
         expect(article!.slug).toBe('test-article-1');
 
         // Check flat field
-        expect(article!.mainImage).toBe(`${CDN_URL}/article1.jpg`);
+        expect(article!.mainImage).toBe(buildImgproxyUrl('article1.jpg'));
 
         // Check nested author image
-        expect(article!.author.image).toBe(`${CDN_URL}/john.jpg`);
+        expect(article!.author.image).toBe(buildImgproxyUrl('john.jpg'));
 
         // Check array of images
-        expect(article!.images[0].url).toBe(`${CDN_URL}/img1.jpg`);
-        expect(article!.images[1].url).toBe(`${CDN_URL}/img2.jpg`);
+        expect(article!.images[0].url).toBe(buildImgproxyUrl('img1.jpg'));
+        expect(article!.images[1].url).toBe(buildImgproxyUrl('img2.jpg'));
     });
 
     it('should return null when article not found', async () => {
