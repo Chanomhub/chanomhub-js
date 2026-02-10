@@ -16,3 +16,7 @@ export {
 } from './searchRepository';
 export { createAuthRepository, type AuthRepository } from './authRepository';
 export { createDownloadsRepository, type DownloadsRepository } from './downloadsRepository';
+export {
+    createSubscriptionsRepository,
+    type SubscriptionsRepository,
+} from './subscriptionsRepository';
