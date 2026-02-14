@@ -18,7 +18,7 @@
  *
  * // With custom config
  * const sdk = createChanomhubClient({
- *   apiUrl: 'https://api.chanomhub.online',
+ *   apiUrl: 'https://api.chanomhub.com',
  *   cdnUrl: 'https://cdn.chanomhub.com',
  *   token: 'jwt-token',
  * });
@@ -85,7 +85,7 @@ export interface ChanomhubClient {
  * used to interact with the Chanomhub API.
  *
  * @param config - Configuration options
- * @param config.apiUrl - API base URL (default: https://api.chanomhub.online)
+ * @param config.apiUrl - API base URL (default: https://api.chanomhub.com)
  * @param config.cdnUrl - CDN base URL for images (default: https://cdn.chanomhub.com)
  * @param config.token - JWT authentication token (optional)
  * @param config.defaultCacheSeconds - Default cache duration in seconds (default: 3600)

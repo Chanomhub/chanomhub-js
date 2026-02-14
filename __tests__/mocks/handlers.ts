@@ -7,36 +7,38 @@ export const handlers = [
     graphql.query('GetArticles', () => {
         return HttpResponse.json({
             data: {
-                articles: [
-                    {
-                        id: 1,
-                        title: 'Test Article 1',
-                        slug: 'test-article-1',
-                        mainImage: 'article1.jpg',
-                        status: 'PUBLISHED',
-                        engine: { id: 'ng1', name: 'RenPy' },
-                        author: { name: 'Author 1', image: 'auth1.jpg' },
-                        creators: [],
-                        tags: [],
-                        platforms: [],
-                        categories: [],
-                        images: [],
-                    },
-                    {
-                        id: 2,
-                        title: 'Test Article 2',
-                        slug: 'test-article-2',
-                        mainImage: 'https://external.com/image.jpg',
-                        status: 'PUBLISHED',
-                        engine: { id: 'ng2', name: 'Unity' },
-                        author: { name: 'Author 2', image: 'auth2.jpg' },
-                        creators: [],
-                        tags: [],
-                        platforms: [],
-                        categories: [],
-                        images: [],
-                    },
-                ],
+                public: {
+                    articles: [
+                        {
+                            id: 1,
+                            title: 'Test Article 1',
+                            slug: 'test-article-1',
+                            mainImage: 'article1.jpg',
+                            status: 'PUBLISHED',
+                            engine: { id: 'ng1', name: 'RenPy' },
+                            author: { name: 'Author 1', image: 'auth1.jpg' },
+                            creators: [],
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            images: [],
+                        },
+                        {
+                            id: 2,
+                            title: 'Test Article 2',
+                            slug: 'test-article-2',
+                            mainImage: 'https://external.com/image.jpg',
+                            status: 'PUBLISHED',
+                            engine: { id: 'ng2', name: 'Unity' },
+                            author: { name: 'Author 2', image: 'auth2.jpg' },
+                            creators: [],
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            images: [],
+                        },
+                    ],
+                },
             },
         });
     }),
@@ -45,33 +47,35 @@ export const handlers = [
     graphql.query('GetArticlesPaginated', () => {
         return HttpResponse.json({
             data: {
-                articles: [
-                    {
-                        id: 1,
-                        title: 'Article 1',
-                        slug: 'article-1',
-                        mainImage: 'img1.jpg',
-                        author: { name: 'A1', image: null },
-                        tags: [],
-                        platforms: [],
-                        categories: [],
-                        creators: [],
-                        images: [],
-                    },
-                    {
-                        id: 2,
-                        title: 'Article 2',
-                        slug: 'article-2',
-                        mainImage: 'img2.jpg',
-                        author: { name: 'A2', image: null },
-                        tags: [],
-                        platforms: [],
-                        categories: [],
-                        creators: [],
-                        images: [],
-                    },
-                ],
-                articlesCount: 100,
+                public: {
+                    articles: [
+                        {
+                            id: 1,
+                            title: 'Article 1',
+                            slug: 'article-1',
+                            mainImage: 'img1.jpg',
+                            author: { name: 'A1', image: null },
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            creators: [],
+                            images: [],
+                        },
+                        {
+                            id: 2,
+                            title: 'Article 2',
+                            slug: 'article-2',
+                            mainImage: 'img2.jpg',
+                            author: { name: 'A2', image: null },
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            creators: [],
+                            images: [],
+                        },
+                    ],
+                    articlesCount: 100,
+                },
             },
         });
     }),
@@ -80,18 +84,20 @@ export const handlers = [
     graphql.query('SearchArticles', () => {
         return HttpResponse.json({
             data: {
-                articles: [
-                    {
-                        id: 1,
-                        title: 'Found Article',
-                        slug: 'found-article',
-                        mainImage: 'found.jpg',
-                        author: { name: 'Author', image: null },
-                        tags: [],
-                        engine: { id: 'e1', name: 'RenPy' },
-                    },
-                ],
-                articlesCount: 1,
+                public: {
+                    articles: [
+                        {
+                            id: 1,
+                            title: 'Found Article',
+                            slug: 'found-article',
+                            mainImage: 'found.jpg',
+                            author: { name: 'Author', image: null },
+                            tags: [],
+                            engine: { id: 'e1', name: 'RenPy' },
+                        },
+                    ],
+                    articlesCount: 1,
+                },
             },
         });
     }),
@@ -100,20 +106,22 @@ export const handlers = [
     graphql.query('GetArticlesByTag', () => {
         return HttpResponse.json({
             data: {
-                articles: [
-                    {
-                        id: 1,
-                        title: 'Tagged Article',
-                        slug: 'tagged',
-                        mainImage: null,
-                        author: { name: 'A', image: null },
-                        tags: [],
-                        platforms: [],
-                        categories: [],
-                        creators: [],
-                        images: [],
-                    },
-                ],
+                public: {
+                    articles: [
+                        {
+                            id: 1,
+                            title: 'Tagged Article',
+                            slug: 'tagged',
+                            mainImage: null,
+                            author: { name: 'A', image: null },
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            creators: [],
+                            images: [],
+                        },
+                    ],
+                },
             },
         });
     }),
@@ -121,20 +129,22 @@ export const handlers = [
     graphql.query('GetArticlesByPlatform', () => {
         return HttpResponse.json({
             data: {
-                articles: [
-                    {
-                        id: 1,
-                        title: 'Platform Article',
-                        slug: 'platform',
-                        mainImage: null,
-                        author: { name: 'A', image: null },
-                        tags: [],
-                        platforms: [],
-                        categories: [],
-                        creators: [],
-                        images: [],
-                    },
-                ],
+                public: {
+                    articles: [
+                        {
+                            id: 1,
+                            title: 'Platform Article',
+                            slug: 'platform',
+                            mainImage: null,
+                            author: { name: 'A', image: null },
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            creators: [],
+                            images: [],
+                        },
+                    ],
+                },
             },
         });
     }),
@@ -142,20 +152,22 @@ export const handlers = [
     graphql.query('GetArticlesByCategory', () => {
         return HttpResponse.json({
             data: {
-                articles: [
-                    {
-                        id: 1,
-                        title: 'Category Article',
-                        slug: 'category',
-                        mainImage: null,
-                        author: { name: 'A', image: null },
-                        tags: [],
-                        platforms: [],
-                        categories: [],
-                        creators: [],
-                        images: [],
-                    },
-                ],
+                public: {
+                    articles: [
+                        {
+                            id: 1,
+                            title: 'Category Article',
+                            slug: 'category',
+                            mainImage: null,
+                            author: { name: 'A', image: null },
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            creators: [],
+                            images: [],
+                        },
+                    ],
+                },
             },
         });
     }),
@@ -166,46 +178,52 @@ export const handlers = [
 
         if (slug === 'not-found') {
             return HttpResponse.json({
-                data: { article: null },
+                data: {
+                    public: {
+                        article: null,
+                    },
+                },
             });
         }
 
         return HttpResponse.json({
             data: {
-                article: {
-                    id: 1,
-                    title: 'Test Article 1',
-                    slug: slug as string,
-                    description: 'A test article',
-                    body: 'This is the body content',
-                    ver: '1.0',
-                    createdAt: '2023-01-01',
-                    updatedAt: '2023-01-02',
-                    status: 'PUBLISHED',
-                    engine: { id: 'ng1', name: 'RenPy' },
-                    mainImage: 'article1.jpg',
-                    backgroundImage: 'bg.jpg',
-                    coverImage: 'cover.jpg',
-                    favorited: false,
-                    favoritesCount: 10,
-                    sequentialCode: '001',
-                    author: {
-                        name: 'John Doe',
-                        bio: 'Bio',
-                        image: 'john.jpg',
-                        backgroundImage: 'auth_bg.jpg',
-                        following: false,
-                        socialMediaLinks: [],
+                public: {
+                    article: {
+                        id: 1,
+                        title: 'Test Article 1',
+                        slug: slug as string,
+                        description: 'A test article',
+                        body: 'This is the body content',
+                        ver: '1.0',
+                        createdAt: '2023-01-01',
+                        updatedAt: '2023-01-02',
+                        status: 'PUBLISHED',
+                        engine: { id: 'ng1', name: 'RenPy' },
+                        mainImage: 'article1.jpg',
+                        backgroundImage: 'bg.jpg',
+                        coverImage: 'cover.jpg',
+                        favorited: false,
+                        favoritesCount: 10,
+                        sequentialCode: '001',
+                        author: {
+                            name: 'John Doe',
+                            bio: 'Bio',
+                            image: 'john.jpg',
+                            backgroundImage: 'auth_bg.jpg',
+                            following: false,
+                            socialMediaLinks: [],
+                        },
+                        images: [
+                            { id: 'img1', url: 'img1.jpg' },
+                            { id: 'img2', url: 'img2.jpg' },
+                        ],
+                        creators: [],
+                        tags: [],
+                        platforms: [],
+                        categories: [],
+                        mods: [],
                     },
-                    images: [
-                        { id: 'img1', url: 'img1.jpg' },
-                        { id: 'img2', url: 'img2.jpg' },
-                    ],
-                    creators: [],
-                    tags: [],
-                    platforms: [],
-                    categories: [],
-                    mods: [],
                 },
             },
         });
@@ -215,48 +233,81 @@ export const handlers = [
     graphql.query('GetArticleWithDownloads', () => {
         return HttpResponse.json({
             data: {
-                article: {
-                    id: 1,
-                    title: 'Article With Downloads',
-                    slug: 'with-downloads',
-                    description: 'Desc',
-                    body: 'Body',
-                    ver: '1.0',
-                    createdAt: '2023-01-01',
-                    updatedAt: '2023-01-01',
-                    status: 'PUBLISHED',
-                    engine: { id: 'e1', name: 'RenPy' },
-                    mainImage: 'main.jpg',
-                    backgroundImage: null,
-                    coverImage: null,
-                    favorited: false,
-                    favoritesCount: 5,
-                    sequentialCode: '001',
-                    author: {
-                        name: 'Author',
-                        bio: null,
-                        image: null,
-                        backgroundImage: null,
-                        following: false,
-                        socialMediaLinks: [],
-                    },
-                    images: [],
-                    creators: [],
-                    tags: [],
-                    platforms: [],
-                    categories: [],
-                    mods: [],
-                },
-                downloads: [
-                    {
+                public: {
+                    article: {
                         id: 1,
-                        name: 'Download 1',
-                        url: 'https://dl.com/1',
-                        isActive: true,
-                        vipOnly: false,
+                        title: 'Article With Downloads',
+                        slug: 'with-downloads',
+                        description: 'Desc',
+                        body: 'Body',
+                        ver: '1.0',
+                        createdAt: '2023-01-01',
+                        updatedAt: '2023-01-01',
+                        status: 'PUBLISHED',
+                        engine: { id: 'e1', name: 'RenPy' },
+                        mainImage: 'main.jpg',
+                        backgroundImage: null,
+                        coverImage: null,
+                        favorited: false,
+                        favoritesCount: 5,
+                        sequentialCode: '001',
+                        author: {
+                            name: 'Author',
+                            bio: null,
+                            image: null,
+                            backgroundImage: null,
+                            following: false,
+                            socialMediaLinks: [],
+                        },
+                        images: [],
+                        creators: [],
+                        tags: [],
+                        platforms: [],
+                        categories: [],
+                        mods: [],
                     },
-                ],
-                officialDownloadSources: [],
+                    downloads: [
+                        {
+                            id: 1,
+                            name: 'Download 1',
+                            url: 'https://dl.com/1',
+                            isActive: true,
+                            vipOnly: false,
+                        },
+                    ],
+                    officialDownloadSources: [],
+                },
+            },
+        });
+    }),
+
+    // System Queries
+    graphql.query('GetTags', () => {
+        return HttpResponse.json({
+            data: {
+                system: {
+                    tags: ['renpy', 'unity', 'rpgmaker'],
+                },
+            },
+        });
+    }),
+
+    graphql.query('GetCategories', () => {
+        return HttpResponse.json({
+            data: {
+                system: {
+                    categories: ['Action', 'RPG', 'Strategy'],
+                },
+            },
+        });
+    }),
+
+    graphql.query('GetPlatforms', () => {
+        return HttpResponse.json({
+            data: {
+                system: {
+                    platforms: ['Windows', 'macOS', 'Linux', 'Android', 'iOS'],
+                },
             },
         });
     }),

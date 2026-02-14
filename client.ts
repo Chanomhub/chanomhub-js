@@ -65,7 +65,7 @@ export function createGraphQLClient(config: ChanomhubConfig) {
         }
 
         try {
-            const res = await fetch(`${config.apiUrl}/api/graphql`, fetchOptions);
+            const res = await fetch(`${config.apiUrl}/api/v2/graphql`, fetchOptions);
 
             if (!res.ok) {
                 const errorText = await res.text();
@@ -77,6 +77,7 @@ export function createGraphQLClient(config: ChanomhubConfig) {
             }
 
             const json = await res.json();
+            console.log('DEBUG: GraphQL Response JSON:', JSON.stringify(json));
 
             if (json.errors) {
                 console.error('GraphQL errors:', json.errors);

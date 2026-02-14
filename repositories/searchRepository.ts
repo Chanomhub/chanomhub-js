@@ -73,15 +73,19 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
         const filterArg = `filter: { ${filterParts.join(', ')} }`;
 
         const graphqlQuery = `query SearchArticles {
-            articles(${filterArg}, limit: ${limit}, offset: ${offset}, status: PUBLISHED) {
-                ${fieldsQuery}
+            public {
+                articles(${filterArg}, limit: ${limit}, offset: ${offset}, status: PUBLISHED) {
+                    ${fieldsQuery}
+                }
+                articlesCount(${filterArg})
             }
-            articlesCount(${filterArg})
         }`;
 
         const { data, errors } = await fetcher<{
-            articles: ArticleListItem[];
-            articlesCount: number;
+            public: {
+                articles: ArticleListItem[];
+                articlesCount: number;
+            };
         }>(graphqlQuery, {}, { operationName: 'SearchArticles' });
 
         if (errors || !data) {
@@ -92,8 +96,8 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
         const page = Math.floor(offset / limit) + 1;
 
         return {
-            items: data.articles || [],
-            total: data.articlesCount || 0,
+            items: data.public.articles || [],
+            total: data.public.articlesCount || 0,
             page,
             pageSize: limit,
         };

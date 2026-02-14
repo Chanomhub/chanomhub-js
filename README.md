@@ -110,7 +110,7 @@ import { createChanomhubClient } from '@chanomhub/sdk';
 
 // Custom API and CDN URLs
 const sdk = createChanomhubClient({
-  apiUrl: 'https://api.chanomhub.online',
+  apiUrl: 'https://api.chanomhub.com',
   cdnUrl: 'https://cdn.chanomhub.com',
   token: 'your-jwt-token',
   defaultCacheSeconds: 300, // 5 minutes cache

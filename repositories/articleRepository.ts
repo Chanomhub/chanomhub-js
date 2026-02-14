@@ -39,6 +39,15 @@ export interface ArticleRepository {
     /** Get article with downloads */
     getWithDownloads(slug: string, language?: string): Promise<ArticleWithDownloads>;
 
+    /** Get all available tags */
+    getTags(): Promise<string[]>;
+
+    /** Get all available categories */
+    getCategories(): Promise<string[]>;
+
+    /** Get all available platforms */
+    getPlatforms(): Promise<string[]>;
+
     /** Create a new article */
     create(data: NewArticleDTO): Promise<Article>;
 
@@ -193,12 +202,14 @@ export function createArticleRepository(
         const fieldsQuery = buildFieldsQuery({ preset, fields });
 
         const query = `query GetArticles {
-      articles(${filterArg}limit: ${limit}, offset: ${offset}, status: ${status}) {
-        ${fieldsQuery}
+      public {
+        articles(${filterArg}limit: ${limit}, offset: ${offset}, status: ${status}) {
+          ${fieldsQuery}
+        }
       }
     }`;
 
-        const { data, errors } = await fetcher<{ articles: ArticleListItem[] }>(
+        const { data, errors } = await fetcher<{ public: { articles: ArticleListItem[] } }>(
             query,
             {},
             {
@@ -211,7 +222,7 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.articles || [];
+        return data.public.articles || [];
     }
 
     async function getAllPaginated(
@@ -244,15 +255,19 @@ export function createArticleRepository(
 
         // Query articles and count in a single request
         const query = `query GetArticlesPaginated {
-      articles(${filterArg}limit: ${limit}, offset: ${offset}, status: ${status}) {
-        ${fieldsQuery}
+      public {
+        articles(${filterArg}limit: ${limit}, offset: ${offset}, status: ${status}) {
+          ${fieldsQuery}
+        }
+        articlesCount${countFilterArg}
       }
-      articlesCount${countFilterArg}
     }`;
 
         const { data, errors } = await fetcher<{
-            articles: ArticleListItem[];
-            articlesCount: number;
+            public: {
+                articles: ArticleListItem[];
+                articlesCount: number;
+            };
         }>(
             query,
             {},
@@ -269,8 +284,8 @@ export function createArticleRepository(
         const page = Math.floor(offset / limit) + 1;
 
         return {
-            items: data.articles || [],
-            total: data.articlesCount || 0,
+            items: data.public.articles || [],
+            total: data.public.articlesCount || 0,
             page,
             pageSize: limit,
         };
@@ -283,12 +298,14 @@ export function createArticleRepository(
         const { limit = 50 } = options;
 
         const query = `query GetArticlesByTag($tag: String!) {
-      articles(filter: { tag: $tag }, status: PUBLISHED, limit: ${limit}) {
-        ${buildFieldsQuery()}
+      public {
+        articles(filter: { tag: $tag }, status: PUBLISHED, limit: ${limit}) {
+          ${buildFieldsQuery()}
+        }
       }
     }`;
 
-        const { data, errors } = await fetcher<{ articles: ArticleListItem[] }>(
+        const { data, errors } = await fetcher<{ public: { articles: ArticleListItem[] } }>(
             query,
             { tag },
             {
@@ -301,7 +318,7 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.articles || [];
+        return data.public.articles || [];
     }
 
     async function getByPlatform(
@@ -311,12 +328,14 @@ export function createArticleRepository(
         const { limit = 50 } = options;
 
         const query = `query GetArticlesByPlatform($platform: String!) {
-      articles(filter: { platform: $platform }, status: PUBLISHED, limit: ${limit}) {
-        ${buildFieldsQuery()}
+      public {
+        articles(filter: { platform: $platform }, status: PUBLISHED, limit: ${limit}) {
+          ${buildFieldsQuery()}
+        }
       }
     }`;
 
-        const { data, errors } = await fetcher<{ articles: ArticleListItem[] }>(
+        const { data, errors } = await fetcher<{ public: { articles: ArticleListItem[] } }>(
             query,
             { platform },
             {
@@ -329,7 +348,7 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.articles || [];
+        return data.public.articles || [];
     }
 
     async function getByCategory(
@@ -339,12 +358,14 @@ export function createArticleRepository(
         const { limit = 50 } = options;
 
         const query = `query GetArticlesByCategory($category: String!) {
-      articles(filter: { category: $category }, status: PUBLISHED, limit: ${limit}) {
-        ${buildFieldsQuery()}
+      public {
+        articles(filter: { category: $category }, status: PUBLISHED, limit: ${limit}) {
+          ${buildFieldsQuery()}
+        }
       }
     }`;
 
-        const { data, errors } = await fetcher<{ articles: ArticleListItem[] }>(
+        const { data, errors } = await fetcher<{ public: { articles: ArticleListItem[] } }>(
             query,
             { category },
             {
@@ -357,17 +378,19 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.articles || [];
+        return data.public.articles || [];
     }
 
     async function getBySlug(slug: string, language?: string): Promise<Article | null> {
         const query = `query GetArticleBySlug($slug: String!, $language: String) {
-      article(slug: $slug, language: $language) {
-        ${buildFieldsQuery({ preset: 'full' })}
+      public {
+        article(slug: $slug, language: $language) {
+          ${buildFieldsQuery({ preset: 'full' })}
+        }
       }
     }`;
 
-        const { data, errors } = await fetcher<{ article: Article }>(
+        const { data, errors } = await fetcher<{ public: { article: Article } }>(
             query,
             { slug, language },
             {
@@ -380,7 +403,7 @@ export function createArticleRepository(
             return null;
         }
 
-        return data.article || null;
+        return data.public.article || null;
     }
 
     async function getWithDownloads(
@@ -388,21 +411,23 @@ export function createArticleRepository(
         language?: string,
     ): Promise<ArticleWithDownloads> {
         const query = `query GetArticleWithDownloads($slug: String!, $language: String, $downloadsArticleId: Int!) {
-      article(slug: $slug, language: $language) {
-        ${buildFieldsQuery({ preset: 'full' })}
-      }
-      downloads(articleId: $downloadsArticleId) {
-        id
-        name
-        url
-        isActive
-        vipOnly
-      }
-      officialDownloadSources(articleId: $downloadsArticleId) {
-        id
-        name
-        url
-        status
+      public {
+        article(slug: $slug, language: $language) {
+          ${buildFieldsQuery({ preset: 'full' })}
+        }
+        downloads(articleId: $downloadsArticleId) {
+          id
+          name
+          url
+          isActive
+          vipOnly
+        }
+        officialDownloadSources(articleId: $downloadsArticleId) {
+          id
+          name
+          url
+          status
+        }
       }
     }`;
 
@@ -413,9 +438,11 @@ export function createArticleRepository(
         }
 
         const { data, errors } = await fetcher<{
-            article: Article;
-            downloads: Article['downloads'];
-            officialDownloadSources: Article['officialDownloadSources'];
+            public: {
+                article: Article;
+                downloads: Article['downloads'];
+                officialDownloadSources: Article['officialDownloadSources'];
+            };
         }>(
             query,
             { slug, language, downloadsArticleId: Number(articleResult.id) },
@@ -428,15 +455,79 @@ export function createArticleRepository(
         }
 
         // Combine data
-        if (data.article) {
-            data.article.downloads = data.downloads || [];
-            data.article.officialDownloadSources = data.officialDownloadSources || [];
+        if (data.public.article) {
+            data.public.article.downloads = data.public.downloads || [];
+            data.public.article.officialDownloadSources =
+                data.public.officialDownloadSources || [];
         }
 
         return {
-            article: data.article || articleResult,
-            downloads: data.downloads || null,
+            article: data.public.article || articleResult,
+            downloads: data.public.downloads || null,
         };
+    }
+
+    async function getTags(): Promise<string[]> {
+        const query = `query GetTags {
+      system {
+        tags
+      }
+    }`;
+
+        const { data, errors } = await fetcher<{ system: { tags: string[] } }>(
+            query,
+            {},
+            { operationName: 'GetTags' },
+        );
+
+        if (errors || !data) {
+            console.error('Failed to fetch tags:', errors);
+            return [];
+        }
+
+        return data.system.tags || [];
+    }
+
+    async function getCategories(): Promise<string[]> {
+        const query = `query GetCategories {
+      system {
+        categories
+      }
+    }`;
+
+        const { data, errors } = await fetcher<{ system: { categories: string[] } }>(
+            query,
+            {},
+            { operationName: 'GetCategories' },
+        );
+
+        if (errors || !data) {
+            console.error('Failed to fetch categories:', errors);
+            return [];
+        }
+
+        return data.system.categories || [];
+    }
+
+    async function getPlatforms(): Promise<string[]> {
+        const query = `query GetPlatforms {
+      system {
+        platforms
+      }
+    }`;
+
+        const { data, errors } = await fetcher<{ system: { platforms: string[] } }>(
+            query,
+            {},
+            { operationName: 'GetPlatforms' },
+        );
+
+        if (errors || !data) {
+            console.error('Failed to fetch platforms:', errors);
+            return [];
+        }
+
+        return data.system.platforms || [];
     }
 
     return {
@@ -447,6 +538,9 @@ export function createArticleRepository(
         getByCategory,
         getBySlug,
         getWithDownloads,
+        getTags,
+        getCategories,
+        getPlatforms,
         create,
         update,
         delete: remove,

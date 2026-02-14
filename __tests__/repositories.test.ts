@@ -44,6 +44,31 @@ describe('Repositories Integration Tests', () => {
             expect(result.article).not.toBeNull();
             expect(result.downloads).toHaveLength(1);
         });
+
+        it('should get all tags', async () => {
+            const client = createChanomhubClient();
+            const tags = await client.articles.getTags();
+
+            expect(tags).toContain('renpy');
+            expect(tags).toContain('unity');
+            expect(tags).toHaveLength(3);
+        });
+
+        it('should get all categories', async () => {
+            const client = createChanomhubClient();
+            const categories = await client.articles.getCategories();
+
+            expect(categories).toContain('RPG');
+            expect(categories).toHaveLength(3);
+        });
+
+        it('should get all platforms', async () => {
+            const client = createChanomhubClient();
+            const platforms = await client.articles.getPlatforms();
+
+            expect(platforms).toContain('Windows');
+            expect(platforms).toHaveLength(5);
+        });
     });
 
     describe('SearchRepository', () => {

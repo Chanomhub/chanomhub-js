@@ -1,0 +1,2042 @@
+{
+  "__schema": {
+    "types": [
+      {
+        "name": "ArticleAuthorGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "image",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "following",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "followersCount",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Int",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ID",
+        "kind": "SCALAR",
+        "fields": null
+      },
+      {
+        "name": "String",
+        "kind": "SCALAR",
+        "fields": null
+      },
+      {
+        "name": "Boolean",
+        "kind": "SCALAR",
+        "fields": null
+      },
+      {
+        "name": "Int",
+        "kind": "SCALAR",
+        "fields": null
+      },
+      {
+        "name": "ArticleCreatorGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleDownloadGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "isActive",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "url",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "vipOnly",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleFilterInput",
+        "kind": "INPUT_OBJECT",
+        "fields": null
+      },
+      {
+        "name": "ArticleGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "author",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ArticleAuthorGraphQLDTO",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "backgroundImage",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "body",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "categories",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "coverImage",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "DateTime",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "creators",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "favorited",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "favoritesCount",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Int",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "images",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "mainImage",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "mods",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "platforms",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "slug",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ArticleStatus",
+                "kind": "ENUM",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "tags",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "title",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "DateTime",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "ver",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "sequentialCode",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "engine",
+            "type": {
+              "name": "EngineTypeGraphQLDTO",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          },
+          {
+            "name": "subscribed",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "subscribersCount",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Int",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "EngineTypeGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleImageGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "url",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleModCategoryGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleModGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "categories",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "creditTo",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "downloadLink",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "images",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "version",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleModImageGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "url",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleStatus",
+        "kind": "ENUM",
+        "fields": null
+      },
+      {
+        "name": "ArticleDetails",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "title",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "slug",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "mainImage",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "images",
+            "type": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": {
+                  "name": "ArticleImageGraphQLDTO",
+                  "kind": "OBJECT"
+                }
+              }
+            }
+          },
+          {
+            "name": "author",
+            "type": {
+              "name": "ArticleAuthorGraphQLDTO",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          }
+        ]
+      },
+      {
+        "name": "DownloadLinkDetails",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "url",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "articleId",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Int",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleCategoryGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "DateTime",
+        "kind": "SCALAR",
+        "fields": null
+      },
+      {
+        "name": "User",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "image",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        ]
+      },
+      {
+        "name": "OtherDetails",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "CommentDetails",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "content",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "articleId",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Int",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "EntityDetails",
+        "kind": "UNION",
+        "fields": null
+      },
+      {
+        "name": "Mutation",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "updateModerationStatus",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ModerationRequest",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "UpdateModerationStatusInput",
+        "kind": "INPUT_OBJECT",
+        "fields": null
+      },
+      {
+        "name": "ModerateQuery",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "moderationRequests",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "articleModerationGroups",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleModerationGroup",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "article",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ArticleDetails",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "requests",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ModerationRequest",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "entityId",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Int",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "entityType",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "requestNote",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "RequestStatus",
+                "kind": "ENUM",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "reviewNote",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "createdAt",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "DateTime",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "updatedAt",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "DateTime",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "requester",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "User",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "reviewer",
+            "type": {
+              "name": "User",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          },
+          {
+            "name": "entityDetails",
+            "type": {
+              "name": "EntityDetails",
+              "kind": "UNION",
+              "ofType": null
+            }
+          }
+        ]
+      },
+      {
+        "name": "RequestStatus",
+        "kind": "ENUM",
+        "fields": null
+      },
+      {
+        "name": "ArticleOfficialDownloadSourceGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "reviewNote",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "url",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "OfficialDownloadSourceDetails",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "url",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "articleId",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Int",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticlePlatformGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "ArticleTagGraphQLDTO",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "id",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ID",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Query",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "hello",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "article",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ArticleGraphQLDTO",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "articles",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "articlesCount",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Int",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "downloads",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "officialDownloadSources",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "categories",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "platforms",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "tags",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "moderate",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "ModerateQuery",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "__Schema",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "description",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "types",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "queryType",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "__Type",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "mutationType",
+            "type": {
+              "name": "__Type",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          },
+          {
+            "name": "subscriptionType",
+            "type": {
+              "name": "__Type",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          },
+          {
+            "name": "directives",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "__Type",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "kind",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "__TypeKind",
+                "kind": "ENUM",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "specifiedByURL",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "fields",
+            "type": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": {
+                  "name": "__Field",
+                  "kind": "OBJECT"
+                }
+              }
+            }
+          },
+          {
+            "name": "interfaces",
+            "type": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": {
+                  "name": "__Type",
+                  "kind": "OBJECT"
+                }
+              }
+            }
+          },
+          {
+            "name": "possibleTypes",
+            "type": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": {
+                  "name": "__Type",
+                  "kind": "OBJECT"
+                }
+              }
+            }
+          },
+          {
+            "name": "enumValues",
+            "type": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": {
+                  "name": "__EnumValue",
+                  "kind": "OBJECT"
+                }
+              }
+            }
+          },
+          {
+            "name": "inputFields",
+            "type": {
+              "name": null,
+              "kind": "LIST",
+              "ofType": {
+                "name": null,
+                "kind": "NON_NULL",
+                "ofType": {
+                  "name": "__InputValue",
+                  "kind": "OBJECT"
+                }
+              }
+            }
+          },
+          {
+            "name": "ofType",
+            "type": {
+              "name": "__Type",
+              "kind": "OBJECT",
+              "ofType": null
+            }
+          },
+          {
+            "name": "isOneOf",
+            "type": {
+              "name": "Boolean",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        ]
+      },
+      {
+        "name": "__TypeKind",
+        "kind": "ENUM",
+        "fields": null
+      },
+      {
+        "name": "__Field",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "args",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "type",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "__Type",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "isDeprecated",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "deprecationReason",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        ]
+      },
+      {
+        "name": "__InputValue",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "type",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "__Type",
+                "kind": "OBJECT",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "defaultValue",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "isDeprecated",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "deprecationReason",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        ]
+      },
+      {
+        "name": "__EnumValue",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "isDeprecated",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "deprecationReason",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          }
+        ]
+      },
+      {
+        "name": "__Directive",
+        "kind": "OBJECT",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "String",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "description",
+            "type": {
+              "name": "String",
+              "kind": "SCALAR",
+              "ofType": null
+            }
+          },
+          {
+            "name": "isRepeatable",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": "Boolean",
+                "kind": "SCALAR",
+                "ofType": null
+              }
+            }
+          },
+          {
+            "name": "locations",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          },
+          {
+            "name": "args",
+            "type": {
+              "name": null,
+              "kind": "NON_NULL",
+              "ofType": {
+                "name": null,
+                "kind": "LIST",
+                "ofType": {
+                  "name": null,
+                  "kind": "NON_NULL"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "__DirectiveLocation",
+        "kind": "ENUM",
+        "fields": null
+      }
+    ]
+  }
+}
