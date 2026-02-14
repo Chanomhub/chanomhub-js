@@ -1,0 +1,14 @@
+PublicQuery Fields:
+- _empty
+- article
+- articles
+- articlesCount
+- downloads
+- mods
+- officialDownloadSources
+
+SystemQuery Fields:
+- _empty
+- categories
+- platforms
+- tags

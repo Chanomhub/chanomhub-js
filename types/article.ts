@@ -74,6 +74,8 @@ export interface Article {
     sequentialCode: string | null;
     downloads?: Download[];
     mods: Mod[];
+    versions?: string[];
+    downloadLinks?: Download[];
     officialDownloadSources?: OfficialDownloadSource[];
     version?: string;
 }

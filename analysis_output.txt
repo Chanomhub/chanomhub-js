@@ -1,0 +1,19 @@
+Analysis of V2 Changes:
+=======================
+
+New Types (2):
+- PublicQuery
+- SystemQuery
+
+Changed Types (1):
+- Query:
+  - New field: public
+  - New field: system
+  - Removed field: article
+  - Removed field: articles
+  - Removed field: articlesCount
+  - Removed field: downloads
+  - Removed field: officialDownloadSources
+  - Removed field: categories
+  - Removed field: platforms
+  - Removed field: tags

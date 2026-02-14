@@ -56,6 +56,7 @@ export interface OfficialDownloadSource {
 
 /** Mod type */
 export interface Mod {
+    id: number;
     name: string;
     description: string;
     creditTo: string;
@@ -64,8 +65,11 @@ export interface Mod {
     status: string;
     categories: NamedEntity[];
     images: ImageObject[];
+    creator: {
+        name: string;
+        image: string | null;
+    };
 }
-
 /** Named entity (tag, category, platform, etc.) */
 export interface NamedEntity {
     id: string; // Changed to string as ID is usually string in GraphQL

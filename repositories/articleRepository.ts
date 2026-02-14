@@ -14,6 +14,7 @@ import type {
     RevisionDetail,
     CompareResult,
 } from '../types/article';
+import type { Mod } from '../types/common';
 import type { PaginatedResponse } from '../types/common';
 import { buildFieldsQuery } from '../utils/fields';
 
@@ -65,6 +66,15 @@ export interface ArticleRepository {
 
     /** Compare two versions */
     compareVersions(slug: string, v1: number, v2: number): Promise<CompareResult>;
+
+    /** Get article with versions */
+    getWithVersions(slug: string): Promise<Article | null>;
+
+    /** Get article by version */
+    getByVersion(slug: string, version: string): Promise<Article | null>;
+
+    /** Get mods for an article */
+    getMods(articleId: number): Promise<Mod[]>;
 
     /** Restore article to a specific version */
     restoreRevision(slug: string, version: number): Promise<RevisionDetail>;
@@ -467,6 +477,96 @@ export function createArticleRepository(
         };
     }
 
+    async function getWithVersions(slug: string): Promise<Article | null> {
+        const query = `query GetArticleWithVersions($slug: String!) {
+      public {
+        article(slug: $slug) {
+          id
+          title
+          slug
+          versions
+        }
+      }
+    }`;
+
+        const { data, errors } = await fetcher<{ public: { article: Article } }>(
+            query,
+            { slug },
+            { operationName: 'GetArticleWithVersions' },
+        );
+
+        if (errors || !data) {
+            console.error('Failed to fetch article with versions:', errors);
+            return null;
+        }
+
+        return data.public.article || null;
+    }
+
+    async function getByVersion(slug: string, version: string): Promise<Article | null> {
+        const query = `query GetArticleByVersion($slug: String!, $version: String!) {
+      public {
+        article(slug: $slug, version: $version) {
+          id
+          title
+          downloadLinks {
+            id
+            url
+            vipOnly
+          }
+          mods {
+            id
+            name
+            version
+          }
+        }
+      }
+    }`;
+
+        const { data, errors } = await fetcher<{ public: { article: Article } }>(
+            query,
+            { slug, version },
+            { operationName: 'GetArticleByVersion' },
+        );
+
+        if (errors || !data) {
+            console.error('Failed to fetch article by version:', errors);
+            return null;
+        }
+
+        return data.public.article || null;
+    }
+
+    async function getMods(articleId: number): Promise<Mod[]> {
+        const query = `query GetArticleMods($articleId: Int!) {
+      public {
+        mods(articleId: $articleId) {
+          id
+          name
+          version
+          downloadLink
+          creator {
+            name
+            image
+          }
+        }
+      }
+    }`;
+
+        const { data, errors } = await fetcher<{ public: { mods: Mod[] } }>(
+            query,
+            { articleId },
+            { operationName: 'GetArticleMods' },
+        );
+
+        if (errors || !data) {
+            console.error('Failed to fetch article mods:', errors);
+            return [];
+        }
+
+        return data.public.mods || [];
+    }
+
     async function getTags(): Promise<string[]> {
         const query = `query GetTags {
       system {
@@ -538,6 +638,9 @@ export function createArticleRepository(
         getByCategory,
         getBySlug,
         getWithDownloads,
+        getWithVersions,
+        getByVersion,
+        getMods,
         getTags,
         getCategories,
         getPlatforms,
