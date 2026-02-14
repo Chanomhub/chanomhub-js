@@ -6,7 +6,7 @@ import type { ModListOptions } from './types/common';
 // This file is just to verify that the types and signatures are correct.
 // It is not meant to be executed against a backend.
 
-async function verify usage(repo: ArticleRepository) {
+export async function verifyUsage(repo: ArticleRepository) {
     // 1. getByTag with options
     await repo.getByTag('some-tag', {
         preset: 'minimal',

@@ -240,4 +240,6 @@ export interface ArticleQueryOptions {
     preset?: ArticlePreset;
     /** Custom field selection (overrides preset) */
     fields?: ArticleField[];
+    limit?: number;
+    offset?: number;
 }

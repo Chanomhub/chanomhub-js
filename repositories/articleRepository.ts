@@ -305,12 +305,11 @@ export function createArticleRepository(
         tag: string,
         options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { preset = 'standard', fields } = options;
-        const limit = 50; // TODO: Add limit to options if needed, or rely on calling code
+        const { preset = 'standard', fields, limit = 50, offset = 0 } = options;
 
         const query = `query GetArticlesByTag($tag: String!) {
       public {
-        articles(filter: { tag: $tag }, status: PUBLISHED, limit: ${limit}) {
+        articles(filter: { tag: $tag }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
           ${buildFieldsQuery({ preset, fields })}
         }
       }
@@ -336,12 +335,11 @@ export function createArticleRepository(
         platform: string,
         options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { preset = 'standard', fields } = options;
-        const limit = 50;
+        const { preset = 'standard', fields, limit = 50, offset = 0 } = options;
 
         const query = `query GetArticlesByPlatform($platform: String!) {
       public {
-        articles(filter: { platform: $platform }, status: PUBLISHED, limit: ${limit}) {
+        articles(filter: { platform: $platform }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
           ${buildFieldsQuery({ preset, fields })}
         }
       }
@@ -367,12 +365,11 @@ export function createArticleRepository(
         category: string,
         options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { preset = 'standard', fields } = options;
-        const limit = 50;
+        const { preset = 'standard', fields, limit = 50, offset = 0 } = options;
 
         const query = `query GetArticlesByCategory($category: String!) {
       public {
-        articles(filter: { category: $category }, status: PUBLISHED, limit: ${limit}) {
+        articles(filter: { category: $category }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
           ${buildFieldsQuery({ preset, fields })}
         }
       }
