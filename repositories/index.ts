@@ -20,3 +20,4 @@ export {
     createSubscriptionsRepository,
     type SubscriptionsRepository,
 } from './subscriptionsRepository';
+export { createModsRepository, type ModsRepository } from './modsRepository';
