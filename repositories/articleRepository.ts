@@ -7,6 +7,7 @@ import type {
     Article,
     ArticleListItem,
     ArticleListOptions,
+    ArticleQueryOptions,
     ArticleWithDownloads,
     NewArticleDTO,
     UpdateArticleDTO,
@@ -14,9 +15,8 @@ import type {
     RevisionDetail,
     CompareResult,
 } from '../types/article';
-import type { Mod } from '../types/common';
-import type { PaginatedResponse } from '../types/common';
-import { buildFieldsQuery } from '../utils/fields';
+import type { Mod, ModField, ModListOptions, PaginatedResponse } from '../types/common';
+import { buildFieldsQuery, buildModFieldsQuery } from '../utils/fields';
 
 export interface ArticleRepository {
     /** Get list of articles */
@@ -26,19 +26,19 @@ export interface ArticleRepository {
     getAllPaginated(options?: ArticleListOptions): Promise<PaginatedResponse<ArticleListItem>>;
 
     /** Get articles by tag */
-    getByTag(tag: string, options?: { limit?: number }): Promise<ArticleListItem[]>;
+    getByTag(tag: string, options?: ArticleQueryOptions): Promise<ArticleListItem[]>;
 
     /** Get articles by platform */
-    getByPlatform(platform: string, options?: { limit?: number }): Promise<ArticleListItem[]>;
+    getByPlatform(platform: string, options?: ArticleQueryOptions): Promise<ArticleListItem[]>;
 
     /** Get articles by category */
-    getByCategory(category: string, options?: { limit?: number }): Promise<ArticleListItem[]>;
+    getByCategory(category: string, options?: ArticleQueryOptions): Promise<ArticleListItem[]>;
 
     /** Get single article by slug */
-    getBySlug(slug: string, language?: string): Promise<Article | null>;
+    getBySlug(slug: string, options?: ArticleQueryOptions): Promise<Article | null>;
 
     /** Get article with downloads */
-    getWithDownloads(slug: string, language?: string): Promise<ArticleWithDownloads>;
+    getWithDownloads(slug: string, options?: ArticleQueryOptions): Promise<ArticleWithDownloads>;
 
     /** Get all available tags */
     getTags(): Promise<string[]>;
@@ -74,7 +74,7 @@ export interface ArticleRepository {
     getByVersion(slug: string, version: string): Promise<Article | null>;
 
     /** Get mods for an article */
-    getMods(articleId: number): Promise<Mod[]>;
+    getMods(articleId: number, options?: ModListOptions): Promise<Mod[]>;
 
     /** Restore article to a specific version */
     restoreRevision(slug: string, version: number): Promise<RevisionDetail>;
@@ -303,14 +303,15 @@ export function createArticleRepository(
 
     async function getByTag(
         tag: string,
-        options: { limit?: number } = {},
+        options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { limit = 50 } = options;
+        const { preset = 'standard', fields } = options;
+        const limit = 50; // TODO: Add limit to options if needed, or rely on calling code
 
         const query = `query GetArticlesByTag($tag: String!) {
       public {
         articles(filter: { tag: $tag }, status: PUBLISHED, limit: ${limit}) {
-          ${buildFieldsQuery()}
+          ${buildFieldsQuery({ preset, fields })}
         }
       }
     }`;
@@ -333,14 +334,15 @@ export function createArticleRepository(
 
     async function getByPlatform(
         platform: string,
-        options: { limit?: number } = {},
+        options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { limit = 50 } = options;
+        const { preset = 'standard', fields } = options;
+        const limit = 50;
 
         const query = `query GetArticlesByPlatform($platform: String!) {
       public {
         articles(filter: { platform: $platform }, status: PUBLISHED, limit: ${limit}) {
-          ${buildFieldsQuery()}
+          ${buildFieldsQuery({ preset, fields })}
         }
       }
     }`;
@@ -363,14 +365,15 @@ export function createArticleRepository(
 
     async function getByCategory(
         category: string,
-        options: { limit?: number } = {},
+        options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { limit = 50 } = options;
+        const { preset = 'standard', fields } = options;
+        const limit = 50;
 
         const query = `query GetArticlesByCategory($category: String!) {
       public {
         articles(filter: { category: $category }, status: PUBLISHED, limit: ${limit}) {
-          ${buildFieldsQuery()}
+          ${buildFieldsQuery({ preset, fields })}
         }
       }
     }`;
@@ -391,18 +394,19 @@ export function createArticleRepository(
         return data.public.articles || [];
     }
 
-    async function getBySlug(slug: string, language?: string): Promise<Article | null> {
-        const query = `query GetArticleBySlug($slug: String!, $language: String) {
+    async function getBySlug(slug: string, options: ArticleQueryOptions = {}): Promise<Article | null> {
+        const { language, version, preset = 'full', fields } = options;
+        const query = `query GetArticleBySlug($slug: String!, $language: String, $version: String) {
       public {
-        article(slug: $slug, language: $language) {
-          ${buildFieldsQuery({ preset: 'full' })}
+        article(slug: $slug, language: $language, version: $version) {
+          ${buildFieldsQuery({ preset, fields })}
         }
       }
     }`;
 
         const { data, errors } = await fetcher<{ public: { article: Article } }>(
             query,
-            { slug, language },
+            { slug, language, version },
             {
                 operationName: 'GetArticleBySlug',
             },
@@ -418,106 +422,53 @@ export function createArticleRepository(
 
     async function getWithDownloads(
         slug: string,
-        language?: string,
+        options: ArticleQueryOptions = {},
     ): Promise<ArticleWithDownloads> {
-        const query = `query GetArticleWithDownloads($slug: String!, $language: String, $downloadsArticleId: Int!) {
+        const { language, version, preset = 'full', fields } = options;
+
+        // Ensure downloadLinks and officialDownloadSources are in fields if not using preset='full' or if overriding
+        // But if fields is undefined, preset='full' (default) already includes them? 
+        // No, 'full' preset in fields.ts has 'images', 'creators' etc. but I didn't verify if it has downloadLinks.
+        // I added 'downloadLinks', 'versions', 'officialDownloadSources' to ArticleField but NOT to FIELD_PRESETS.full.
+        // So I must explicitly add them or modify FIELD_PRESETS.full in fields.ts (which would affect everyone).
+        // Safest is to explicitly request them here.
+
+        let queryFields = fields;
+        if (!fields) {
+            // Start with preset fields
+            // NOTE: We can't easily access FIELD_PRESETS here without importing it.
+            // Better to rely on buildFieldsQuery handling.
+            // If I just pass fields=['downloadLinks', 'officialDownloadSources'], I lose all other fields.
+            // So if fields is empty, I assume preset='full' and merge?
+            // Or I just request `article { ...fields, downloadLinks, officialDownloadSources }` in the query construction.
+        }
+
+        // Simplest strategy: Request the article with provided options, AND explicit download fields.
+        // But buildFieldsQuery builds the string.
+        // We can append fields to the query string constructed by buildFieldsQuery if we want to force them.
+        // OR we just use getBySlug and if fields are missing, that's caller's problem?
+        // No, getWithDownloads implies getting downloads.
+
+        const fieldsQuery = buildFieldsQuery({ preset, fields });
+
+        // Check if downloadLinks are already in fieldsQuery? Hard to check string.
+        // We can just append them if we are willing to risk duplications (GraphQL ignores dupes usually).
+        // Or better: construct a specialized query.
+
+        const query = `query GetArticleWithDownloads($slug: String!, $language: String, $version: String) {
       public {
-        article(slug: $slug, language: $language) {
-          ${buildFieldsQuery({ preset: 'full' })}
-        }
-        downloads(articleId: $downloadsArticleId) {
-          id
-          name
-          url
-          isActive
-          vipOnly
-        }
-        officialDownloadSources(articleId: $downloadsArticleId) {
-          id
-          name
-          url
-          status
-        }
-      }
-    }`;
-
-        // First get article to get its ID
-        const articleResult = await getBySlug(slug, language);
-        if (!articleResult) {
-            return { article: null, downloads: null };
-        }
-
-        const { data, errors } = await fetcher<{
-            public: {
-                article: Article;
-                downloads: Article['downloads'];
-                officialDownloadSources: Article['officialDownloadSources'];
-            };
-        }>(
-            query,
-            { slug, language, downloadsArticleId: Number(articleResult.id) },
-            { operationName: 'GetArticleWithDownloads' },
-        );
-
-        if (errors || !data) {
-            console.error('Failed to fetch article with downloads:', errors);
-            return { article: articleResult, downloads: null };
-        }
-
-        // Combine data
-        if (data.public.article) {
-            data.public.article.downloads = data.public.downloads || [];
-            data.public.article.officialDownloadSources =
-                data.public.officialDownloadSources || [];
-        }
-
-        return {
-            article: data.public.article || articleResult,
-            downloads: data.public.downloads || null,
-        };
-    }
-
-    async function getWithVersions(slug: string): Promise<Article | null> {
-        const query = `query GetArticleWithVersions($slug: String!) {
-      public {
-        article(slug: $slug) {
-          id
-          title
-          slug
-          versions
-        }
-      }
-    }`;
-
-        const { data, errors } = await fetcher<{ public: { article: Article } }>(
-            query,
-            { slug },
-            { operationName: 'GetArticleWithVersions' },
-        );
-
-        if (errors || !data) {
-            console.error('Failed to fetch article with versions:', errors);
-            return null;
-        }
-
-        return data.public.article || null;
-    }
-
-    async function getByVersion(slug: string, version: string): Promise<Article | null> {
-        const query = `query GetArticleByVersion($slug: String!, $version: String!) {
-      public {
-        article(slug: $slug, version: $version) {
-          id
-          title
+        article(slug: $slug, language: $language, version: $version) {
+          ${fieldsQuery}
           downloadLinks {
             id
             url
             vipOnly
           }
-          mods {
+          officialDownloadSources {
             id
             name
-            version
+            url
+            status
           }
         }
       }
@@ -525,30 +476,43 @@ export function createArticleRepository(
 
         const { data, errors } = await fetcher<{ public: { article: Article } }>(
             query,
-            { slug, version },
-            { operationName: 'GetArticleByVersion' },
+            { slug, language, version },
+            { operationName: 'GetArticleWithDownloads' },
         );
 
         if (errors || !data) {
-            console.error('Failed to fetch article by version:', errors);
-            return null;
+            console.error('Failed to fetch article with downloads:', errors);
+            return { article: null, downloads: null };
         }
 
-        return data.public.article || null;
+        const article = data.public.article;
+
+        if (!article) {
+            return { article: null, downloads: null };
+        }
+
+        return {
+            article,
+            downloads: article.downloadLinks || [],
+        };
     }
 
-    async function getMods(articleId: number): Promise<Mod[]> {
+    async function getWithVersions(slug: string): Promise<Article | null> {
+        return getBySlug(slug, { fields: ['id', 'title', 'slug', 'versions'] });
+    }
+
+    async function getByVersion(slug: string, version: string): Promise<Article | null> {
+        return getBySlug(slug, {
+            version,
+            fields: ['id', 'title', 'downloadLinks', 'mods']
+        });
+    }
+
+    async function getMods(articleId: number, options: ModListOptions = {}): Promise<Mod[]> {
         const query = `query GetArticleMods($articleId: Int!) {
       public {
         mods(articleId: $articleId) {
-          id
-          name
-          version
-          downloadLink
-          creator {
-            name
-            image
-          }
+          ${buildModFieldsQuery(options)}
         }
       }
     }`;

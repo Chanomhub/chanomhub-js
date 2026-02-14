@@ -46,7 +46,11 @@ export type ArticleField =
     | 'createdAt'
     | 'updatedAt'
     | 'status'
-    | 'sequentialCode';
+    | 'sequentialCode'
+    | 'versions'
+    | 'downloadLinks'
+    | 'officialDownloadSources'
+    | 'version';
 
 /** Full Article type */
 export interface Article {
@@ -226,4 +230,14 @@ export interface CompareResult {
     descriptionDiff?: string;
     bodyDiff?: string;
     parsedBodyDiff?: DiffLine[];
+}
+
+/** Options for single article queries */
+export interface ArticleQueryOptions {
+    language?: string;
+    version?: string;
+    /** Field preset level (default: 'full') */
+    preset?: ArticlePreset;
+    /** Custom field selection (overrides preset) */
+    fields?: ArticleField[];
 }

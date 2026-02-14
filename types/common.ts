@@ -81,3 +81,20 @@ export interface ImageObject {
     id?: string;
     url: string;
 }
+
+/** Mod fields for selection */
+export type ModField =
+    | 'id'
+    | 'name'
+    | 'description'
+    | 'creditTo'
+    | 'downloadLink'
+    | 'version'
+    | 'status'
+    | 'categories'
+    | 'images'
+    | 'creator';
+
+export interface ModListOptions {
+    fields?: ModField[];
+}
