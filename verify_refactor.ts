@@ -20,11 +20,6 @@ export async function verifyUsage(repo: ArticleRepository) {
         fields: ['id', 'title', 'versions', 'downloadLinks']
     });
 
-    // 3. getWithDownloads with custom fields
-    // Should support options
-    await repo.getWithDownloads('some-slug', {
-        fields: ['id', 'downloadLinks', 'officialDownloadSources']
-    });
 
     // 4. getMods with options (excluding creator)
     const modListOptions: ModListOptions = {

@@ -115,6 +115,7 @@ export function createDownloadsRepository(
 
         const params = new URLSearchParams();
         if (options?.status) params.set('status', options.status);
+        if (options?.articleId) params.set('articleId', String(options.articleId));
         if (options?.page) params.set('page', String(options.page));
         if (options?.limit) params.set('limit', String(options.limit));
 

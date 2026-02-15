@@ -37,8 +37,6 @@ export interface ArticleRepository {
     /** Get single article by slug */
     getBySlug(slug: string, options?: ArticleQueryOptions): Promise<Article | null>;
 
-    /** Get article with downloads */
-    getWithDownloads(slug: string, options?: ArticleQueryOptions): Promise<ArticleWithDownloads>;
 
     /** Get all available tags */
     getTags(): Promise<string[]>;
@@ -417,82 +415,6 @@ export function createArticleRepository(
         return data.public.article || null;
     }
 
-    async function getWithDownloads(
-        slug: string,
-        options: ArticleQueryOptions = {},
-    ): Promise<ArticleWithDownloads> {
-        const { language, version, preset = 'full', fields } = options;
-
-        // Ensure downloadLinks and officialDownloadSources are in fields if not using preset='full' or if overriding
-        // But if fields is undefined, preset='full' (default) already includes them? 
-        // No, 'full' preset in fields.ts has 'images', 'creators' etc. but I didn't verify if it has downloadLinks.
-        // I added 'downloadLinks', 'versions', 'officialDownloadSources' to ArticleField but NOT to FIELD_PRESETS.full.
-        // So I must explicitly add them or modify FIELD_PRESETS.full in fields.ts (which would affect everyone).
-        // Safest is to explicitly request them here.
-
-        let queryFields = fields;
-        if (!fields) {
-            // Start with preset fields
-            // NOTE: We can't easily access FIELD_PRESETS here without importing it.
-            // Better to rely on buildFieldsQuery handling.
-            // If I just pass fields=['downloadLinks', 'officialDownloadSources'], I lose all other fields.
-            // So if fields is empty, I assume preset='full' and merge?
-            // Or I just request `article { ...fields, downloadLinks, officialDownloadSources }` in the query construction.
-        }
-
-        // Simplest strategy: Request the article with provided options, AND explicit download fields.
-        // But buildFieldsQuery builds the string.
-        // We can append fields to the query string constructed by buildFieldsQuery if we want to force them.
-        // OR we just use getBySlug and if fields are missing, that's caller's problem?
-        // No, getWithDownloads implies getting downloads.
-
-        const fieldsQuery = buildFieldsQuery({ preset, fields });
-
-        // Check if downloadLinks are already in fieldsQuery? Hard to check string.
-        // We can just append them if we are willing to risk duplications (GraphQL ignores dupes usually).
-        // Or better: construct a specialized query.
-
-        const query = `query GetArticleWithDownloads($slug: String!, $language: String, $version: String) {
-      public {
-        article(slug: $slug, language: $language, version: $version) {
-          ${fieldsQuery}
-          downloadLinks {
-            id
-            url
-            vipOnly
-          }
-          officialDownloadSources {
-            id
-            name
-            url
-            status
-          }
-        }
-      }
-    }`;
-
-        const { data, errors } = await fetcher<{ public: { article: Article } }>(
-            query,
-            { slug, language, version },
-            { operationName: 'GetArticleWithDownloads' },
-        );
-
-        if (errors || !data) {
-            console.error('Failed to fetch article with downloads:', errors);
-            return { article: null, downloads: null };
-        }
-
-        const article = data.public.article;
-
-        if (!article) {
-            return { article: null, downloads: null };
-        }
-
-        return {
-            article,
-            downloads: article.downloadLinks || [],
-        };
-    }
 
     async function getWithVersions(slug: string): Promise<Article | null> {
         return getBySlug(slug, { fields: ['id', 'title', 'slug', 'versions'] });
@@ -598,7 +520,7 @@ export function createArticleRepository(
         getByPlatform,
         getByCategory,
         getBySlug,
-        getWithDownloads,
+
         getWithVersions,
         getByVersion,
         getMods,

@@ -37,13 +37,6 @@ describe('Repositories Integration Tests', () => {
             expect(articles[0].title).toBe('Category Article');
         });
 
-        it('should get article with downloads', async () => {
-            const client = createChanomhubClient();
-            const result = await client.articles.getWithDownloads('with-downloads');
-
-            expect(result.article).not.toBeNull();
-            expect(result.downloads).toHaveLength(1);
-        });
 
         it('should get all tags', async () => {
             const client = createChanomhubClient();

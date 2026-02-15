@@ -111,41 +111,9 @@ async function main() {
     }
 
     // ============================================================================
-    // 6. ดึง Article พร้อม Downloads
+    // 6. [REMOVED] getWithDownloads
     // ============================================================================
-    console.log('\n⬇️  6. ดึง Article พร้อม Downloads\n');
-
-    try {
-        const firstArticles = await sdk.articles.getAll({ limit: 1 });
-        if (firstArticles.length > 0) {
-            const slug = firstArticles[0].slug;
-            const result = await sdk.articles.getWithDownloads(slug);
-
-            if (result.article) {
-                console.log(`✅ บทความ: ${result.article.title}\n`);
-
-                if (result.downloads && result.downloads.length > 0) {
-                    console.log(`   📥 Downloads (${result.downloads.length}):`);
-                    result.downloads.forEach((dl) => {
-                        console.log(`      - ${dl.name} ${dl.vipOnly ? '(VIP)' : ''}`);
-                    });
-                } else {
-                    console.log('   📥 ไม่มี downloads');
-                }
-
-                if (result.article.officialDownloadSources?.length) {
-                    console.log(
-                        `   🔗 Official Sources (${result.article.officialDownloadSources.length}):`,
-                    );
-                    result.article.officialDownloadSources.forEach((src) => {
-                        console.log(`      - ${src.name}: ${src.url}`);
-                    });
-                }
-            }
-        }
-    } catch (error) {
-        console.error('❌ Error fetching article with downloads:', error);
-    }
+    console.log('\n⬇️  6. [REMOVED] getWithDownloads has been removed from SDK.\n');
 
     // ============================================================================
     // 7. ใช้ Field Presets
@@ -242,7 +210,6 @@ async function main() {
     console.log('   4. sdk.articles.getByPlatform()- ดึงตาม platform');
     console.log('   5. sdk.articles.getByCategory()- ดึงตาม category');
     console.log('   6. sdk.articles.getBySlug()    - ดึง article เดียว');
-    console.log('   7. sdk.articles.getWithDownloads() - ดึงพร้อม downloads');
     console.log('   8. sdk.graphql()               - Raw GraphQL query');
     console.log('\n🔗 Docs: https://github.com/Chanomhub/chanomhub-sdk');
 }

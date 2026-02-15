@@ -186,7 +186,7 @@ export function buildModFieldsQuery(options: ModListOptions = {}): string {
     'name',
     'version',
     'downloadLink',
-    'creator' // Default includes creator to match previous behavior unless specified
+    // 'creator' removed as default per request, add explicitly if needed
   ];
 
   const selectedFields = fields ?? defaultFields;

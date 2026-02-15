@@ -67,6 +67,7 @@ export interface DownloadLinksListResponse {
 /** Options for listing downloads */
 export interface ListDownloadsOptions {
     status?: SourceStatus;
+    articleId?: number;
     page?: number;
     limit?: number;
 }
