@@ -4,7 +4,7 @@
  * Provides API methods for managing download links.
  */
 
-import type { RestFetcher } from '../client';
+import type { GraphQLFetcher, RestFetcher } from '../client';
 import type { ChanomhubConfig } from '../config';
 import { AuthenticationError } from '../errors';
 import type {
@@ -83,7 +83,8 @@ export interface DownloadsRepository {
  * Creates a downloads repository with the given REST client
  */
 export function createDownloadsRepository(
-    fetcher: RestFetcher,
+    rest: RestFetcher,
+    graphql: GraphQLFetcher,
     config: ChanomhubConfig,
 ): DownloadsRepository {
     function requireAuth(): void {
@@ -97,7 +98,7 @@ export function createDownloadsRepository(
     async function create(data: CreateDownloadLinkRequest): Promise<DownloadLink | null> {
         requireAuth();
 
-        const { data: response, error } = await fetcher<DownloadLinkResponse>(
+        const { data: response, error } = await rest<DownloadLinkResponse>(
             '/api/downloads',
             { method: 'POST', body: data },
         );
@@ -122,7 +123,7 @@ export function createDownloadsRepository(
         const queryString = params.toString();
         const url = `/api/downloads${queryString ? `?${queryString}` : ''}`;
 
-        const { data, error } = await fetcher<DownloadLinksListResponse>(url, { method: 'GET' });
+        const { data, error } = await rest<DownloadLinksListResponse>(url, { method: 'GET' });
 
         if (error) {
             console.error('Failed to get download links:', error);
@@ -133,17 +134,33 @@ export function createDownloadsRepository(
     }
 
     async function getByArticle(articleId: number): Promise<DownloadLink[]> {
-        const { data, error } = await fetcher<DownloadLink[]>(
-            `/api/downloads/article/${articleId}`,
-            { method: 'GET' },
+        const query = `query GetArticleDownloads($articleId: Int!) {
+      public {
+        downloads(articleId: $articleId) {
+          id
+          name
+          url
+          isActive
+          vipOnly
+          forVersion
+          createdAt
+          updatedAt
+        }
+      }
+    }`;
+
+        const { data, errors } = await graphql<{ public: { downloads: DownloadLink[] } }>(
+            query,
+            { articleId },
+            { operationName: 'GetArticleDownloads' },
         );
 
-        if (error) {
-            console.error('Failed to get download links for article:', error);
+        if (errors || !data) {
+            console.error('Failed to get download links for article:', errors);
             return [];
         }
 
-        return data ?? [];
+        return data.public.downloads ?? [];
     }
 
     async function getPending(page = 1, limit = 20): Promise<DownloadLinksListResponse | null> {
@@ -153,7 +170,7 @@ export function createDownloadsRepository(
         params.set('page', String(page));
         params.set('limit', String(limit));
 
-        const { data, error } = await fetcher<DownloadLinksListResponse>(
+        const { data, error } = await rest<DownloadLinksListResponse>(
             `/api/downloads/pending?${params.toString()}`,
             { method: 'GET' },
         );
@@ -169,7 +186,7 @@ export function createDownloadsRepository(
     async function moderate(id: number, moderationData: ModerateDownloadLinkRequest): Promise<DownloadLink | null> {
         requireAuth();
 
-        const { data: response, error } = await fetcher<DownloadLinkResponse>(
+        const { data: response, error } = await rest<DownloadLinkResponse>(
             `/api/downloads/${id}/moderate`,
             { method: 'PATCH', body: moderationData },
         );
@@ -183,7 +200,7 @@ export function createDownloadsRepository(
     }
 
     async function getById(id: number): Promise<DownloadLink | null> {
-        const { data, error } = await fetcher<DownloadLink>(
+        const { data, error } = await rest<DownloadLink>(
             `/api/downloads/${id}`,
             { method: 'GET' },
         );
@@ -199,7 +216,7 @@ export function createDownloadsRepository(
     async function update(id: number, updateData: UpdateDownloadLinkRequest): Promise<DownloadLink | null> {
         requireAuth();
 
-        const { data: response, error } = await fetcher<DownloadLinkResponse>(
+        const { data: response, error } = await rest<DownloadLinkResponse>(
             `/api/downloads/${id}`,
             { method: 'PATCH', body: updateData },
         );
@@ -215,7 +232,7 @@ export function createDownloadsRepository(
     async function deleteDownload(id: number): Promise<boolean> {
         requireAuth();
 
-        const { error } = await fetcher<void>(
+        const { error } = await rest<void>(
             `/api/downloads/${id}`,
             { method: 'DELETE' },
         );

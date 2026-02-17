@@ -41,6 +41,7 @@ import {
     createDownloadsRepository,
     createSubscriptionsRepository,
     createModsRepository,
+    createBillingRepository,
     type ArticleRepository,
     type FavoritesRepository,
     type UsersRepository,
@@ -49,6 +50,7 @@ import {
     type DownloadsRepository,
     type SubscriptionsRepository,
     type ModsRepository,
+    type BillingRepository,
 } from './repositories';
 import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
 
@@ -76,6 +78,8 @@ export interface ChanomhubClient {
     subscriptions: SubscriptionsRepository;
     /** Mods operations */
     mods: ModsRepository;
+    /** Billing operations (Usage tracking) */
+    billing: BillingRepository;
     /** Raw GraphQL fetcher for custom queries */
     graphql: GraphQLFetcher;
     /** SDK configuration */
@@ -117,9 +121,10 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
     const users = createUsersRepository(rest);
     const search = createSearchRepository(graphql);
     const auth = createAuthRepository(rest, fullConfig);
-    const downloads = createDownloadsRepository(rest, fullConfig);
+    const downloads = createDownloadsRepository(rest, graphql, fullConfig);
     const subscriptions = createSubscriptionsRepository(rest, fullConfig);
     const mods = createModsRepository(rest, fullConfig);
+    const billing = createBillingRepository(rest, fullConfig);
 
     return {
         articles,
@@ -130,6 +135,7 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
         downloads,
         subscriptions,
         mods,
+        billing,
         graphql,
         config: fullConfig,
     };

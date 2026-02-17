@@ -62,6 +62,14 @@ describe('Repositories Integration Tests', () => {
             expect(platforms).toContain('Windows');
             expect(platforms).toHaveLength(5);
         });
+
+        it('should get official download sources', async () => {
+            const client = createChanomhubClient();
+            const sources = await client.articles.getOfficialDownloadSources(10);
+
+            expect(sources).toHaveLength(1);
+            expect(sources[0].name).toBe('Official Source for 10');
+        });
     });
 
     describe('SearchRepository', () => {
@@ -148,6 +156,17 @@ describe('Repositories Integration Tests', () => {
 
             expect(profile).not.toBeNull();
             expect(profile?.following).toBe(false);
+        });
+    });
+
+    describe('DownloadsRepository', () => {
+        it('should get downloads by article ID via GraphQL', async () => {
+            const client = createChanomhubClient();
+            const downloads = await client.downloads.getByArticle(10);
+
+            expect(downloads).toHaveLength(1);
+            expect(downloads[0].name).toBe('Download for 10');
+            expect(downloads[0].url).toBe('https://dl.com/1');
         });
     });
 });

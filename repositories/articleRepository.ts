@@ -15,7 +15,7 @@ import type {
     RevisionDetail,
     CompareResult,
 } from '../types/article';
-import type { Mod, ModField, ModListOptions, PaginatedResponse } from '../types/common';
+import type { Mod, ModField, ModListOptions, PaginatedResponse, OfficialDownloadSource } from '../types/common';
 import { buildFieldsQuery, buildModFieldsQuery } from '../utils/fields';
 
 export interface ArticleRepository {
@@ -73,6 +73,9 @@ export interface ArticleRepository {
 
     /** Get mods for an article */
     getMods(articleId: number, options?: ModListOptions): Promise<Mod[]>;
+
+    /** Get official download sources for an article */
+    getOfficialDownloadSources(articleId: number): Promise<OfficialDownloadSource[]>;
 
     /** Restore article to a specific version */
     restoreRevision(slug: string, version: number): Promise<RevisionDetail>;
@@ -450,6 +453,32 @@ export function createArticleRepository(
         return data.public.mods || [];
     }
 
+    async function getOfficialDownloadSources(articleId: number): Promise<OfficialDownloadSource[]> {
+        const query = `query GetOfficialDownloadSources($articleId: Int!) {
+      public {
+        officialDownloadSources(articleId: $articleId) {
+          id
+          name
+          url
+          status
+        }
+      }
+    }`;
+
+        const { data, errors } = await fetcher<{ public: { officialDownloadSources: OfficialDownloadSource[] } }>(
+            query,
+            { articleId },
+            { operationName: 'GetOfficialDownloadSources' },
+        );
+
+        if (errors || !data) {
+            console.error('Failed to fetch official download sources:', errors);
+            return [];
+        }
+
+        return data.public.officialDownloadSources || [];
+    }
+
     async function getTags(): Promise<string[]> {
         const query = `query GetTags {
       system {
@@ -524,6 +553,7 @@ export function createArticleRepository(
         getWithVersions,
         getByVersion,
         getMods,
+        getOfficialDownloadSources,
         getTags,
         getCategories,
         getPlatforms,

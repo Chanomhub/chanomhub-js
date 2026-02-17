@@ -229,7 +229,7 @@ export const handlers = [
         });
     }),
 
-    // Get Article with Downloads
+    // Get Article with Downloads (Legacy / Combined)
     graphql.query('GetArticleWithDownloads', () => {
         return HttpResponse.json({
             data: {
@@ -276,6 +276,49 @@ export const handlers = [
                         },
                     ],
                     officialDownloadSources: [],
+                },
+            },
+        });
+    }),
+
+    // New: Get Article Downloads
+    graphql.query('GetArticleDownloads', ({ variables }) => {
+        const { articleId } = variables;
+        return HttpResponse.json({
+            data: {
+                public: {
+                    downloads: [
+                        {
+                            id: 1,
+                            articleId: articleId as number,
+                            name: `Download for ${articleId}`,
+                            url: 'https://dl.com/1',
+                            isActive: true,
+                            vipOnly: false,
+                            forVersion: '1.0',
+                            createdAt: '2023-01-01',
+                            updatedAt: '2023-01-01',
+                        },
+                    ],
+                },
+            },
+        });
+    }),
+
+    // New: Get Official Download Sources
+    graphql.query('GetOfficialDownloadSources', ({ variables }) => {
+        const { articleId } = variables;
+        return HttpResponse.json({
+            data: {
+                public: {
+                    officialDownloadSources: [
+                        {
+                            id: 'source1',
+                            name: `Official Source for ${articleId}`,
+                            url: 'https://official.com/1',
+                            status: 'APPROVED',
+                        },
+                    ],
                 },
             },
         });
