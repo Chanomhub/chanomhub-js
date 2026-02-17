@@ -18,4 +18,3 @@ export { createAuthRepository, type AuthRepository } from './authRepository';
 export { createDownloadsRepository, type DownloadsRepository } from './downloadsRepository';
 export { createSubscriptionsRepository, type SubscriptionsRepository } from './subscriptionsRepository';
 export { createModsRepository, type ModsRepository } from './modsRepository';
-export { createBillingRepository, type BillingRepository } from './billingRepository';
