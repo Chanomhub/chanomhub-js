@@ -433,13 +433,15 @@ export function createArticleRepository(
     async function getMods(articleId: number, options: ModListOptions = {}): Promise<Mod[]> {
         const query = `query GetArticleMods($articleId: Int!) {
       public {
-        mods(articleId: $articleId) {
-          ${buildModFieldsQuery(options)}
+        article(id: $articleId) {
+          mods {
+            ${buildModFieldsQuery(options)}
+          }
         }
       }
     }`;
 
-        const { data, errors } = await fetcher<{ public: { mods: Mod[] } }>(
+        const { data, errors } = await fetcher<{ public: { article: { mods: Mod[] } } }>(
             query,
             { articleId },
             { operationName: 'GetArticleMods' },
@@ -450,22 +452,24 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.public.mods || [];
+        return data.public.article?.mods || [];
     }
 
     async function getOfficialDownloadSources(articleId: number): Promise<OfficialDownloadSource[]> {
         const query = `query GetOfficialDownloadSources($articleId: Int!) {
       public {
-        officialDownloadSources(articleId: $articleId) {
-          id
-          name
-          url
-          status
+        article(id: $articleId) {
+          officialDownloadSources {
+            id
+            name
+            url
+            status
+          }
         }
       }
     }`;
 
-        const { data, errors } = await fetcher<{ public: { officialDownloadSources: OfficialDownloadSource[] } }>(
+        const { data, errors } = await fetcher<{ public: { article: { officialDownloadSources: OfficialDownloadSource[] } } }>(
             query,
             { articleId },
             { operationName: 'GetOfficialDownloadSources' },
@@ -476,7 +480,7 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.public.officialDownloadSources || [];
+        return data.public.article?.officialDownloadSources || [];
     }
 
     async function getTags(): Promise<string[]> {

@@ -136,20 +136,22 @@ export function createDownloadsRepository(
     async function getByArticle(articleId: number): Promise<DownloadLink[]> {
         const query = `query GetArticleDownloads($articleId: Int!) {
       public {
-        downloads(articleId: $articleId) {
-          id
-          name
-          url
-          isActive
-          vipOnly
-          forVersion
-          createdAt
-          updatedAt
+        article(id: $articleId) {
+          downloads {
+            id
+            name
+            url
+            isActive
+            vipOnly
+            forVersion
+            createdAt
+            updatedAt
+          }
         }
       }
     }`;
 
-        const { data, errors } = await graphql<{ public: { downloads: DownloadLink[] } }>(
+        const { data, errors } = await graphql<{ public: { article: { downloads: DownloadLink[] } } }>(
             query,
             { articleId },
             { operationName: 'GetArticleDownloads' },
@@ -160,7 +162,7 @@ export function createDownloadsRepository(
             return [];
         }
 
-        return data.public.downloads ?? [];
+        return data.public.article?.downloads ?? [];
     }
 
     async function getPending(page = 1, limit = 20): Promise<DownloadLinksListResponse | null> {

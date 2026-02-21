@@ -18,7 +18,7 @@ import type {
  * - standard: Common fields for list views (default)
  * - full: All available fields including body content
  */
-export type ArticlePreset = 'minimal' | 'standard' | 'full';
+export type ArticlePreset = 'minimal' | 'standard' | 'full' | 'complete';
 
 /**
  * Available fields for custom selection
@@ -48,6 +48,7 @@ export type ArticleField =
     | 'status'
     | 'sequentialCode'
     | 'versions'
+    | 'downloads'
     | 'downloadLinks'
     | 'officialDownloadSources'
     | 'version';

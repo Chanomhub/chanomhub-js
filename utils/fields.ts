@@ -57,6 +57,34 @@ export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
     'status',
     'sequentialCode',
   ],
+  complete: [
+    'id',
+    'title',
+    'slug',
+    'description',
+    'body',
+    'ver',
+    'mainImage',
+    'coverImage',
+    'backgroundImage',
+    'author',
+    'tags',
+    'platforms',
+    'categories',
+    'creators',
+    'engine',
+    'images',
+    'favoritesCount',
+    'favorited',
+    'createdAt',
+    'updatedAt',
+    'status',
+    'sequentialCode',
+    'downloads',
+    'mods',
+    'officialDownloadSources',
+    'versions',
+  ],
 };
 
 /**
@@ -111,9 +139,31 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
     id
     name
     version
+    downloadLink
+    description
+    creditTo
+    status
+    categories {
+      id
+      name
+    }
+    images {
+      id
+      url
+    }
   }`,
   versions: 'versions',
-  downloadLinks: `downloadLinks {
+  downloads: `downloads {
+    id
+    name
+    url
+    isActive
+    vipOnly
+    forVersion
+    createdAt
+    updatedAt
+  }`,
+  downloadLinks: `downloads {
     id
     url
     vipOnly
