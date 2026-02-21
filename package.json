@@ -1,6 +1,6 @@
 {
   "name": "@chanomhub/sdk",
-  "version": "1.2.11",
+  "version": "1.2.12",
   "description": "ChanomHub SDK",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
