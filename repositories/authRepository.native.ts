@@ -123,7 +123,9 @@ export function createNativeAuthRepository(
     fetcher: RestFetcher,
     _config: ChanomhubConfig,
 ): NativeAuthRepository {
-    async function exchangeOAuthToken(oauthResult: NativeOAuthResult): Promise<LoginResponse | null> {
+    async function exchangeOAuthToken(
+        oauthResult: NativeOAuthResult,
+    ): Promise<LoginResponse | null> {
         // Use idToken for Google (OpenID Connect) or accessToken for others
         const tokenToExchange = oauthResult.idToken || oauthResult.accessToken;
 

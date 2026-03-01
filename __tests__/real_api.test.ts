@@ -1,4 +1,3 @@
-
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createChanomhubClient } from '../index';
 import { server } from './mocks/server';

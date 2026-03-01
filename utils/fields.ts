@@ -3,139 +3,139 @@
  * Used by articleRepository and searchRepository
  */
 
-import type { ArticlePreset, ArticleField, ArticleQueryOptions } from '../types/article';
+import type { ArticlePreset, ArticleField } from '../types/article';
 import type { ModField, ModListOptions } from '../types/common';
 
 /**
  * Field definitions for each preset level
  */
 export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
-  minimal: ['id', 'title', 'slug', 'mainImage'],
-  standard: [
-    'id',
-    'title',
-    'slug',
-    'description',
-    'ver',
-    'mainImage',
-    'coverImage',
-    'author',
-    'tags',
-    'platforms',
-    'categories',
-    'creators',
-    'engine',
-    'favoritesCount',
-    'favorited',
-    'createdAt',
-    'updatedAt',
-    'status',
-    'sequentialCode',
-    'images',
-  ],
-  full: [
-    'id',
-    'title',
-    'slug',
-    'description',
-    'body',
-    'ver',
-    'mainImage',
-    'coverImage',
-    'backgroundImage',
-    'author',
-    'tags',
-    'platforms',
-    'categories',
-    'creators',
-    'engine',
-    'images',
-    'favoritesCount',
-    'favorited',
-    'createdAt',
-    'updatedAt',
-    'status',
-    'sequentialCode',
-  ],
-  complete: [
-    'id',
-    'title',
-    'slug',
-    'description',
-    'body',
-    'ver',
-    'mainImage',
-    'coverImage',
-    'backgroundImage',
-    'author',
-    'tags',
-    'platforms',
-    'categories',
-    'creators',
-    'engine',
-    'images',
-    'favoritesCount',
-    'favorited',
-    'createdAt',
-    'updatedAt',
-    'status',
-    'sequentialCode',
-    'downloads',
-    'mods',
-    'officialDownloadSources',
-    'versions',
-  ],
+    minimal: ['id', 'title', 'slug', 'mainImage'],
+    standard: [
+        'id',
+        'title',
+        'slug',
+        'description',
+        'ver',
+        'mainImage',
+        'coverImage',
+        'author',
+        'tags',
+        'platforms',
+        'categories',
+        'creators',
+        'engine',
+        'favoritesCount',
+        'favorited',
+        'createdAt',
+        'updatedAt',
+        'status',
+        'sequentialCode',
+        'images',
+    ],
+    full: [
+        'id',
+        'title',
+        'slug',
+        'description',
+        'body',
+        'ver',
+        'mainImage',
+        'coverImage',
+        'backgroundImage',
+        'author',
+        'tags',
+        'platforms',
+        'categories',
+        'creators',
+        'engine',
+        'images',
+        'favoritesCount',
+        'favorited',
+        'createdAt',
+        'updatedAt',
+        'status',
+        'sequentialCode',
+    ],
+    complete: [
+        'id',
+        'title',
+        'slug',
+        'description',
+        'body',
+        'ver',
+        'mainImage',
+        'coverImage',
+        'backgroundImage',
+        'author',
+        'tags',
+        'platforms',
+        'categories',
+        'creators',
+        'engine',
+        'images',
+        'favoritesCount',
+        'favorited',
+        'createdAt',
+        'updatedAt',
+        'status',
+        'sequentialCode',
+        'downloads',
+        'mods',
+        'officialDownloadSources',
+        'versions',
+    ],
 };
 
 /**
  * GraphQL field mappings - converts field names to GraphQL query fragments
  */
 export const FIELD_MAPPINGS: Record<ArticleField, string> = {
-  id: 'id',
-  title: 'title',
-  slug: 'slug',
-  description: 'description',
-  body: 'body',
-  ver: 'ver',
-  mainImage: 'mainImage',
-  coverImage: 'coverImage',
-  backgroundImage: 'backgroundImage',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  status: 'status',
-  sequentialCode: 'sequentialCode',
-  favoritesCount: 'favoritesCount',
-  favorited: 'favorited',
-  engine: `engine {
+    id: 'id',
+    title: 'title',
+    slug: 'slug',
+    description: 'description',
+    body: 'body',
+    ver: 'ver',
+    mainImage: 'mainImage',
+    coverImage: 'coverImage',
+    backgroundImage: 'backgroundImage',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    status: 'status',
+    sequentialCode: 'sequentialCode',
+    favoritesCount: 'favoritesCount',
+    favorited: 'favorited',
+    engine: `engine {
     id
     name
   }`,
-  author: `author {
+    author: `author {
     id
     name
     image
   }`,
-  creators: `creators {
+    creators: `creators {
     id
     name
   }`,
-  tags: `tags {
+    tags: `tags {
     id
     name
   }`,
-  platforms: `platforms {
+    platforms: `platforms {
     id
     name
   }`,
-  categories: `categories {
+    categories: `categories {
     id
     name
   }`,
-  images: `images {
+    images: `images {
     id
     url
   }`,
-  mods: `mods {
+    mods: `mods {
     id
     name
     version
@@ -152,8 +152,8 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
       url
     }
   }`,
-  versions: 'versions',
-  downloads: `downloads {
+    versions: 'versions',
+    downloads: `downloads {
     id
     name
     url
@@ -163,60 +163,60 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
     createdAt
     updatedAt
   }`,
-  downloadLinks: `downloads {
+    downloadLinks: `downloads {
     id
     url
     vipOnly
   }`,
-  officialDownloadSources: `officialDownloadSources {
+    officialDownloadSources: `officialDownloadSources {
     id
     name
     url
     status
   }`,
-  version: 'version',
+    version: 'version',
 };
 
 export interface FieldQueryOptions {
-  /** Field preset level (default: 'standard') */
-  preset?: ArticlePreset;
-  /** Custom field selection (overrides preset) */
-  fields?: ArticleField[];
+    /** Field preset level (default: 'standard') */
+    preset?: ArticlePreset;
+    /** Custom field selection (overrides preset) */
+    fields?: ArticleField[];
 }
 
 /**
  * Builds GraphQL fields query from preset or custom fields
  */
 export function buildFieldsQuery(options: FieldQueryOptions = {}): string {
-  const { preset = 'standard', fields } = options;
-  const selectedFields = fields ?? FIELD_PRESETS[preset];
+    const { preset = 'standard', fields } = options;
+    const selectedFields = fields ?? FIELD_PRESETS[preset];
 
-  return selectedFields
-    .map((field) => FIELD_MAPPINGS[field])
-    .filter(Boolean)
-    .join('\n  ');
+    return selectedFields
+        .map((field) => FIELD_MAPPINGS[field])
+        .filter(Boolean)
+        .join('\n  ');
 }
 
 /**
  * GraphQL mod field mappings
  */
 export const FIELD_MAPPINGS_MOD: Record<ModField, string> = {
-  id: 'id',
-  name: 'name',
-  description: 'description',
-  creditTo: 'creditTo',
-  downloadLink: 'downloadLink',
-  version: 'version',
-  status: 'status',
-  categories: `categories {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    creditTo: 'creditTo',
+    downloadLink: 'downloadLink',
+    version: 'version',
+    status: 'status',
+    categories: `categories {
     id
     name
   }`,
-  images: `images {
+    images: `images {
     id
     url
   }`,
-  creator: `creator {
+    creator: `creator {
     name
     image
   }`,
@@ -226,23 +226,23 @@ export const FIELD_MAPPINGS_MOD: Record<ModField, string> = {
  * Builds GraphQL mod fields query
  */
 export function buildModFieldsQuery(options: ModListOptions = {}): string {
-  const { fields } = options;
+    const { fields } = options;
 
-  // Default fields if none provided (all except creator to be safe, or just all?)
-  // User complaint was "always gets creator". So let's default to all, but allow overriding.
-  // If fields is undefined, we return default set.
-  const defaultFields: ModField[] = [
-    'id',
-    'name',
-    'version',
-    'downloadLink',
-    // 'creator' removed as default per request, add explicitly if needed
-  ];
+    // Default fields if none provided (all except creator to be safe, or just all?)
+    // User complaint was "always gets creator". So let's default to all, but allow overriding.
+    // If fields is undefined, we return default set.
+    const defaultFields: ModField[] = [
+        'id',
+        'name',
+        'version',
+        'downloadLink',
+        // 'creator' removed as default per request, add explicitly if needed
+    ];
 
-  const selectedFields = fields ?? defaultFields;
+    const selectedFields = fields ?? defaultFields;
 
-  return selectedFields
-    .map((field) => FIELD_MAPPINGS_MOD[field])
-    .filter(Boolean)
-    .join('\n  ');
+    return selectedFields
+        .map((field) => FIELD_MAPPINGS_MOD[field])
+        .filter(Boolean)
+        .join('\n  ');
 }

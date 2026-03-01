@@ -96,7 +96,6 @@ describe('authRepository', () => {
         });
     });
 
-
     // Note: React Native OAuth tests (signInWithGoogleNative, signInWithProviderNative, exchangeOAuthToken)
     // are now tested in auth.native.test.ts since those methods moved to @chanomhub/sdk/native
 

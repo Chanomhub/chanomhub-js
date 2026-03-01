@@ -1,4 +1,3 @@
-
 import { createChanomhubClient } from '../index';
 import type { NewArticleDTO } from '../types/article';
 
@@ -44,10 +43,12 @@ async function main() {
         console.log(`Found ${revisions.total} revisions`);
 
         if (revisions.total === 0) {
-            console.log('Note: No revisions found. This is expected for DRAFT articles or unapproved updates.');
+            console.log(
+                'Note: No revisions found. This is expected for DRAFT articles or unapproved updates.',
+            );
             console.log('Skipping comparison and restore tests.');
         } else {
-            revisions.items.forEach(rev => {
+            revisions.items.forEach((rev) => {
                 console.log(`- v${rev.version} by ${rev.author.name} at ${rev.createdAt}`);
             });
 
@@ -68,7 +69,6 @@ async function main() {
         console.log('\n--- Cleaning Up ---');
         await client.articles.delete(article.slug);
         console.log('Deleted article');
-
     } catch (error) {
         console.error('Error:', error);
     }

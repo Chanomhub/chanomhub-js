@@ -16,7 +16,7 @@ export interface CreateModDTO {
     creditTo?: string;
     categories?: string[];
     tags?: string[];
-    images?: any; // To be defined better if we support image upload in SDK
+    images?: unknown; // To be defined better if we support image upload in SDK
 }
 
 /** DTO for updating a mod */

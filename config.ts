@@ -6,10 +6,30 @@
 export type ImgproxyResizeType = 'fit' | 'fill' | 'fill-down' | 'force' | 'auto';
 
 /** Imgproxy gravity (for cropping) */
-export type ImgproxyGravity = 'no' | 'so' | 'ea' | 'we' | 'noea' | 'nowe' | 'soea' | 'sowe' | 'ce' | 'sm' | 'fp';
+export type ImgproxyGravity =
+    | 'no'
+    | 'so'
+    | 'ea'
+    | 'we'
+    | 'noea'
+    | 'nowe'
+    | 'soea'
+    | 'sowe'
+    | 'ce'
+    | 'sm'
+    | 'fp';
 
 /** Imgproxy output format */
-export type ImgproxyFormat = 'webp' | 'avif' | 'jpg' | 'png' | 'gif' | 'ico' | 'heic' | 'bmp' | 'tiff';
+export type ImgproxyFormat =
+    | 'webp'
+    | 'avif'
+    | 'jpg'
+    | 'png'
+    | 'gif'
+    | 'ico'
+    | 'heic'
+    | 'bmp'
+    | 'tiff';
 
 /**
  * Imgproxy processing options

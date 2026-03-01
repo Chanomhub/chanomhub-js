@@ -36,13 +36,10 @@ export function createModsRepository(
     async function create(slug: string, data: CreateModDTO): Promise<Mod> {
         requireAuth();
 
-        const { data: response, error } = await fetcher<{ mod: Mod }>(
-            `/api/mods/article/${slug}`,
-            {
-                method: 'POST',
-                body: data as unknown as Record<string, unknown>,
-            },
-        );
+        const { data: response, error } = await fetcher<{ mod: Mod }>(`/api/mods/article/${slug}`, {
+            method: 'POST',
+            body: data as unknown as Record<string, unknown>,
+        });
 
         if (error || !response) {
             throw new Error(error || 'Failed to create mod');

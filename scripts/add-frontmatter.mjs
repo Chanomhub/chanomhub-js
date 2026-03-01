@@ -14,7 +14,7 @@ function cleanTitle(title) {
         .replace(/\\</g, '<')
         .replace(/\\>/g, '>')
         .replace(/<[^>]+>/g, '') // Remove generic type parameters like <T>
-        .replace(/\\/g, '')      // Remove remaining backslashes
+        .replace(/\\/g, '') // Remove remaining backslashes
         .trim();
 }
 
@@ -37,11 +37,16 @@ function extractDescription(content) {
             foundTitle = true;
             continue;
         }
-        if (foundTitle && line.trim() && !line.startsWith('#') && !line.startsWith('|') && !line.startsWith('***') && !line.startsWith('Defined in:')) {
+        if (
+            foundTitle &&
+            line.trim() &&
+            !line.startsWith('#') &&
+            !line.startsWith('|') &&
+            !line.startsWith('***') &&
+            !line.startsWith('Defined in:')
+        ) {
             // Clean and limit description length
-            const desc = line.trim()
-                .replace(/"/g, '\\"')
-                .slice(0, 160);
+            const desc = line.trim().replace(/"/g, '\\"').slice(0, 160);
             return desc;
         }
     }
@@ -51,8 +56,8 @@ function extractDescription(content) {
 function escapeYamlString(str) {
     // Escape special YAML characters in double-quoted strings
     return str
-        .replace(/\\/g, '\\\\')  // Escape backslashes first
-        .replace(/"/g, '\\"');   // Escape double quotes
+        .replace(/\\/g, '\\\\') // Escape backslashes first
+        .replace(/"/g, '\\"'); // Escape double quotes
 }
 
 function addFrontmatter(filePath) {
@@ -74,10 +79,7 @@ function addFrontmatter(filePath) {
     newContent = newContent.replace(/\[([^\]]+)\]\(([^)]+)\.mdx\)/g, '[$1]($2)');
 
     // Build frontmatter
-    const frontmatter = [
-        '---',
-        `title: "${escapeYamlString(title)}"`,
-    ];
+    const frontmatter = ['---', `title: "${escapeYamlString(title)}"`];
 
     if (description) {
         frontmatter.push(`description: "${escapeYamlString(description)}"`);

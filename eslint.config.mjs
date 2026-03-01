@@ -7,13 +7,13 @@ export default tseslint.config(
     ...tseslint.configs.recommended,
     prettierRecommended,
     {
-        ignores: ['dist', 'coverage', 'node_modules', '*.config.*', 'fetch_schema.js'],
+        ignores: ['dist', 'coverage', 'node_modules', '*.config.*', '**/*.js', '**/*.mjs'],
     },
     {
         rules: {
             '@typescript-eslint/explicit-function-return-type': 'off',
             '@typescript-eslint/explicit-module-boundary-types': 'off',
-            '@typescript-eslint/no-explicit-any': 'warn',
+            '@typescript-eslint/no-explicit-any': 'error',
             '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
         },
     },

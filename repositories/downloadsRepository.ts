@@ -15,7 +15,6 @@ import type {
     DownloadLinkResponse,
     DownloadLinksListResponse,
     ListDownloadsOptions,
-    SourceStatus,
 } from '../types/download';
 
 export interface DownloadsRepository {
@@ -98,10 +97,10 @@ export function createDownloadsRepository(
     async function create(data: CreateDownloadLinkRequest): Promise<DownloadLink | null> {
         requireAuth();
 
-        const { data: response, error } = await rest<DownloadLinkResponse>(
-            '/api/downloads',
-            { method: 'POST', body: data },
-        );
+        const { data: response, error } = await rest<DownloadLinkResponse>('/api/downloads', {
+            method: 'POST',
+            body: data,
+        });
 
         if (error) {
             console.error('Failed to create download link:', error);
@@ -111,7 +110,9 @@ export function createDownloadsRepository(
         return response?.downloadLink ?? null;
     }
 
-    async function getAll(options?: ListDownloadsOptions): Promise<DownloadLinksListResponse | null> {
+    async function getAll(
+        options?: ListDownloadsOptions,
+    ): Promise<DownloadLinksListResponse | null> {
         requireAuth();
 
         const params = new URLSearchParams();
@@ -151,11 +152,9 @@ export function createDownloadsRepository(
       }
     }`;
 
-        const { data, errors } = await graphql<{ public: { article: { downloads: DownloadLink[] } } }>(
-            query,
-            { articleId },
-            { operationName: 'GetArticleDownloads' },
-        );
+        const { data, errors } = await graphql<{
+            public: { article: { downloads: DownloadLink[] } };
+        }>(query, { articleId }, { operationName: 'GetArticleDownloads' });
 
         if (errors || !data) {
             console.error('Failed to get download links for article:', errors);
@@ -185,7 +184,10 @@ export function createDownloadsRepository(
         return data;
     }
 
-    async function moderate(id: number, moderationData: ModerateDownloadLinkRequest): Promise<DownloadLink | null> {
+    async function moderate(
+        id: number,
+        moderationData: ModerateDownloadLinkRequest,
+    ): Promise<DownloadLink | null> {
         requireAuth();
 
         const { data: response, error } = await rest<DownloadLinkResponse>(
@@ -202,10 +204,7 @@ export function createDownloadsRepository(
     }
 
     async function getById(id: number): Promise<DownloadLink | null> {
-        const { data, error } = await rest<DownloadLink>(
-            `/api/downloads/${id}`,
-            { method: 'GET' },
-        );
+        const { data, error } = await rest<DownloadLink>(`/api/downloads/${id}`, { method: 'GET' });
 
         if (error) {
             console.error('Failed to get download link:', error);
@@ -215,13 +214,16 @@ export function createDownloadsRepository(
         return data;
     }
 
-    async function update(id: number, updateData: UpdateDownloadLinkRequest): Promise<DownloadLink | null> {
+    async function update(
+        id: number,
+        updateData: UpdateDownloadLinkRequest,
+    ): Promise<DownloadLink | null> {
         requireAuth();
 
-        const { data: response, error } = await rest<DownloadLinkResponse>(
-            `/api/downloads/${id}`,
-            { method: 'PATCH', body: updateData },
-        );
+        const { data: response, error } = await rest<DownloadLinkResponse>(`/api/downloads/${id}`, {
+            method: 'PATCH',
+            body: updateData,
+        });
 
         if (error) {
             console.error('Failed to update download link:', error);
@@ -234,10 +236,7 @@ export function createDownloadsRepository(
     async function deleteDownload(id: number): Promise<boolean> {
         requireAuth();
 
-        const { error } = await rest<void>(
-            `/api/downloads/${id}`,
-            { method: 'DELETE' },
-        );
+        const { error } = await rest<void>(`/api/downloads/${id}`, { method: 'DELETE' });
 
         if (error) {
             console.error('Failed to delete download link:', error);

@@ -87,7 +87,10 @@ async function tryGetSupabaseClient(config: ChanomhubConfig): Promise<SupabaseCl
     try {
         // Dynamic import to handle optional dependency
         const { createClient } = await import('@supabase/supabase-js');
-        return createClient(config.supabaseUrl, config.supabaseAnonKey) as unknown as SupabaseClient;
+        return createClient(
+            config.supabaseUrl,
+            config.supabaseAnonKey,
+        ) as unknown as SupabaseClient;
     } catch {
         console.warn(
             'Supabase client not available. Install @supabase/supabase-js to enable OAuth.',
@@ -102,7 +105,10 @@ async function tryGetSupabaseClient(config: ChanomhubConfig): Promise<SupabaseCl
  * @param fetcher - REST API fetcher
  * @param config - SDK configuration with optional Supabase settings
  */
-export function createAuthRepository(fetcher: RestFetcher, config: ChanomhubConfig): AuthRepository {
+export function createAuthRepository(
+    fetcher: RestFetcher,
+    config: ChanomhubConfig,
+): AuthRepository {
     // Cache the Supabase client promise
     let supabaseClientPromise: Promise<SupabaseClient | null> | null = null;
 
@@ -156,7 +162,7 @@ export function createAuthRepository(fetcher: RestFetcher, config: ChanomhubConf
         if (!client) {
             throw new Error(
                 'Supabase is not configured. Please provide supabaseUrl and supabaseAnonKey in config, ' +
-                'and install @supabase/supabase-js package.',
+                    'and install @supabase/supabase-js package.',
             );
         }
 

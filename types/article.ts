@@ -139,7 +139,6 @@ export interface ArticleListOptions {
     fields?: ArticleField[];
 }
 
-
 /** DTO for creating a new article */
 export interface NewArticleDTO {
     title: string;

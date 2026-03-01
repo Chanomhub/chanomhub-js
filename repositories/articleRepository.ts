@@ -8,14 +8,18 @@ import type {
     ArticleListItem,
     ArticleListOptions,
     ArticleQueryOptions,
-    ArticleWithDownloads,
     NewArticleDTO,
     UpdateArticleDTO,
     Revision,
     RevisionDetail,
     CompareResult,
 } from '../types/article';
-import type { Mod, ModField, ModListOptions, PaginatedResponse, OfficialDownloadSource } from '../types/common';
+import type {
+    Mod,
+    ModListOptions,
+    PaginatedResponse,
+    OfficialDownloadSource,
+} from '../types/common';
 import { buildFieldsQuery, buildModFieldsQuery } from '../utils/fields';
 
 export interface ArticleRepository {
@@ -36,7 +40,6 @@ export interface ArticleRepository {
 
     /** Get single article by slug */
     getBySlug(slug: string, options?: ArticleQueryOptions): Promise<Article | null>;
-
 
     /** Get all available tags */
     getTags(): Promise<string[]>;
@@ -151,11 +154,7 @@ export function createArticleRepository(
         return res.data;
     }
 
-    async function compareVersions(
-        slug: string,
-        v1: number,
-        v2: number,
-    ): Promise<CompareResult> {
+    async function compareVersions(slug: string, v1: number, v2: number): Promise<CompareResult> {
         // Note: query parameters should be handled, but rest client is simple string concatenation for now
         // Assuming rest client doesn't support query params in options yet, appending manually
         const res = await rest<CompareResult>(
@@ -392,7 +391,10 @@ export function createArticleRepository(
         return data.public.articles || [];
     }
 
-    async function getBySlug(slug: string, options: ArticleQueryOptions = {}): Promise<Article | null> {
+    async function getBySlug(
+        slug: string,
+        options: ArticleQueryOptions = {},
+    ): Promise<Article | null> {
         const { language, version, preset = 'full', fields } = options;
         const query = `query GetArticleBySlug($slug: String!, $language: String, $version: String) {
       public {
@@ -418,7 +420,6 @@ export function createArticleRepository(
         return data.public.article || null;
     }
 
-
     async function getWithVersions(slug: string): Promise<Article | null> {
         return getBySlug(slug, { fields: ['id', 'title', 'slug', 'versions'] });
     }
@@ -426,7 +427,7 @@ export function createArticleRepository(
     async function getByVersion(slug: string, version: string): Promise<Article | null> {
         return getBySlug(slug, {
             version,
-            fields: ['id', 'title', 'downloadLinks', 'mods']
+            fields: ['id', 'title', 'downloadLinks', 'mods'],
         });
     }
 
@@ -455,7 +456,9 @@ export function createArticleRepository(
         return data.public.article?.mods || [];
     }
 
-    async function getOfficialDownloadSources(articleId: number): Promise<OfficialDownloadSource[]> {
+    async function getOfficialDownloadSources(
+        articleId: number,
+    ): Promise<OfficialDownloadSource[]> {
         const query = `query GetOfficialDownloadSources($articleId: Int!) {
       public {
         article(id: $articleId) {
@@ -469,11 +472,9 @@ export function createArticleRepository(
       }
     }`;
 
-        const { data, errors } = await fetcher<{ public: { article: { officialDownloadSources: OfficialDownloadSource[] } } }>(
-            query,
-            { articleId },
-            { operationName: 'GetOfficialDownloadSources' },
-        );
+        const { data, errors } = await fetcher<{
+            public: { article: { officialDownloadSources: OfficialDownloadSource[] } };
+        }>(query, { articleId }, { operationName: 'GetOfficialDownloadSources' });
 
         if (errors || !data) {
             console.error('Failed to fetch official download sources:', errors);

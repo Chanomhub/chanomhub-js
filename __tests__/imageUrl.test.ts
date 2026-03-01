@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { resolveImageUrl, transformImageUrlsDeep, getFallbackUrl, buildImgproxyPath } from '../transforms/imageUrl';
+import {
+    resolveImageUrl,
+    transformImageUrlsDeep,
+    getFallbackUrl,
+    buildImgproxyPath,
+} from '../transforms/imageUrl';
 import { ImgproxyOptions } from '../config';
 
 const CDN_URL = 'https://imgproxy.chanomhub.com';

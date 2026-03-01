@@ -32,13 +32,13 @@ export function createModsRepository(
         }
     }
 
-    async function create(data: CreateModDTO): Promise<Mod> {
+    async function create(_data: CreateModDTO): Promise<Mod> {
         requireAuth();
 
         // The endpoint is /api/mods/article/:slug but the DTO has articleId.
         // Wait, the frontend code used: /api/mods/article/${slug}
         // But the DTO in frontend has articleId: number.
-        // The Articles API usually takes slug or ID. 
+        // The Articles API usually takes slug or ID.
         // Let's check how we can get slug if we only have ID, OR if there is an endpoint that takes ID.
         // If the SDK structure follows the existing pattern, maybe we should ask for slug in create() arguments?
         // The frontend `AddModDialog` has `slug` available.
@@ -49,17 +49,10 @@ export function createModsRepository(
         // But if the route depends on slug, we need it.
         // Let's assume we change signature to `create(slug: string, data: CreateModDTO)`.
 
-        throw new Error("Method not implemented correctly yet - checking path requirements");
+        throw new Error('Method not implemented correctly yet - checking path requirements');
     }
 
     return {
-        create: async (data: CreateModDTO) => {
-            // We need slug to call /api/mods/article/:slug
-            // If CreateModDTO doesn't have slug, we are in trouble unless we change the API or the DTO.
-            // The frontend passes `slug` to `AddModDialog`.
-            // So I should probably include `slug` in `CreateModDTO` or as an argument.
-            // Let's modify the interface to accept slug.
-            throw new Error("Invalid usage. See updated implementation below.");
-        }
+        create,
     };
 }

@@ -68,10 +68,10 @@ export function createSubscriptionsRepository(
     async function create(data: CreateSubscriptionRequest): Promise<Subscription | null> {
         requireAuth();
 
-        const { data: response, error } = await fetcher<Subscription>(
-            '/api/subscriptions',
-            { method: 'POST', body: data as unknown as Record<string, unknown> },
-        );
+        const { data: response, error } = await fetcher<Subscription>('/api/subscriptions', {
+            method: 'POST',
+            body: data as unknown as Record<string, unknown>,
+        });
 
         if (error) {
             console.error('Failed to create subscription:', error);
@@ -84,10 +84,9 @@ export function createSubscriptionsRepository(
     async function getAll(): Promise<Subscription[]> {
         requireAuth();
 
-        const { data, error } = await fetcher<Subscription[]>(
-            '/api/subscriptions',
-            { method: 'GET' },
-        );
+        const { data, error } = await fetcher<Subscription[]>('/api/subscriptions', {
+            method: 'GET',
+        });
 
         if (error) {
             console.error('Failed to get subscriptions:', error);
@@ -100,10 +99,9 @@ export function createSubscriptionsRepository(
     async function cancel(id: number): Promise<Subscription | null> {
         requireAuth();
 
-        const { data: response, error } = await fetcher<Subscription>(
-            `/api/subscriptions/${id}`,
-            { method: 'DELETE' },
-        );
+        const { data: response, error } = await fetcher<Subscription>(`/api/subscriptions/${id}`, {
+            method: 'DELETE',
+        });
 
         if (error) {
             console.error('Failed to cancel subscription:', error);
@@ -113,7 +111,9 @@ export function createSubscriptionsRepository(
         return response;
     }
 
-    async function createPlan(data: CreateSubscriptionPlanRequest): Promise<SubscriptionPlan | null> {
+    async function createPlan(
+        data: CreateSubscriptionPlanRequest,
+    ): Promise<SubscriptionPlan | null> {
         requireAuth();
 
         const { data: response, error } = await fetcher<SubscriptionPlan>(
@@ -130,14 +130,9 @@ export function createSubscriptionsRepository(
     }
 
     async function getPlans(refresh?: boolean): Promise<SubscriptionPlan[]> {
-        const url = refresh
-            ? '/api/subscriptions/plans?refresh=true'
-            : '/api/subscriptions/plans';
+        const url = refresh ? '/api/subscriptions/plans?refresh=true' : '/api/subscriptions/plans';
 
-        const { data, error } = await fetcher<SubscriptionPlan[]>(
-            url,
-            { method: 'GET' },
-        );
+        const { data, error } = await fetcher<SubscriptionPlan[]>(url, { method: 'GET' });
 
         if (error) {
             console.error('Failed to get subscription plans:', error);

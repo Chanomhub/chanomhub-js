@@ -94,9 +94,7 @@ export function createSponsoredArticlesRepository(
     }
 
     async function getById(id: number): Promise<SponsoredArticle | null> {
-        const { data, error } = await rest<SponsoredArticle>(
-            `/api/sponsored-articles/${id}`,
-        );
+        const { data, error } = await rest<SponsoredArticle>(`/api/sponsored-articles/${id}`);
 
         if (error || !data) {
             if (error?.includes('404')) return null;
@@ -110,13 +108,10 @@ export function createSponsoredArticlesRepository(
     async function create(dto: CreateSponsoredArticleDTO): Promise<SponsoredArticle> {
         requireAuth();
 
-        const { data, error } = await rest<SponsoredArticle>(
-            '/api/sponsored-articles',
-            {
-                method: 'POST',
-                body: dto as unknown as Record<string, unknown>,
-            },
-        );
+        const { data, error } = await rest<SponsoredArticle>('/api/sponsored-articles', {
+            method: 'POST',
+            body: dto as unknown as Record<string, unknown>,
+        });
 
         if (error || !data) {
             throw new Error(error || 'Failed to create sponsored article');
@@ -125,19 +120,13 @@ export function createSponsoredArticlesRepository(
         return data;
     }
 
-    async function update(
-        id: number,
-        dto: UpdateSponsoredArticleDTO,
-    ): Promise<SponsoredArticle> {
+    async function update(id: number, dto: UpdateSponsoredArticleDTO): Promise<SponsoredArticle> {
         requireAuth();
 
-        const { data, error } = await rest<SponsoredArticle>(
-            `/api/sponsored-articles/${id}`,
-            {
-                method: 'PUT',
-                body: dto as unknown as Record<string, unknown>,
-            },
-        );
+        const { data, error } = await rest<SponsoredArticle>(`/api/sponsored-articles/${id}`, {
+            method: 'PUT',
+            body: dto as unknown as Record<string, unknown>,
+        });
 
         if (error || !data) {
             throw new Error(error || 'Failed to update sponsored article');
@@ -149,10 +138,7 @@ export function createSponsoredArticlesRepository(
     async function remove(id: number): Promise<void> {
         requireAuth();
 
-        const { error } = await rest<void>(
-            `/api/sponsored-articles/${id}`,
-            { method: 'DELETE' },
-        );
+        const { error } = await rest<void>(`/api/sponsored-articles/${id}`, { method: 'DELETE' });
 
         if (error) {
             throw new Error(error || 'Failed to delete sponsored article');

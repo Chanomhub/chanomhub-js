@@ -61,9 +61,9 @@ export function buildImgproxyPath(options: ImgproxyOptions = {}): string {
  * - If it's just a filename (e.g., "abc.jpg"), creates an imgproxy URL
  * - If it's already a full URL, returns it as-is
  * - Handles null/undefined gracefully
- * 
+ *
  * imgproxy URL format: {cdnUrl}/insecure/{options}/plain/{sourceUrl}@{format}
- * 
+ *
  * @param imageUrl - Image filename or full URL
  * @param cdnUrl - Imgproxy base URL
  * @param storageUrl - Source image storage URL
@@ -104,7 +104,7 @@ export function resolveImageUrl(
 /**
  * Generates a fallback URL (original source) for an image.
  * Useful when the CDN is unavailable or fails to load.
- * 
+ *
  * For imgproxy URLs, extracts the original source URL from the path.
  * imgproxy URL format: {cdnUrl}/insecure/plain/{encodedSourceUrl}@{format}
  *

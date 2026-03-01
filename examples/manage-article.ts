@@ -1,4 +1,3 @@
-
 import { createChanomhubClient } from '../index';
 import type { NewArticleDTO } from '../types/article';
 
@@ -58,7 +57,6 @@ async function main() {
         console.log('Deleting article...');
         await client.articles.delete(created.slug);
         console.log('Deleted article');
-
     } catch (error) {
         console.error('Error:', error);
     }
