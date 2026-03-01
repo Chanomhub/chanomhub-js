@@ -9,6 +9,7 @@ export interface User {
     username: string;
     bio: string | null;
     image: string | null;
+    points: number;
     token?: string;
 }
 

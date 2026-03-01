@@ -32,6 +32,9 @@ export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
         'status',
         'sequentialCode',
         'images',
+        'price',
+        'isPaid',
+        'isUnlocked',
     ],
     full: [
         'id',
@@ -56,6 +59,9 @@ export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
         'updatedAt',
         'status',
         'sequentialCode',
+        'price',
+        'isPaid',
+        'isUnlocked',
     ],
     complete: [
         'id',
@@ -84,6 +90,9 @@ export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
         'mods',
         'officialDownloadSources',
         'versions',
+        'price',
+        'isPaid',
+        'isUnlocked',
     ],
 };
 
@@ -175,6 +184,9 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
     status
   }`,
     version: 'version',
+    price: 'price',
+    isPaid: 'isPaid',
+    isUnlocked: 'isUnlocked',
 };
 
 export interface FieldQueryOptions {

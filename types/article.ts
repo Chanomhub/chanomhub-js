@@ -51,7 +51,10 @@ export type ArticleField =
     | 'downloads'
     | 'downloadLinks'
     | 'officialDownloadSources'
-    | 'version';
+    | 'version'
+    | 'price'
+    | 'isPaid'
+    | 'isUnlocked';
 
 /** Full Article type */
 export interface Article {
@@ -83,6 +86,9 @@ export interface Article {
     downloadLinks?: Download[];
     officialDownloadSources?: OfficialDownloadSource[];
     version?: string;
+    price: number;
+    isPaid: boolean;
+    isUnlocked: boolean;
 }
 
 /** Partial article for list views */
@@ -110,6 +116,9 @@ export interface ArticleListItem {
     categories?: NamedEntity[];
     creators?: NamedEntity[];
     images?: ImageObject[];
+    price: number;
+    isPaid: boolean;
+    isUnlocked: boolean;
 }
 
 /** Article filter options */
@@ -159,6 +168,8 @@ export interface NewArticleDTO {
     categories?: string[];
     platforms?: string[];
     creator?: string | null;
+    price?: number;
+    isPaid?: boolean;
 }
 
 /** DTO for updating an article */
@@ -178,6 +189,8 @@ export interface UpdateArticleDTO {
     categories?: string[];
     platforms?: string[];
     creator?: string | null;
+    price?: number;
+    isPaid?: boolean;
 }
 
 /** Article with downloads response */

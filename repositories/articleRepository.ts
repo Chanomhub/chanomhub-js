@@ -82,6 +82,9 @@ export interface ArticleRepository {
 
     /** Restore article to a specific version */
     restoreRevision(slug: string, version: number): Promise<RevisionDetail>;
+
+    /** Purchase a paid article */
+    purchase(articleId: number): Promise<Article>;
 }
 
 /**
@@ -547,6 +550,18 @@ export function createArticleRepository(
         return data.system.platforms || [];
     }
 
+    async function purchase(id: number): Promise<Article> {
+        const res = await rest<{ article: Article }>(`/api/v1/lago/purchase/article/${id}`, {
+            method: 'POST',
+        });
+
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to purchase article');
+        }
+
+        return res.data.article;
+    }
+
     return {
         getAll,
         getAllPaginated,
@@ -569,5 +584,6 @@ export function createArticleRepository(
         getRevision,
         compareVersions,
         restoreRevision,
+        purchase,
     };
 }
