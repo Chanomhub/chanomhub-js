@@ -10,3 +10,4 @@ export * from './auth';
 export * from './download';
 export * from './subscription';
 export * from './mod';
+export * from './sponsoredArticle';

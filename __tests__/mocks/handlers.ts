@@ -467,4 +467,129 @@ export const handlers = [
             },
         });
     }),
+
+    // ===================== Sponsored Articles =====================
+
+    // GraphQL: Get Sponsored Articles
+    graphql.query('GetSponsoredArticles', () => {
+        return HttpResponse.json({
+            data: {
+                public: {
+                    sponsoredArticles: [
+                        {
+                            id: 1,
+                            articleId: 10,
+                            coverImage: 'sponsored-cover.jpg',
+                            isActive: true,
+                            priority: 10,
+                            startDate: '2026-01-01T00:00:00Z',
+                            endDate: null,
+                            article: {
+                                id: 10,
+                                title: 'Sponsored Game',
+                                slug: 'sponsored-game',
+                                description: 'A promoted game',
+                                mainImage: 'game-main.jpg',
+                                author: { name: 'GameDev', image: 'dev.jpg' },
+                                tags: [{ id: 't1', name: 'renpy' }],
+                                platforms: [],
+                                categories: [],
+                                creators: [],
+                                images: [],
+                            },
+                        },
+                        {
+                            id: 2,
+                            articleId: 20,
+                            coverImage: null,
+                            isActive: true,
+                            priority: 5,
+                            startDate: '2026-02-01T00:00:00Z',
+                            endDate: '2026-12-31T23:59:59Z',
+                            article: {
+                                id: 20,
+                                title: 'Another Sponsored Game',
+                                slug: 'another-sponsored',
+                                description: 'Another promoted game',
+                                mainImage: 'another-main.jpg',
+                                author: { name: 'Dev2', image: null },
+                                tags: [],
+                                platforms: [],
+                                categories: [],
+                                creators: [],
+                                images: [],
+                            },
+                        },
+                    ],
+                },
+            },
+        });
+    }),
+
+    // REST: Get Sponsored Article by ID
+    http.get(`${BASE_URL}/api/sponsored-articles/:id`, ({ params }) => {
+        const { id } = params;
+        if (id === '999') {
+            return new HttpResponse(null, { status: 404 });
+        }
+        return HttpResponse.json({
+            id: Number(id),
+            articleId: 10,
+            coverImage: 'sponsored-cover.jpg',
+            isActive: true,
+            priority: 10,
+            startDate: '2026-01-01T00:00:00Z',
+            endDate: null,
+            article: {
+                id: 10,
+                title: 'Sponsored Game',
+                slug: 'sponsored-game',
+            },
+        });
+    }),
+
+    // REST: Create Sponsored Article
+    http.post(`${BASE_URL}/api/sponsored-articles`, async ({ request }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        const body = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json({
+            id: 3,
+            articleId: body.articleId,
+            coverImage: body.coverImage ?? null,
+            isActive: body.isActive ?? true,
+            priority: body.priority ?? 0,
+            startDate: body.startDate ?? '2026-03-01T00:00:00Z',
+            endDate: body.endDate ?? null,
+        });
+    }),
+
+    // REST: Update Sponsored Article
+    http.put(`${BASE_URL}/api/sponsored-articles/:id`, async ({ request, params }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        const body = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json({
+            id: Number(params.id),
+            articleId: 10,
+            coverImage: body.coverImage ?? 'sponsored-cover.jpg',
+            isActive: body.isActive ?? true,
+            priority: body.priority ?? 10,
+            startDate: '2026-01-01T00:00:00Z',
+            endDate: body.endDate ?? null,
+        });
+    }),
+
+    // REST: Delete Sponsored Article
+    http.delete(`${BASE_URL}/api/sponsored-articles/:id`, ({ request }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        return new HttpResponse(null, { status: 204 });
+    }),
 ];

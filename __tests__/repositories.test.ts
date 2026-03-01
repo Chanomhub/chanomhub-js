@@ -169,4 +169,63 @@ describe('Repositories Integration Tests', () => {
             expect(downloads[0].url).toBe('https://dl.com/1');
         });
     });
+
+    describe('SponsoredArticlesRepository', () => {
+        it('should get sponsored articles via GraphQL', async () => {
+            const client = createChanomhubClient();
+            const sponsored = await client.sponsoredArticles.getAll();
+
+            expect(sponsored).toHaveLength(2);
+            expect(sponsored[0].article.title).toBe('Sponsored Game');
+            expect(sponsored[0].priority).toBe(10);
+            expect(sponsored[0].isActive).toBe(true);
+            expect(sponsored[1].coverImage).toBeNull();
+        });
+
+        it('should get sponsored article by ID', async () => {
+            const client = createChanomhubClient();
+            const sponsored = await client.sponsoredArticles.getById(1);
+
+            expect(sponsored).not.toBeNull();
+            expect(sponsored?.id).toBe(1);
+            expect(sponsored?.articleId).toBe(10);
+        });
+
+        it('should create sponsored article (admin)', async () => {
+            const client = createAuthenticatedClient('admin-token');
+            const sponsored = await client.sponsoredArticles.create({
+                articleId: 42,
+                priority: 5,
+            });
+
+            expect(sponsored).not.toBeNull();
+            expect(sponsored.articleId).toBe(42);
+            expect(sponsored.priority).toBe(5);
+        });
+
+        it('should update sponsored article (admin)', async () => {
+            const client = createAuthenticatedClient('admin-token');
+            const sponsored = await client.sponsoredArticles.update(1, {
+                priority: 20,
+                isActive: false,
+            });
+
+            expect(sponsored).not.toBeNull();
+            expect(sponsored.id).toBe(1);
+            expect(sponsored.priority).toBe(20);
+            expect(sponsored.isActive).toBe(false);
+        });
+
+        it('should delete sponsored article (admin)', async () => {
+            const client = createAuthenticatedClient('admin-token');
+            await expect(client.sponsoredArticles.delete(1)).resolves.not.toThrow();
+        });
+
+        it('should throw AuthenticationError when not authenticated', async () => {
+            const client = createChanomhubClient(); // No token
+            await expect(client.sponsoredArticles.create({ articleId: 1 })).rejects.toThrow(
+                'Authentication required for sponsored articles management',
+            );
+        });
+    });
 });
