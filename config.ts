@@ -75,6 +75,10 @@ export interface ChanomhubConfig {
     supabaseUrl?: string;
     /** Supabase anon key (required for OAuth) */
     supabaseAnonKey?: string;
+    /** Storage service URL (GOR2) */
+    storageServiceUrl?: string;
+    /** Download gateway URL (Worker) */
+    downloadGatewayUrl?: string;
 }
 
 export const DEFAULT_IMGPROXY_OPTIONS: ImgproxyOptions = {
@@ -85,6 +89,8 @@ export const DEFAULT_CONFIG: ChanomhubConfig = {
     apiUrl: 'https://api.chanomhub.com',
     cdnUrl: 'https://imgproxy.chanomhub.com',
     storageUrl: 'https://cdn.chanomhub.com',
+    storageServiceUrl: 'https://oi.chanomhub.com',
+    downloadGatewayUrl: 'https://dl.chanomhub.com',
     imgproxyOptions: DEFAULT_IMGPROXY_OPTIONS,
     defaultCacheSeconds: 3600,
 };

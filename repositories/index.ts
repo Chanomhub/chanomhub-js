@@ -21,3 +21,9 @@ export {
     createSponsoredArticlesRepository,
     type SponsoredArticlesRepository,
 } from './sponsoredArticlesRepository';
+export {
+    createStorageRepository,
+    type StorageRepository,
+    type UploadResponse,
+    type UploadOptions,
+} from './storageRepository';
