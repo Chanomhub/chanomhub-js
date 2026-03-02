@@ -9,22 +9,7 @@
 [![License: ISC](https://img.shields.io/badge/license-ISC-blue.svg?style=flat-square)](https://opensource.org/licenses/ISC)
 [![CI Status](https://img.shields.io/github/actions/workflow/status/Chanomhub/chanomhub-sdk/ci.yml?branch=main&style=flat-square)](https://github.com/Chanomhub/chanomhub-sdk/actions)
 
----
 
-## 🌟 Overview
-
-The **Chanomhub SDK** is a comprehensive, type-safe TypeScript library designed to simplify interactions with the Chanomhub API. Whether you're building a web application with Next.js, a mobile app with React Native, or a server-side application, this SDK provides a consistent, well-typed interface to access all Chanomhub features.
-
-### Key Features
-
-✅ **Framework-Agnostic** – Works seamlessly with Next.js, React Native, Node.js, and browser environments
-✅ **TypeScript First** – Complete type definitions for all API endpoints and responses
-✅ **Modular Design** – Organized repositories for articles, users, favorites, and search
-✅ **Automatic Image Transformation** – Converts filename-only URLs to full CDN URLs
-✅ **Authentication Support** – Built-in JWT token handling with Next.js cookie integration
-✅ **Caching** – Configurable cache settings for better performance
-✅ **Error Handling** – Custom error classes for robust error management
-✅ **Next.js Optimized** – Special helpers for Server Components and client-side usage
 
 ---
 
