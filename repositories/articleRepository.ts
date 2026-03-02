@@ -19,6 +19,7 @@ import type {
     ModListOptions,
     PaginatedResponse,
     OfficialDownloadSource,
+    NamedEntity,
 } from '../types/common';
 import { buildFieldsQuery, buildModFieldsQuery } from '../utils/fields';
 
@@ -49,6 +50,9 @@ export interface ArticleRepository {
 
     /** Get all available platforms */
     getPlatforms(): Promise<string[]>;
+
+    /** Get all available engines */
+    getEngines(): Promise<NamedEntity[]>;
 
     /** Create a new article */
     create(data: NewArticleDTO): Promise<Article>;
@@ -550,6 +554,17 @@ export function createArticleRepository(
         return data.system.platforms || [];
     }
 
+    async function getEngines(): Promise<NamedEntity[]> {
+        const res = await rest<NamedEntity[]>('/api/engines');
+
+        if (res.error || !res.data) {
+            console.error('Failed to fetch engines:', res.error);
+            return [];
+        }
+
+        return res.data;
+    }
+
     async function purchase(id: number): Promise<Article> {
         const res = await rest<{ article: Article }>(`/api/v1/lago/purchase/article/${id}`, {
             method: 'POST',
@@ -577,6 +592,7 @@ export function createArticleRepository(
         getTags,
         getCategories,
         getPlatforms,
+        getEngines,
         create,
         update,
         delete: remove,
