@@ -157,6 +157,8 @@ export interface NewArticleDTO {
     language: string;
     /** Game version */
     ver?: string;
+    /** Sequential code (e.g., 'HJ218') */
+    sequentialCode?: string;
     status?: ArticleStatus;
     /** Engine ID or name */
     engine?: string;
@@ -179,6 +181,8 @@ export interface UpdateArticleDTO {
     description?: string;
     body?: string;
     ver?: string;
+    /** Sequential code (e.g., 'HJ218') */
+    sequentialCode?: string;
     status?: ArticleStatus;
     engine?: string;
     mainImage?: string | null;
