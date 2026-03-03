@@ -51,17 +51,25 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
             throw error;
         }
 
+        if (!data) {
+            throw new Error('Failed to generate token: No data returned from server');
+        }
+
         return data;
     }
 
     async function verifyDeveloper(token: string, data: VerifyDeveloperDto): Promise<DeveloperProfile> {
         const { data: profile, error } = await fetcher<DeveloperProfile>(`/developer/verify/${token}`, {
             method: 'POST',
-            body: data,
+            body: data as unknown as Record<string, unknown>,
         });
 
         if (error) {
             throw error;
+        }
+
+        if (!profile) {
+            throw new Error('Failed to verify developer: No profile data returned from server');
         }
 
         return profile;
@@ -72,6 +80,10 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
 
         if (error) {
             throw error;
+        }
+
+        if (!profile) {
+            throw new Error('Developer profile not found');
         }
 
         return profile;
