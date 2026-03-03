@@ -29,8 +29,11 @@ export interface DeveloperProfile {
     id: number;
     userId: number;
     realName: string;
+    bankType: 'LOCAL' | 'INTERNATIONAL';
     bankName: string;
     bankAccount: string;
+    swiftCode?: string;
+    bankAddress?: string;
     citizenId?: string;
     isVerified: boolean;
     verifiedAt?: string;
@@ -41,8 +44,11 @@ export interface DeveloperProfile {
 /** Developer verification request */
 export interface VerifyDeveloperDto {
     realName: string;
+    bankType: 'LOCAL' | 'INTERNATIONAL';
     bankName: string;
     bankAccount: string;
+    swiftCode?: string;
+    bankAddress?: string;
     citizenId?: string;
 }
 

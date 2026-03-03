@@ -33,6 +33,13 @@ export interface DeveloperRepository {
      * Get the developer profile for the currently authenticated user.
      */
     getProfile(): Promise<DeveloperProfile>;
+
+    /**
+     * Update the developer profile for the currently authenticated user.
+     * 
+     * @param data - Developer verification details to update
+     */
+    updateProfile(data: Partial<VerifyDeveloperDto>): Promise<DeveloperProfile>;
 }
 
 /**
@@ -89,9 +96,27 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
         return profile;
     }
 
+    async function updateProfile(data: Partial<VerifyDeveloperDto>): Promise<DeveloperProfile> {
+        const { data: profile, error } = await fetcher<DeveloperProfile>('/developer/profile', {
+            method: 'PATCH',
+            body: data as unknown as Record<string, unknown>,
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        if (!profile) {
+            throw new Error('Failed to update developer profile: No data returned from server');
+        }
+
+        return profile;
+    }
+
     return {
         generateVerificationToken,
         verifyDeveloper,
         getProfile,
+        updateProfile,
     };
 }
