@@ -33,3 +33,7 @@ export {
     type CheckoutResponse,
     type CheckoutOptions,
 } from './checkoutRepository';
+export {
+    createDeveloperRepository,
+    type DeveloperRepository,
+} from './developerRepository';

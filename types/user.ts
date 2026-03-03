@@ -24,6 +24,38 @@ export interface SocialMediaLink {
     url: string;
 }
 
+/** Developer verification profile */
+export interface DeveloperProfile {
+    id: number;
+    userId: number;
+    realName: string;
+    bankName: string;
+    bankAccount: string;
+    citizenId?: string;
+    isVerified: boolean;
+    verifiedAt?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+/** Developer verification request */
+export interface VerifyDeveloperDto {
+    realName: string;
+    bankName: string;
+    bankAccount: string;
+    citizenId?: string;
+}
+
+/** One-time verification token */
+export interface OneTimeToken {
+    id: string;
+    userId: number;
+    token: string;
+    type: 'DEVELOPER_VERIFICATION';
+    expiresAt: string;
+    createdAt: string;
+}
+
 /** Public profile */
 export interface Profile {
     id: number;

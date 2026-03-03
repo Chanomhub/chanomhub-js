@@ -43,6 +43,7 @@ import {
     createSponsoredArticlesRepository,
     createStorageRepository,
     createCheckoutRepository,
+    createDeveloperRepository,
     type ArticleRepository,
     type FavoritesRepository,
     type UsersRepository,
@@ -53,6 +54,7 @@ import {
     type SponsoredArticlesRepository,
     type StorageRepository,
     type CheckoutRepository,
+    type DeveloperRepository,
 } from './repositories';
 import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
 
@@ -84,6 +86,8 @@ export interface ChanomhubClient {
     storage: StorageRepository;
     /** Checkout and Purchase operations */
     checkout: CheckoutRepository;
+    /** Developer operations */
+    developer: DeveloperRepository;
     /** Raw GraphQL fetcher for custom queries */
     graphql: GraphQLFetcher;
     /** SDK configuration */
@@ -130,6 +134,7 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
     const sponsoredArticles = createSponsoredArticlesRepository(graphql, rest, fullConfig);
     const storage = createStorageRepository(fullConfig);
     const checkout = createCheckoutRepository(graphql);
+    const developer = createDeveloperRepository(rest);
 
     return {
         articles,
@@ -142,6 +147,7 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
         sponsoredArticles,
         storage,
         checkout,
+        developer,
         graphql,
         config: fullConfig,
     };
