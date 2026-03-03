@@ -227,4 +227,39 @@ describe('Repositories Integration Tests', () => {
             );
         });
     });
+
+    describe('CheckoutRepository', () => {
+        it('should create article checkout with redirect URLs', async () => {
+            const client = createAuthenticatedClient('test-token');
+            const result = await client.checkout.purchaseArticle(123, {
+                successUrl: 'https://mysite.com/success',
+                cancelUrl: 'https://mysite.com/cancel',
+            });
+
+            expect(result.invoiceId).toBe('inv_123');
+            expect(result.paymentUrl).toContain('https://mysite.com/success');
+            expect(result.status).toBe('PENDING');
+        });
+
+        it('should create mod checkout', async () => {
+            const client = createAuthenticatedClient('test-token');
+            const result = await client.checkout.purchaseMod(456);
+
+            expect(result.invoiceId).toBe('inv_123');
+            expect(result.paymentUrl).toBe('https://stripe.com/checkout');
+        });
+    });
+
+    describe('Article Purchase (REST)', () => {
+        it('should purchase article with redirect URLs', async () => {
+            const client = createAuthenticatedClient('test-token');
+            const article = await client.articles.purchase(123, {
+                successUrl: 'https://mysite.com/success',
+            });
+
+            expect(article.id).toBe(123);
+            // In our mock, we put the successUrl in checkoutUrl for verification
+            expect((article as any).checkoutUrl).toContain('https://mysite.com/success');
+        });
+    });
 });

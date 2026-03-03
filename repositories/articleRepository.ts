@@ -88,7 +88,7 @@ export interface ArticleRepository {
     restoreRevision(slug: string, version: number): Promise<RevisionDetail>;
 
     /** Purchase a paid article */
-    purchase(articleId: number): Promise<Article>;
+    purchase(articleId: number, options?: { successUrl?: string; cancelUrl?: string }): Promise<Article>;
 }
 
 /**
@@ -565,9 +565,13 @@ export function createArticleRepository(
         return res.data;
     }
 
-    async function purchase(id: number): Promise<Article> {
+    async function purchase(
+        id: number,
+        options: { successUrl?: string; cancelUrl?: string } = {},
+    ): Promise<Article> {
         const res = await rest<{ article: Article }>(`/api/v1/lago/purchase/article/${id}`, {
             method: 'POST',
+            body: options as unknown as Record<string, unknown>,
         });
 
         if (res.error || !res.data) {

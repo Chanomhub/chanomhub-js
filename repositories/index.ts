@@ -27,3 +27,9 @@ export {
     type UploadResponse,
     type UploadOptions,
 } from './storageRepository';
+export {
+    createCheckoutRepository,
+    type CheckoutRepository,
+    type CheckoutResponse,
+    type CheckoutOptions,
+} from './checkoutRepository';

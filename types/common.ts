@@ -98,3 +98,9 @@ export type ModField =
 export interface ModListOptions {
     fields?: ModField[];
 }
+
+/** Type of item for purchase/checkout */
+export enum ItemType {
+    ARTICLE = 'ARTICLE',
+    MOD = 'MOD',
+}

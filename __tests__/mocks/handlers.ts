@@ -592,4 +592,36 @@ export const handlers = [
         }
         return new HttpResponse(null, { status: 204 });
     }),
+
+    // Purchase - Article
+    http.post(`${BASE_URL}/api/v1/lago/purchase/article/:id`, async ({ request, params }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        const body = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json({
+            article: {
+                id: Number(params.id),
+                title: 'Purchased Article',
+                slug: 'purchased-article',
+                checkoutUrl: body.successUrl ? `${body.successUrl}&checkout=true` : 'https://stripe.com/checkout',
+            },
+        });
+    }),
+
+    // GraphQL: Create One-Off Checkout
+    graphql.mutation('CreateOneOffCheckout', ({ variables }) => {
+        return HttpResponse.json({
+            data: {
+                createOneOffCheckout: {
+                    invoiceId: 'inv_123',
+                    paymentUrl: variables.successUrl 
+                        ? `${variables.successUrl}&checkout=true` 
+                        : 'https://stripe.com/checkout',
+                    status: 'PENDING',
+                },
+            },
+        });
+    }),
 ];
