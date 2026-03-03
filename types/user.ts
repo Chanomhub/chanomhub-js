@@ -74,6 +74,7 @@ export interface Profile {
     backgroundImage: string | null;
     following: boolean;
     socialMediaLinks: SocialMediaLink[];
+    roles: string[];
 }
 
 /** Profile response wrapper */
