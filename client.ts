@@ -144,7 +144,8 @@ export function createRestClient(config: ChanomhubConfig) {
         }
 
         try {
-            const res = await fetch(`${config.apiUrl}${endpoint}`, fetchOptions);
+            // Include /api prefix for REST calls as required by the backend
+            const res = await fetch(`${config.apiUrl}/api${endpoint}`, fetchOptions);
 
             if (!res.ok) {
                 const errorText = await res.text();

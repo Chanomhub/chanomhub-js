@@ -40,6 +40,11 @@ export interface DeveloperRepository {
      * @param data - Developer verification details to update
      */
     updateProfile(data: Partial<VerifyDeveloperDto>): Promise<DeveloperProfile>;
+    /**
+     * Get all developer profiles.
+     * Admin only.
+     */
+    getAllProfiles(): Promise<DeveloperProfile[]>;
 }
 
 /**
@@ -48,6 +53,16 @@ export interface DeveloperRepository {
  * @param fetcher - REST API fetcher
  */
 export function createDeveloperRepository(fetcher: RestFetcher): DeveloperRepository {
+    async function getAllProfiles(): Promise<DeveloperProfile[]> {
+        const { data, error } = await fetcher<DeveloperProfile[]>('/admin/developer/profiles');
+
+        if (error) {
+            throw error;
+        }
+
+        return data || [];
+    }
+
     async function generateVerificationToken(userId: number): Promise<OneTimeToken> {
         const { data, error } = await fetcher<OneTimeToken>('/admin/developer/generate-token', {
             method: 'POST',
@@ -118,5 +133,6 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
         verifyDeveloper,
         getProfile,
         updateProfile,
+        getAllProfiles,
     };
 }
