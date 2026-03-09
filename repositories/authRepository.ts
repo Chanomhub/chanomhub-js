@@ -247,7 +247,7 @@ export function createAuthRepository(
     }
 
     async function refreshToken(refreshToken: string): Promise<RefreshResponse | null> {
-        const { data, error } = await fetcher<RefreshResponse>('/api/users/refresh-token', {
+        const { data, error } = await fetcher<RefreshResponse>('/api/auth/refresh', {
             method: 'POST',
             body: { refreshToken },
         });

@@ -69,6 +69,10 @@ export interface ChanomhubConfig {
     imgproxyOptions?: ImgproxyOptions;
     /** Authentication token (optional) */
     token?: string;
+    /** Refresh token for automatic renewal (optional) */
+    refreshToken?: string;
+    /** Callback triggered when token is automatically refreshed */
+    onTokenRefreshed?: (token: string, refreshToken: string) => void;
     /** Default cache duration in seconds (0 = no cache) */
     defaultCacheSeconds?: number;
     /** Supabase project URL (required for OAuth) */

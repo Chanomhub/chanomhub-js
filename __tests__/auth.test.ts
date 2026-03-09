@@ -67,7 +67,7 @@ describe('authRepository', () => {
             const auth = createAuthRepository(mockFetcher as RestFetcher, config);
             const result = await auth.refreshToken('old-refresh-token');
 
-            expect(mockFetcher).toHaveBeenCalledWith('/api/users/refresh-token', {
+            expect(mockFetcher).toHaveBeenCalledWith('/api/auth/refresh', {
                 method: 'POST',
                 body: { refreshToken: 'old-refresh-token' },
             });

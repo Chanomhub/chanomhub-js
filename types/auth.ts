@@ -22,13 +22,15 @@ export interface OAuthOptions {
 /** Login response from backend after token exchange */
 export interface LoginResponse {
     user: User;
-    token: string;
+    token?: string;
+    accessToken?: string;
     refreshToken: string;
 }
 
 /** Token refresh response from backend */
 export interface RefreshResponse {
-    token: string;
+    token?: string;
+    accessToken?: string;
     refreshToken?: string;
 }
 

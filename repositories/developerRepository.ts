@@ -97,15 +97,15 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
         return profile;
     }
 
-    async function getProfile(): Promise<DeveloperProfile> {
+    async function getProfile(): Promise<DeveloperProfile | null> {
         const { data: profile, error } = await fetcher<DeveloperProfile>('/developer/profile');
 
         if (error) {
+            // Handle 404 as a valid "no profile" state
+            if (error.includes('404')) {
+                return null;
+            }
             throw error;
-        }
-
-        if (!profile) {
-            throw new Error('Developer profile not found');
         }
 
         return profile;
