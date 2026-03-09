@@ -32,7 +32,7 @@ export interface DeveloperRepository {
     /**
      * Get the developer profile for the currently authenticated user.
      */
-    getProfile(): Promise<DeveloperProfile>;
+    getProfile(): Promise<DeveloperProfile | null>;
 
     /**
      * Update the developer profile for the currently authenticated user.
@@ -40,6 +40,7 @@ export interface DeveloperRepository {
      * @param data - Developer verification details to update
      */
     updateProfile(data: Partial<VerifyDeveloperDto>): Promise<DeveloperProfile>;
+
     /**
      * Get all developer profiles.
      * Admin only.
@@ -54,7 +55,7 @@ export interface DeveloperRepository {
  */
 export function createDeveloperRepository(fetcher: RestFetcher): DeveloperRepository {
     async function getAllProfiles(): Promise<DeveloperProfile[]> {
-        const { data, error } = await fetcher<DeveloperProfile[]>('/admin/developer/profiles');
+        const { data, error } = await fetcher<DeveloperProfile[]>('/api/admin/developer/profiles');
 
         if (error) {
             throw error;
@@ -64,7 +65,7 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
     }
 
     async function generateVerificationToken(userId: number): Promise<OneTimeToken> {
-        const { data, error } = await fetcher<OneTimeToken>('/admin/developer/generate-token', {
+        const { data, error } = await fetcher<OneTimeToken>('/api/admin/developer/generate-token', {
             method: 'POST',
             body: { userId },
         });
@@ -81,7 +82,7 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
     }
 
     async function verifyDeveloper(token: string, data: VerifyDeveloperDto): Promise<DeveloperProfile> {
-        const { data: profile, error } = await fetcher<DeveloperProfile>(`/developer/verify/${token}`, {
+        const { data: profile, error } = await fetcher<DeveloperProfile>(`/api/developer/verify/${token}`, {
             method: 'POST',
             body: data as unknown as Record<string, unknown>,
         });
@@ -98,7 +99,7 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
     }
 
     async function getProfile(): Promise<DeveloperProfile | null> {
-        const { data: profile, error } = await fetcher<DeveloperProfile>('/developer/profile');
+        const { data: profile, error } = await fetcher<DeveloperProfile>('/api/developer/profile');
 
         if (error) {
             // Handle 404 as a valid "no profile" state
@@ -112,7 +113,7 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
     }
 
     async function updateProfile(data: Partial<VerifyDeveloperDto>): Promise<DeveloperProfile> {
-        const { data: profile, error } = await fetcher<DeveloperProfile>('/developer/profile', {
+        const { data: profile, error } = await fetcher<DeveloperProfile>('/api/developer/profile', {
             method: 'PATCH',
             body: data as unknown as Record<string, unknown>,
         });
