@@ -38,12 +38,18 @@ export interface Author {
 
 /** Download link type */
 export interface Download {
-    id: number;
+    id: number | string;
     name: string;
     url: string;
     isActive: boolean;
     vipOnly: boolean;
     createdAt?: string;
+    /** Type of download determined by the backend */
+    type: 'DIRECT_FILE' | 'EXTERNAL_MIRROR' | 'PURCHASE_REDIRECT';
+    /** Whether this is a redirect link to purchase the article (pseudo-download) */
+    isPurchaseRedirect?: boolean;
+    /** Whether this is a direct downloadable file (zip, exe, etc.) */
+    isDirectFile?: boolean;
 }
 
 /** Official download source */

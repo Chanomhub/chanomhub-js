@@ -92,6 +92,29 @@ export interface ArticleRepository {
 }
 
 /**
+ * Helper to transform and add metadata to download links
+ */
+function transformDownload<T extends { url: string }>(download: T): T & { isPurchaseRedirect: boolean, isDirectFile: boolean } {
+    const url = download.url.toLowerCase();
+    const isPurchaseRedirect = url.includes('purchase=true') || 
+                               url.includes('purchase%3dtrue') || 
+                               (url.includes('/articles/') && !url.startsWith('http')) ||
+                               url.includes('imgproxy.chanomhub.com');
+    
+    const isDirectFile = !isPurchaseRedirect && (
+        url.endsWith('.zip') || url.endsWith('.rar') || url.endsWith('.7z') || 
+        url.endsWith('.exe') || url.endsWith('.apk') || url.endsWith('.dmg') ||
+        url.includes('/premium/') || url.includes('/public/')
+    );
+
+    return {
+        ...download,
+        isPurchaseRedirect,
+        isDirectFile
+    };
+}
+
+/**
  * Creates an article repository with the given GraphQL client
  */
 export function createArticleRepository(
@@ -424,7 +447,12 @@ export function createArticleRepository(
             return null;
         }
 
-        return data.public.article || null;
+        const article = data.public.article;
+        if (article && article.downloads) {
+            article.downloads = article.downloads.map(transformDownload);
+        }
+
+        return article || null;
     }
 
     async function getWithVersions(slug: string): Promise<Article | null> {
@@ -434,7 +462,7 @@ export function createArticleRepository(
     async function getByVersion(slug: string, version: string): Promise<Article | null> {
         return getBySlug(slug, {
             version,
-            fields: ['id', 'title', 'downloadLinks', 'mods'],
+            fields: ['id', 'title', 'downloads', 'mods'],
         });
     }
 

@@ -18,6 +18,10 @@ export interface DownloadLink {
     forVersion?: string | null;
     createdAt: string;
     updatedAt: string;
+    /** Whether this is a redirect link to purchase the article (pseudo-download) */
+    isPurchaseRedirect?: boolean;
+    /** Whether this is a direct downloadable file (zip, exe, etc.) */
+    isDirectFile?: boolean;
     /** Included when expanded */
     createdBy?: {
         id: number;

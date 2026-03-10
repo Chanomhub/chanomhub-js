@@ -63,34 +63,54 @@ export function createSponsoredArticlesRepository(
 
     async function getAll(): Promise<SponsoredArticle[]> {
         const articleFields = buildFieldsQuery({ preset: 'standard' });
+        const hasToken = Boolean(config.token);
 
-        const query = `query GetSponsoredArticles {
-      public {
-        sponsoredArticles {
-          id
-          articleId
-          coverImage
-          isActive
-          priority
-          startDate
-          endDate
-          article {
-            ${articleFields}
-          }
-        }
-      }
-    }`;
+        // If authenticated, use SystemQuery to get ALL articles (including inactive/expired)
+        // If public, use PublicQuery to get only ACTIVE articles
+        const query = hasToken 
+            ? `query GetAllSponsoredArticles {
+                system {
+                    allSponsoredArticles {
+                        id
+                        articleId
+                        coverImage
+                        isActive
+                        priority
+                        startDate
+                        endDate
+                        article {
+                            ${articleFields}
+                        }
+                    }
+                }
+            }`
+            : `query GetActiveSponsoredArticles {
+                public {
+                    sponsoredArticles {
+                        id
+                        articleId
+                        coverImage
+                        isActive
+                        priority
+                        startDate
+                        endDate
+                        article {
+                            ${articleFields}
+                        }
+                    }
+                }
+            }`;
 
-        const { data, errors } = await fetcher<{
-            public: { sponsoredArticles: SponsoredArticle[] };
-        }>(query, {}, { operationName: 'GetSponsoredArticles' });
+        const { data, errors } = await fetcher<any>(query, {}, { 
+            operationName: hasToken ? 'GetAllSponsoredArticles' : 'GetActiveSponsoredArticles' 
+        });
 
         if (errors || !data) {
             console.error('Failed to fetch sponsored articles:', errors);
             return [];
         }
 
-        return data.public.sponsoredArticles || [];
+        return hasToken ? data.system.allSponsoredArticles : data.public.sponsoredArticles;
     }
 
     async function getById(id: number): Promise<SponsoredArticle | null> {

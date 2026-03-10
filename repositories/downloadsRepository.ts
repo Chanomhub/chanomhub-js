@@ -79,6 +79,21 @@ export interface DownloadsRepository {
 }
 
 /**
+ * Helper to transform and add metadata to download links using backend provided 'type'
+ */
+function transformDownload<T extends { url: string; type?: string }>(download: T): T & { isPurchaseRedirect: boolean, isDirectFile: boolean } {
+    // Rely on the type provided by the backend, or fallback to DIRECT_FILE if missing
+    const isPurchaseRedirect = download.type === 'PURCHASE_REDIRECT';
+    const isDirectFile = download.type === 'DIRECT_FILE';
+
+    return {
+        ...download,
+        isPurchaseRedirect,
+        isDirectFile
+    } as any;
+}
+
+/**
  * Creates a downloads repository with the given REST client
  */
 export function createDownloadsRepository(
@@ -107,7 +122,7 @@ export function createDownloadsRepository(
             return null;
         }
 
-        return response?.downloadLink ?? null;
+        return response?.downloadLink ? transformDownload(response.downloadLink) : null;
     }
 
     async function getAll(
@@ -129,6 +144,10 @@ export function createDownloadsRepository(
         if (error) {
             console.error('Failed to get download links:', error);
             return null;
+        }
+
+        if (data && data.items) {
+            data.items = data.items.map(transformDownload);
         }
 
         return data;
@@ -161,7 +180,8 @@ export function createDownloadsRepository(
             return [];
         }
 
-        return data.public.article?.downloads ?? [];
+        const downloads = data.public.article?.downloads ?? [];
+        return downloads.map(transformDownload);
     }
 
     async function getPending(page = 1, limit = 20): Promise<DownloadLinksListResponse | null> {
@@ -179,6 +199,10 @@ export function createDownloadsRepository(
         if (error) {
             console.error('Failed to get pending download links:', error);
             return null;
+        }
+
+        if (data && data.items) {
+            data.items = data.items.map(transformDownload);
         }
 
         return data;
@@ -200,18 +224,18 @@ export function createDownloadsRepository(
             return null;
         }
 
-        return response?.downloadLink ?? null;
+        return response?.downloadLink ? transformDownload(response.downloadLink) : null;
     }
 
     async function getById(id: number): Promise<DownloadLink | null> {
         const { data, error } = await rest<DownloadLink>(`/api/downloads/${id}`, { method: 'GET' });
 
-        if (error) {
+        if (error || !data) {
             console.error('Failed to get download link:', error);
             return null;
         }
 
-        return data;
+        return transformDownload(data);
     }
 
     async function update(
@@ -230,7 +254,7 @@ export function createDownloadsRepository(
             return null;
         }
 
-        return response?.downloadLink ?? null;
+        return response?.downloadLink ? transformDownload(response.downloadLink) : null;
     }
 
     async function deleteDownload(id: number): Promise<boolean> {
