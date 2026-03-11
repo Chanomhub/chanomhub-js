@@ -377,6 +377,11 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
 
     return {
         upload,
+        uploadMultipart,
+        initiateMultipartUpload,
+        uploadPart,
+        completeMultipartUpload,
+        abortMultipartUpload,
         getProtectedUrl,
     };
 }
