@@ -41,7 +41,22 @@ export interface CompletedPart {
 }
 
 export interface UploadOptions {
-...
+    /**
+     * Target bucket.
+     * 'images' - Default (Images only, 10MB limit)
+     * 'storage' - General storage/Games (Any type, 1GB limit)
+     */
+    bucket?: 'images' | 'storage';
+    /**
+     * Path prefix for the file (e.g. 'public', 'premium').
+     * Useful for organizing files and protecting access.
+     */
+    path?: string;
+    /**
+     * Game slug or identifier for better file organization.
+     * Example: 'elden-ring'
+     */
+    game?: string;
     /** Progress callback (browser only) */
     onProgress?: (percent: number) => void;
     /** Chunk size for multipart upload (default 5MB) */
