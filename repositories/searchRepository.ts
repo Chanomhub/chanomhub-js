@@ -3,9 +3,11 @@
  */
 
 import type { GraphQLFetcher } from '../client';
+import type { ChanomhubConfig } from '../config';
 import type { ArticleListItem, ArticlePreset, ArticleField } from '../types/article';
 import type { PaginatedResponse } from '../types/common';
 import { buildFieldsQuery } from '../utils/fields';
+import { transformImageUrlsDeep } from '../transforms/imageUrl';
 
 /** Search options */
 export interface SearchOptions {
@@ -39,7 +41,12 @@ export interface SearchRepository {
 /**
  * Creates a search repository with the given GraphQL client
  */
-export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepository {
+export function createSearchRepository(
+    fetcher: GraphQLFetcher,
+    config?: ChanomhubConfig,
+): SearchRepository {
+    const cdnUrl = config?.cdnUrl || 'https://imgproxy.chanomhub.com';
+
     async function articles(
         query: string,
         options: SearchOptions = {},
@@ -96,7 +103,7 @@ export function createSearchRepository(fetcher: GraphQLFetcher): SearchRepositor
         const page = Math.floor(offset / limit) + 1;
 
         return {
-            items: data.public.articles || [],
+            items: transformImageUrlsDeep(data.public.articles || [], cdnUrl),
             total: data.public.articlesCount || 0,
             page,
             pageSize: limit,

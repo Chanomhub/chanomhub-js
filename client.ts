@@ -7,7 +7,6 @@
 
 import type { ChanomhubConfig } from './config';
 import type { GraphQLResponse } from './types/common';
-import { transformImageUrlsDeep } from './transforms/imageUrl';
 
 // Shared state for token refreshing to handle concurrent requests
 // Keyed by refreshToken to avoid cross-user token leakage in server-side environments
@@ -94,7 +93,7 @@ export interface FetchOptions {
 }
 
 /**
- * Creates a GraphQL fetcher function with automatic image URL transformation
+ * Creates a GraphQL fetcher function
  *
  * @param config - SDK configuration
  * @returns GraphQL fetch function
@@ -179,8 +178,7 @@ export function createGraphQLClient(config: ChanomhubConfig) {
                 return { data: null, errors: json.errors };
             }
 
-            const transformedData = transformImageUrlsDeep(json.data, config.cdnUrl) as T;
-            return { data: transformedData };
+            return { data: json.data as T };
         } catch (error) {
             console.error('GraphQL fetch exception:', error);
             return {
@@ -272,8 +270,7 @@ export function createRestClient(config: ChanomhubConfig) {
                     ? json.data
                     : json;
 
-            const transformedData = transformImageUrlsDeep(responseData, config.cdnUrl) as T;
-            return { data: transformedData };
+            return { data: responseData as T };
         } catch (error) {
             console.error('REST fetch exception:', error);
             return {

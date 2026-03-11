@@ -166,6 +166,12 @@ export function transformImageUrlsDeep<T>(data: T, cdnUrl: string): T {
     if (typeof data === 'object') {
         const result: Record<string, unknown> = {};
 
+        // Skip transformation for objects that look like download links
+        // (they have a 'url' but it's not an image, and they have 'vipOnly' or 'isActive')
+        if ('url' in (data as any) && ('vipOnly' in (data as any) || 'isActive' in (data as any))) {
+            return data;
+        }
+
         for (const [key, value] of Object.entries(data as Record<string, unknown>)) {
             // Transform known image URL fields
             if (IMAGE_FIELDS.has(key) && typeof value === 'string') {

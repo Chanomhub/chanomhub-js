@@ -178,6 +178,25 @@ describe('transformImageUrlsDeep', () => {
         expect(result[0].mainImage).toBe(buildImgproxyUrl('img1.jpg'));
         expect(result[1].mainImage).toBe(buildImgproxyUrl('img2.jpg'));
     });
+
+    it('should NOT transform download links even if they have a url property', () => {
+        const data = {
+            downloads: [
+                {
+                    id: '1598',
+                    name: '[Win] Storage',
+                    url: 'public/file.tar.xz',
+                    isActive: true,
+                    vipOnly: false,
+                },
+            ],
+        };
+
+        const result = transformImageUrlsDeep(data, CDN_URL);
+
+        // Should NOT be wrapped in imgproxy
+        expect(result.downloads[0].url).toBe('public/file.tar.xz');
+    });
 });
 
 describe('getFallbackUrl', () => {

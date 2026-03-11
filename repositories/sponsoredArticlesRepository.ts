@@ -11,6 +11,7 @@ import type {
 } from '../types/sponsoredArticle';
 import { AuthenticationError } from '../errors';
 import { buildFieldsQuery } from '../utils/fields';
+import { transformImageUrlsDeep } from '../transforms/imageUrl';
 
 export interface SponsoredArticlesRepository {
     /**
@@ -53,6 +54,8 @@ export function createSponsoredArticlesRepository(
     rest: RestFetcher,
     config: ChanomhubConfig,
 ): SponsoredArticlesRepository {
+    const cdnUrl = config.cdnUrl || 'https://imgproxy.chanomhub.com';
+
     function requireAuth(): void {
         if (!config.token) {
             throw new AuthenticationError(
@@ -110,7 +113,8 @@ export function createSponsoredArticlesRepository(
             return [];
         }
 
-        return hasToken ? data.system.allSponsoredArticles : data.public.sponsoredArticles;
+        const sponsored = hasToken ? data.system.allSponsoredArticles : data.public.sponsoredArticles;
+        return transformImageUrlsDeep(sponsored, cdnUrl);
     }
 
     async function getById(id: number): Promise<SponsoredArticle | null> {
@@ -122,7 +126,7 @@ export function createSponsoredArticlesRepository(
             return null;
         }
 
-        return data;
+        return transformImageUrlsDeep(data, cdnUrl);
     }
 
     async function create(dto: CreateSponsoredArticleDTO): Promise<SponsoredArticle> {
@@ -137,7 +141,7 @@ export function createSponsoredArticlesRepository(
             throw new Error(error || 'Failed to create sponsored article');
         }
 
-        return data;
+        return transformImageUrlsDeep(data, cdnUrl);
     }
 
     async function update(id: number, dto: UpdateSponsoredArticleDTO): Promise<SponsoredArticle> {
@@ -152,7 +156,7 @@ export function createSponsoredArticlesRepository(
             throw new Error(error || 'Failed to update sponsored article');
         }
 
-        return data;
+        return transformImageUrlsDeep(data, cdnUrl);
     }
 
     async function remove(id: number): Promise<void> {

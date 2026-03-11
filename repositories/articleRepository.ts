@@ -24,6 +24,7 @@ import type {
 } from '../types/common';
 import { buildFieldsQuery, buildModFieldsQuery } from '../utils/fields';
 import { resolveDownloadUrl } from '../transforms/downloadUrl';
+import { transformImageUrlsDeep } from '../transforms/imageUrl';
 
 export interface ArticleRepository {
     /** Get list of articles */
@@ -144,6 +145,7 @@ export function createArticleRepository(
     config?: ChanomhubConfig,
 ): ArticleRepository {
     const storageDownloadUrl = config?.storageDownloadUrl;
+    const cdnUrl = config?.cdnUrl || 'https://imgproxy.chanomhub.com';
 
     async function create(data: NewArticleDTO): Promise<Article> {
         const res = await rest<{ article: Article }>('/api/articles', {
@@ -286,7 +288,8 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.public.articles || [];
+        const articles = data.public.articles || [];
+        return transformImageUrlsDeep(articles, config?.cdnUrl || 'https://imgproxy.chanomhub.com');
     }
 
     async function getAllPaginated(
@@ -348,7 +351,7 @@ export function createArticleRepository(
         const page = Math.floor(offset / limit) + 1;
 
         return {
-            items: data.public.articles || [],
+            items: transformImageUrlsDeep(data.public.articles || [], cdnUrl),
             total: data.public.articlesCount || 0,
             page,
             pageSize: limit,
@@ -382,7 +385,8 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.public.articles || [];
+        const articles = data.public.articles || [];
+        return transformImageUrlsDeep(articles, cdnUrl);
     }
 
     async function getByPlatform(
@@ -412,7 +416,8 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.public.articles || [];
+        const articles = data.public.articles || [];
+        return transformImageUrlsDeep(articles, cdnUrl);
     }
 
     async function getByCategory(
@@ -442,7 +447,8 @@ export function createArticleRepository(
             return [];
         }
 
-        return data.public.articles || [];
+        const articles = data.public.articles || [];
+        return transformImageUrlsDeep(articles, cdnUrl);
     }
 
     async function getBySlug(
@@ -471,7 +477,7 @@ export function createArticleRepository(
             return null;
         }
 
-        const article = data.public.article;
+        const article = transformImageUrlsDeep(data.public.article, cdnUrl);
         if (article && article.downloads) {
             article.downloads = article.downloads.map((d) =>
                 transformDownload(d, storageDownloadUrl),
