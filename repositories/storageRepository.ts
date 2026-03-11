@@ -33,6 +33,11 @@ export interface UploadOptions {
      * Useful for organizing files and protecting access.
      */
     path?: string;
+    /**
+     * Game slug or identifier for better file organization.
+     * Example: 'elden-ring'
+     */
+    game?: string;
     /** Progress callback (browser only) */
     onProgress?: (percent: number) => void;
 }
@@ -70,7 +75,7 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
     async function upload(file: File | Blob, options: UploadOptions = {}): Promise<UploadResponse> {
         requireAuth();
 
-        const { bucket = 'images', path } = options;
+        const { bucket = 'images', path, game } = options;
         const storageUrl = config.storageServiceUrl || 'https://oi.chanomhub.com';
 
         const formData = new FormData();
@@ -82,6 +87,9 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
         }
         if (path) {
             url.searchParams.append('path', path);
+        }
+        if (game) {
+            url.searchParams.append('game', game);
         }
 
         const headers: Record<string, string> = {

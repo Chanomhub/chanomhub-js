@@ -89,6 +89,9 @@ export interface ArticleRepository {
 
     /** Purchase a paid article */
     purchase(articleId: number, options?: { successUrl?: string; cancelUrl?: string }): Promise<Article>;
+
+    /** Reserve a slug based on title */
+    reserveSlug(title: string): Promise<{ slug: string }>;
 }
 
 /**
@@ -609,6 +612,19 @@ export function createArticleRepository(
         return res.data.article;
     }
 
+    async function reserveSlug(title: string): Promise<{ slug: string }> {
+        const res = await rest<{ slug: string }>('/api/articles/reserve', {
+            method: 'POST',
+            body: { title },
+        });
+
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to reserve slug');
+        }
+
+        return res.data;
+    }
+
     return {
         getAll,
         getAllPaginated,
@@ -633,5 +649,6 @@ export function createArticleRepository(
         compareVersions,
         restoreRevision,
         purchase,
+        reserveSlug,
     };
 }
