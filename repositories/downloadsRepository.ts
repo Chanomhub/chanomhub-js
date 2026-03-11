@@ -7,6 +7,7 @@
 import type { GraphQLFetcher, RestFetcher } from '../client';
 import type { ChanomhubConfig } from '../config';
 import { AuthenticationError } from '../errors';
+import { resolveDownloadUrl } from '../transforms/downloadUrl';
 import type {
     DownloadLink,
     CreateDownloadLinkRequest,
@@ -81,15 +82,23 @@ export interface DownloadsRepository {
 /**
  * Helper to transform and add metadata to download links using backend provided 'type'
  */
-function transformDownload<T extends { url: string; type?: string }>(download: T): T & { isPurchaseRedirect: boolean, isDirectFile: boolean } {
+function transformDownload<T extends { url: string; type?: string }>(
+    download: T,
+    storageDownloadUrl?: string,
+): T & { isPurchaseRedirect: boolean; isDirectFile: boolean } {
+    const originalUrl = download.url;
+    // Resolve relative storage URLs (e.g., "public/abc.zip")
+    const resolvedUrl = resolveDownloadUrl(originalUrl, storageDownloadUrl) || originalUrl;
+
     // Rely on the type provided by the backend, or fallback to DIRECT_FILE if missing
     const isPurchaseRedirect = download.type === 'PURCHASE_REDIRECT';
     const isDirectFile = download.type === 'DIRECT_FILE';
 
     return {
         ...download,
+        url: resolvedUrl,
         isPurchaseRedirect,
-        isDirectFile
+        isDirectFile,
     } as any;
 }
 
@@ -101,6 +110,8 @@ export function createDownloadsRepository(
     graphql: GraphQLFetcher,
     config: ChanomhubConfig,
 ): DownloadsRepository {
+    const storageDownloadUrl = config.storageDownloadUrl;
+
     function requireAuth(): void {
         if (!config.token) {
             throw new AuthenticationError(
@@ -122,7 +133,7 @@ export function createDownloadsRepository(
             return null;
         }
 
-        return response?.downloadLink ? transformDownload(response.downloadLink) : null;
+        return response?.downloadLink ? transformDownload(response.downloadLink, storageDownloadUrl) : null;
     }
 
     async function getAll(
@@ -147,7 +158,7 @@ export function createDownloadsRepository(
         }
 
         if (data && data.items) {
-            data.items = data.items.map(transformDownload);
+            data.items = data.items.map((d) => transformDownload(d, storageDownloadUrl));
         }
 
         return data;
@@ -181,7 +192,7 @@ export function createDownloadsRepository(
         }
 
         const downloads = data.public.article?.downloads ?? [];
-        return downloads.map(transformDownload);
+        return downloads.map((d) => transformDownload(d, storageDownloadUrl));
     }
 
     async function getPending(page = 1, limit = 20): Promise<DownloadLinksListResponse | null> {
@@ -202,7 +213,7 @@ export function createDownloadsRepository(
         }
 
         if (data && data.items) {
-            data.items = data.items.map(transformDownload);
+            data.items = data.items.map((d) => transformDownload(d, storageDownloadUrl));
         }
 
         return data;
@@ -224,7 +235,7 @@ export function createDownloadsRepository(
             return null;
         }
 
-        return response?.downloadLink ? transformDownload(response.downloadLink) : null;
+        return response?.downloadLink ? transformDownload(response.downloadLink, storageDownloadUrl) : null;
     }
 
     async function getById(id: number): Promise<DownloadLink | null> {
@@ -235,7 +246,7 @@ export function createDownloadsRepository(
             return null;
         }
 
-        return transformDownload(data);
+        return transformDownload(data, storageDownloadUrl);
     }
 
     async function update(
@@ -254,7 +265,7 @@ export function createDownloadsRepository(
             return null;
         }
 
-        return response?.downloadLink ? transformDownload(response.downloadLink) : null;
+        return response?.downloadLink ? transformDownload(response.downloadLink, storageDownloadUrl) : null;
     }
 
     async function deleteDownload(id: number): Promise<boolean> {

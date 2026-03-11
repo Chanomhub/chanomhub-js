@@ -176,6 +176,56 @@ export const handlers = [
     graphql.query('GetArticleBySlug', ({ variables }) => {
         const { slug } = variables;
 
+        if (slug === 'relative-downloads') {
+            return HttpResponse.json({
+                data: {
+                    public: {
+                        article: {
+                            id: 1,
+                            title: 'Relative Article',
+                            slug: 'relative-downloads',
+                            description: 'A test article with relative downloads',
+                            body: 'Content',
+                            ver: '1.0',
+                            createdAt: '2023-01-01',
+                            updatedAt: '2023-01-02',
+                            status: 'PUBLISHED',
+                            engine: { id: 'ng1', name: 'RenPy' },
+                            mainImage: 'article1.jpg',
+                            backgroundImage: 'bg.jpg',
+                            coverImage: 'cover.jpg',
+                            favorited: false,
+                            favoritesCount: 10,
+                            sequentialCode: '001',
+                            author: {
+                                name: 'John Doe',
+                                bio: 'Bio',
+                                image: 'john.jpg',
+                                backgroundImage: 'auth_bg.jpg',
+                                following: false,
+                                socialMediaLinks: [],
+                            },
+                            images: [],
+                            creators: [],
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            mods: [],
+                            downloads: [
+                                {
+                                    id: 1598,
+                                    name: '[Win] Storage',
+                                    url: 'public/file.tar.xz',
+                                    isActive: true,
+                                    vipOnly: false,
+                                },
+                            ],
+                        },
+                    },
+                },
+            });
+        }
+
         if (slug === 'not-found') {
             return HttpResponse.json({
                 data: {
@@ -287,19 +337,21 @@ export const handlers = [
         return HttpResponse.json({
             data: {
                 public: {
-                    downloads: [
-                        {
-                            id: 1,
-                            articleId: articleId as number,
-                            name: `Download for ${articleId}`,
-                            url: 'https://dl.com/1',
-                            isActive: true,
-                            vipOnly: false,
-                            forVersion: '1.0',
-                            createdAt: '2023-01-01',
-                            updatedAt: '2023-01-01',
-                        },
-                    ],
+                    article: {
+                        downloads: [
+                            {
+                                id: 1,
+                                articleId: articleId as number,
+                                name: `Download for ${articleId}`,
+                                url: 'https://dl.com/1',
+                                isActive: true,
+                                vipOnly: false,
+                                forVersion: '1.0',
+                                createdAt: '2023-01-01',
+                                updatedAt: '2023-01-01',
+                            },
+                        ],
+                    },
                 },
             },
         });
@@ -311,14 +363,16 @@ export const handlers = [
         return HttpResponse.json({
             data: {
                 public: {
-                    officialDownloadSources: [
-                        {
-                            id: 'source1',
-                            name: `Official Source for ${articleId}`,
-                            url: 'https://official.com/1',
-                            status: 'APPROVED',
-                        },
-                    ],
+                    article: {
+                        officialDownloadSources: [
+                            {
+                                id: 'source1',
+                                name: `Official Source for ${articleId}`,
+                                url: 'https://official.com/1',
+                                status: 'APPROVED',
+                            },
+                        ],
+                    },
                 },
             },
         });
@@ -471,7 +525,7 @@ export const handlers = [
     // ===================== Sponsored Articles =====================
 
     // GraphQL: Get Sponsored Articles
-    graphql.query('GetSponsoredArticles', () => {
+    graphql.query('GetActiveSponsoredArticles', () => {
         return HttpResponse.json({
             data: {
                 public: {

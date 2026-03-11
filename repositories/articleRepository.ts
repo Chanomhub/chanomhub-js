@@ -3,6 +3,7 @@
  */
 
 import type { GraphQLFetcher, RestFetcher } from '../client';
+import type { ChanomhubConfig } from '../config';
 import type {
     Article,
     ArticleListItem,
@@ -22,6 +23,7 @@ import type {
     NamedEntity,
 } from '../types/common';
 import { buildFieldsQuery, buildModFieldsQuery } from '../utils/fields';
+import { resolveDownloadUrl } from '../transforms/downloadUrl';
 
 export interface ArticleRepository {
     /** Get list of articles */
@@ -97,23 +99,39 @@ export interface ArticleRepository {
 /**
  * Helper to transform and add metadata to download links
  */
-function transformDownload<T extends { url: string }>(download: T): T & { isPurchaseRedirect: boolean, isDirectFile: boolean } {
-    const url = download.url.toLowerCase();
-    const isPurchaseRedirect = url.includes('purchase=true') || 
-                               url.includes('purchase%3dtrue') || 
-                               (url.includes('/articles/') && !url.startsWith('http')) ||
-                               url.includes('imgproxy.chanomhub.com');
-    
-    const isDirectFile = !isPurchaseRedirect && (
-        url.endsWith('.zip') || url.endsWith('.rar') || url.endsWith('.7z') || 
-        url.endsWith('.exe') || url.endsWith('.apk') || url.endsWith('.dmg') ||
-        url.includes('/premium/') || url.includes('/public/')
-    );
+function transformDownload<T extends { url: string }>(
+    download: T,
+    storageDownloadUrl?: string
+): T & { isPurchaseRedirect: boolean, isDirectFile: boolean } {
+    const originalUrl = download.url;
+    // Resolve relative storage URLs (e.g., "public/abc.zip")
+    const resolvedUrl = resolveDownloadUrl(originalUrl, storageDownloadUrl) || originalUrl;
+
+    const url = resolvedUrl.toLowerCase();
+    const isPurchaseRedirect =
+        url.includes('purchase=true') ||
+        url.includes('purchase%3dtrue') ||
+        (url.includes('/articles/') && !url.startsWith('http')) ||
+        url.includes('imgproxy.chanomhub.com');
+
+    const isDirectFile =
+        !isPurchaseRedirect &&
+        (url.endsWith('.zip') ||
+            url.endsWith('.rar') ||
+            url.endsWith('.7z') ||
+            url.endsWith('.xz') ||
+            url.endsWith('.tar.xz') ||
+            url.endsWith('.exe') ||
+            url.endsWith('.apk') ||
+            url.endsWith('.dmg') ||
+            url.includes('/premium/') ||
+            url.includes('/public/'));
 
     return {
         ...download,
+        url: resolvedUrl,
         isPurchaseRedirect,
-        isDirectFile
+        isDirectFile,
     };
 }
 
@@ -123,7 +141,10 @@ function transformDownload<T extends { url: string }>(download: T): T & { isPurc
 export function createArticleRepository(
     fetcher: GraphQLFetcher,
     rest: RestFetcher,
+    config?: ChanomhubConfig,
 ): ArticleRepository {
+    const storageDownloadUrl = config?.storageDownloadUrl;
+
     async function create(data: NewArticleDTO): Promise<Article> {
         const res = await rest<{ article: Article }>('/api/articles', {
             method: 'POST',
@@ -452,7 +473,9 @@ export function createArticleRepository(
 
         const article = data.public.article;
         if (article && article.downloads) {
-            article.downloads = article.downloads.map(transformDownload);
+            article.downloads = article.downloads.map((d) =>
+                transformDownload(d, storageDownloadUrl),
+            );
         }
 
         return article || null;

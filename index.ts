@@ -63,6 +63,7 @@ export * from './types';
 export * from './config';
 export * from './errors';
 export { resolveImageUrl, getFallbackUrl, buildImgproxyPath } from './transforms/imageUrl';
+export { resolveDownloadUrl } from './transforms/downloadUrl';
 
 /** Chanomhub SDK Client interface */
 export interface ChanomhubClient {
@@ -124,7 +125,7 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
 
     const graphql = createGraphQLClient(fullConfig);
     const rest = createRestClient(fullConfig);
-    const articles = createArticleRepository(graphql, rest);
+    const articles = createArticleRepository(graphql, rest, fullConfig);
     const favorites = createFavoritesRepository(rest, fullConfig);
     const users = createUsersRepository(rest);
     const search = createSearchRepository(graphql);

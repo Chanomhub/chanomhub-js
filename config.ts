@@ -83,6 +83,8 @@ export interface ChanomhubConfig {
     storageServiceUrl?: string;
     /** Download gateway URL (Worker) */
     downloadGatewayUrl?: string;
+    /** Public storage download URL */
+    storageDownloadUrl?: string;
 }
 
 export const DEFAULT_IMGPROXY_OPTIONS: ImgproxyOptions = {
@@ -95,6 +97,7 @@ export const DEFAULT_CONFIG: ChanomhubConfig = {
     storageUrl: 'https://cdn.chanomhub.com',
     storageServiceUrl: 'https://oi.chanomhub.com',
     downloadGatewayUrl: 'https://dl.chanomhub.com',
+    storageDownloadUrl: 'https://storage.chanomhub.com',
     imgproxyOptions: DEFAULT_IMGPROXY_OPTIONS,
     defaultCacheSeconds: 3600,
 };

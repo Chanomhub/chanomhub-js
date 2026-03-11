@@ -37,6 +37,17 @@ describe('Repositories Integration Tests', () => {
             expect(articles[0].title).toBe('Category Article');
         });
 
+        it('should resolve relative download URLs to storage URLs', async () => {
+            const client = createChanomhubClient();
+            const article = await client.articles.getBySlug('relative-downloads');
+
+            expect(article).not.toBeNull();
+            expect(article?.downloads).toHaveLength(1);
+            const download = article?.downloads?.[0];
+            expect(download?.url).toBe('https://storage.chanomhub.com/public/file.tar.xz');
+            expect(download?.isDirectFile).toBe(true);
+        });
+
         it('should get all tags', async () => {
             const client = createChanomhubClient();
             const tags = await client.articles.getTags();
