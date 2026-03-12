@@ -21,6 +21,12 @@ export interface DeveloperRepository {
     generateVerificationToken(userId: number): Promise<OneTimeToken>;
 
     /**
+     * Start the developer application process for the current user.
+     * Generates a one-time verification token.
+     */
+    startApplication(): Promise<OneTimeToken>;
+
+    /**
      * Verify developer status using a one-time token.
      * Requires authentication as the user the token belongs to.
      * 
@@ -81,6 +87,22 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
         return data;
     }
 
+    async function startApplication(): Promise<OneTimeToken> {
+        const { data, error } = await fetcher<OneTimeToken>('/api/developer/generate-token', {
+            method: 'POST',
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data) {
+            throw new Error('Failed to start application: No token data returned from server');
+        }
+
+        return data;
+    }
+
     async function verifyDeveloper(token: string, data: VerifyDeveloperDto): Promise<DeveloperProfile> {
         const { data: profile, error } = await fetcher<DeveloperProfile>(`/api/developer/verify/${token}`, {
             method: 'POST',
@@ -131,6 +153,7 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
 
     return {
         generateVerificationToken,
+        startApplication,
         verifyDeveloper,
         getProfile,
         updateProfile,
