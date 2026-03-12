@@ -15,10 +15,10 @@ import { transformImageUrlsDeep } from '../transforms/imageUrl';
 
 export interface SponsoredArticlesRepository {
     /**
-     * Get all active sponsored articles (public)
-     * Uses GraphQL v2 to fetch nested article data in a single query
+     * Get sponsored articles
+     * @param options - Options for fetching (e.g., all: true to use SystemQuery)
      */
-    getAll(): Promise<SponsoredArticle[]>;
+    getAll(options?: { all?: boolean }): Promise<SponsoredArticle[]>;
 
     /**
      * Get a sponsored article by ID (public)
@@ -64,13 +64,13 @@ export function createSponsoredArticlesRepository(
         }
     }
 
-    async function getAll(): Promise<SponsoredArticle[]> {
+    async function getAll(options: { all?: boolean } = {}): Promise<SponsoredArticle[]> {
         const articleFields = buildFieldsQuery({ preset: 'standard' });
-        const hasToken = Boolean(config.token);
+        const useSystemQuery = options.all === true;
 
-        // If authenticated, use SystemQuery to get ALL articles (including inactive/expired)
-        // If public, use PublicQuery to get only ACTIVE articles
-        const query = hasToken 
+        // If 'all' option is true, use SystemQuery to get ALL articles (including inactive/expired)
+        // Otherwise, use PublicQuery to get only ACTIVE articles
+        const query = useSystemQuery 
             ? `query GetAllSponsoredArticles {
                 system {
                     allSponsoredArticles {
@@ -105,7 +105,7 @@ export function createSponsoredArticlesRepository(
             }`;
 
         const { data, errors } = await fetcher<any>(query, {}, { 
-            operationName: hasToken ? 'GetAllSponsoredArticles' : 'GetActiveSponsoredArticles' 
+            operationName: useSystemQuery ? 'GetAllSponsoredArticles' : 'GetActiveSponsoredArticles' 
         });
 
         if (errors || !data) {
@@ -113,7 +113,7 @@ export function createSponsoredArticlesRepository(
             return [];
         }
 
-        const sponsored = hasToken ? data.system.allSponsoredArticles : data.public.sponsoredArticles;
+        const sponsored = useSystemQuery ? data.system.allSponsoredArticles : data.public.sponsoredArticles;
         return transformImageUrlsDeep(sponsored, cdnUrl);
     }
 
