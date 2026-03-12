@@ -27,6 +27,13 @@ export interface DeveloperRepository {
     startApplication(): Promise<OneTimeToken>;
 
     /**
+     * Submit developer profile details for admin review.
+     * 
+     * @param data - Developer identity and payout details
+     */
+    submitApplication(data: VerifyDeveloperDto): Promise<DeveloperProfile>;
+
+    /**
      * Verify developer status using a one-time token.
      * Requires authentication as the user the token belongs to.
      * 
@@ -103,6 +110,23 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
         return data;
     }
 
+    async function submitApplication(data: VerifyDeveloperDto): Promise<DeveloperProfile> {
+        const { data: profile, error } = await fetcher<DeveloperProfile>('/api/developer/apply', {
+            method: 'POST',
+            body: data as unknown as Record<string, unknown>,
+        });
+
+        if (error) {
+            throw error;
+        }
+
+        if (!profile) {
+            throw new Error('Failed to submit application: No profile data returned from server');
+        }
+
+        return profile;
+    }
+
     async function verifyDeveloper(token: string, data: VerifyDeveloperDto): Promise<DeveloperProfile> {
         const { data: profile, error } = await fetcher<DeveloperProfile>(`/api/developer/verify/${token}`, {
             method: 'POST',
@@ -154,6 +178,7 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
     return {
         generateVerificationToken,
         startApplication,
+        submitApplication,
         verifyDeveloper,
         getProfile,
         updateProfile,
