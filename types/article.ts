@@ -54,7 +54,8 @@ export type ArticleField =
     | 'version'
     | 'price'
     | 'isPaid'
-    | 'isUnlocked';
+    | 'isUnlocked'
+    | 'viewsCount';
 
 /** Full Article type */
 export interface Article {
@@ -89,6 +90,7 @@ export interface Article {
     price: number;
     isPaid: boolean;
     isUnlocked: boolean;
+    viewsCount: number;
 }
 
 /** Partial article for list views */
@@ -119,6 +121,7 @@ export interface ArticleListItem {
     price: number;
     isPaid: boolean;
     isUnlocked: boolean;
+    viewsCount: number;
 }
 
 /** Article filter options */

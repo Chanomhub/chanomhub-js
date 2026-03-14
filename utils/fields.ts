@@ -10,7 +10,7 @@ import type { ModField, ModListOptions } from '../types/common';
  * Field definitions for each preset level
  */
 export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
-    minimal: ['id', 'title', 'slug', 'mainImage'],
+    minimal: ['id', 'title', 'slug', 'mainImage', 'viewsCount'],
     standard: [
         'id',
         'title',
@@ -35,6 +35,7 @@ export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
         'price',
         'isPaid',
         'isUnlocked',
+        'viewsCount',
     ],
     full: [
         'id',
@@ -62,6 +63,7 @@ export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
         'price',
         'isPaid',
         'isUnlocked',
+        'viewsCount',
     ],
     complete: [
         'id',
@@ -93,6 +95,7 @@ export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
         'price',
         'isPaid',
         'isUnlocked',
+        'viewsCount',
     ],
 };
 
@@ -187,6 +190,7 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
     price: 'price',
     isPaid: 'isPaid',
     isUnlocked: 'isUnlocked',
+    viewsCount: 'viewsCount',
 };
 
 export interface FieldQueryOptions {

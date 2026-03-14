@@ -95,6 +95,9 @@ export interface ArticleRepository {
 
     /** Reserve a slug based on title */
     reserveSlug(title: string): Promise<{ slug: string }>;
+
+    /** Increment article view count */
+    incrementView(slug: string): Promise<void>;
 }
 
 /**
@@ -654,6 +657,16 @@ export function createArticleRepository(
         return res.data;
     }
 
+    async function incrementView(slug: string): Promise<void> {
+        const res = await rest<void>(`/api/articles/${slug}/view`, {
+            method: 'POST',
+        });
+
+        if (res.error) {
+            throw new Error(res.error || 'Failed to increment article view');
+        }
+    }
+
     return {
         getAll,
         getAllPaginated,
@@ -679,5 +692,6 @@ export function createArticleRepository(
         restoreRevision,
         purchase,
         reserveSlug,
+        incrementView,
     };
 }
