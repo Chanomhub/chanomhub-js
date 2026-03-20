@@ -65,6 +65,23 @@ export interface UploadOptions {
     concurrentUploads?: number;
 }
 
+export interface DownloadParallelOptions {
+    /** Chunk size for parallel download (default 10MB) */
+    chunkSize?: number;
+    /** Number of concurrent chunk downloads (default 4) */
+    concurrency?: number;
+    /** Progress callback */
+    onProgress?: (progress: { receivedBytes: number; totalBytes: number; speed: number }) => void;
+    /** Callback for each downloaded chunk */
+    onChunk?: (chunk: Uint8Array, offset: number) => void;
+    /** Abort signal */
+    signal?: AbortSignal;
+    /** Custom headers */
+    headers?: Record<string, string>;
+    /** Fallback to single stream if parallel fails. Default: true */
+    fallbackToSingle?: boolean;
+}
+
 export interface StorageRepository {
     /**
      * Upload a file to the storage service (Simple upload, <100MB recommended)
@@ -112,6 +129,20 @@ export interface StorageRepository {
     abortMultipartUpload(initiateData: InitiateMultipartResponse, options?: UploadOptions): Promise<void>;
 
     /**
+     * Parallel download for storage files (uses Range headers)
+     * @param url - Download URL
+     * @param options - Download options (chunkSize, concurrency, callbacks)
+     */
+    downloadParallel(url: string, options?: DownloadParallelOptions): Promise<void>;
+
+    /**
+     * Single stream download for storage files
+     * @param url - Download URL
+     * @param options - Download options (callbacks)
+     */
+    downloadSingle(url: string, options?: DownloadParallelOptions): Promise<void>;
+
+    /**
      * Construct a protected download URL for premium content
      * @param path - File path (e.g. 'premium/hash.zip')
      * @param articleId - ID of the article to check purchase for
@@ -134,7 +165,7 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
 
     function getAuthHeaders(): Record<string, string> {
         return {
-            'Authorization': `Bearer Bearer ${config.token}`,
+            'Authorization': `Bearer ${config.token}`,
         };
     }
 
@@ -375,6 +406,133 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
         return url.toString();
     }
 
+    async function downloadParallel(url: string, options: DownloadParallelOptions = {}): Promise<void> {
+        const {
+            chunkSize = 10 * 1024 * 1024, // 10MB
+            concurrency = 4,
+            onProgress,
+            onChunk,
+            signal,
+            headers: customHeaders = {},
+            fallbackToSingle = true
+        } = options;
+
+        try {
+            // 1. Get file size and check for Range support
+            // storage.chanomhub.com might be protected by Cloudflare/R2, use standard fetch with headers
+            const headRes = await fetch(url, {
+                method: 'HEAD',
+                headers: { ...getAuthHeaders(), ...customHeaders },
+                signal
+            });
+
+            if (!headRes.ok) throw new Error(`Failed to fetch file info: ${headRes.status}`);
+
+            const totalBytes = parseInt(headRes.headers.get('Content-Length') || '0', 10);
+            const acceptRanges = headRes.headers.get('Accept-Ranges') === 'bytes';
+
+            // If file is small (< chunkSize), just do single download
+            if (totalBytes <= chunkSize || !acceptRanges) {
+                return await downloadSingle(url, options);
+            }
+
+            // 2. Start parallel download
+            const totalChunks = Math.ceil(totalBytes / chunkSize);
+            let receivedBytes = 0;
+            const startTime = Date.now();
+
+            const downloadChunk = async (chunkIndex: number) => {
+                if (signal?.aborted) return;
+
+                const start = chunkIndex * chunkSize;
+                const end = Math.min(start + chunkSize - 1, totalBytes - 1);
+                
+                const res = await fetch(url, {
+                    headers: {
+                        ...getAuthHeaders(),
+                        ...customHeaders,
+                        'Range': `bytes=${start}-${end}`
+                    },
+                    signal
+                });
+
+                if (!res.ok) throw new Error(`Chunk ${chunkIndex} failed: ${res.status}`);
+
+                const buffer = await res.arrayBuffer();
+                const chunk = new Uint8Array(buffer);
+
+                if (onChunk) {
+                    onChunk(chunk, start);
+                }
+
+                receivedBytes += chunk.length;
+                if (onProgress) {
+                    const elapsed = (Date.now() - startTime) / 1000;
+                    const speed = receivedBytes / elapsed;
+                    onProgress({ receivedBytes, totalBytes, speed });
+                }
+            };
+
+            // Use a simple worker pool approach
+            const chunks = Array.from({ length: totalChunks }, (_, i) => i);
+            const processNext = async (): Promise<void> => {
+                if (chunks.length === 0 || signal?.aborted) return;
+                const index = chunks.shift()!;
+                await downloadChunk(index);
+                return processNext();
+            };
+
+            const workers = Array(Math.min(concurrency, totalChunks)).fill(null).map(() => processNext());
+            await Promise.all(workers);
+
+        } catch (error) {
+            if (fallbackToSingle && !signal?.aborted) {
+                console.warn('Parallel download failed, falling back to single stream:', error);
+                return await downloadSingle(url, options);
+            }
+            throw error;
+        }
+    }
+
+    async function downloadSingle(url: string, options: DownloadParallelOptions = {}): Promise<void> {
+        const { onProgress, onChunk, signal, headers: customHeaders = {} } = options;
+        
+        const res = await fetch(url, {
+            headers: { ...getAuthHeaders(), ...customHeaders },
+            signal
+        });
+
+        if (!res.ok) throw new Error(`Single download failed: ${res.status}`);
+
+        const totalBytes = parseInt(res.headers.get('Content-Length') || '0', 10);
+        let receivedBytes = 0;
+        const startTime = Date.now();
+
+        // Browser and Node 18+ support res.body.getReader()
+        if (!res.body) throw new Error('Response body is null');
+        const reader = (res.body as any).getReader();
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (signal?.aborted) {
+                await reader.cancel();
+                break;
+            }
+
+            if (onChunk) {
+                onChunk(value, receivedBytes);
+            }
+
+            receivedBytes += value.length;
+            if (onProgress) {
+                const elapsed = (Date.now() - startTime) / 1000;
+                const speed = receivedBytes / elapsed;
+                onProgress({ receivedBytes, totalBytes, speed });
+            }
+        }
+    }
+
     return {
         upload,
         uploadMultipart,
@@ -382,6 +540,8 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
         uploadPart,
         completeMultipartUpload,
         abortMultipartUpload,
+        downloadParallel,
+        downloadSingle,
         getProtectedUrl,
     };
 }
