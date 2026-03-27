@@ -1,5 +1,5 @@
-import type { ArticleRepository } from './repositories/articleRepository';
-import type { ModListOptions } from './types/common';
+import type { ArticleRepository } from '../src/repositories/articleRepository';
+import type { ModListOptions } from '../src/types/common';
 
 // This file is just to verify that the types and signatures are correct.
 // It is not meant to be executed against a backend.

@@ -37,3 +37,7 @@ export {
     createDeveloperRepository,
     type DeveloperRepository,
 } from './developerRepository';
+export {
+    createPatreonRepository,
+    type PatreonRepository,
+} from './patreonRepository';

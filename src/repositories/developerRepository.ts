@@ -59,6 +59,11 @@ export interface DeveloperRepository {
      * Admin only.
      */
     getAllProfiles(): Promise<DeveloperProfile[]>;
+
+    /**
+     * List all verified developers (Public).
+     */
+    listVerifiedDevelopers(): Promise<{ id: number; name: string }[]>;
 }
 
 /**
@@ -67,6 +72,12 @@ export interface DeveloperRepository {
  * @param fetcher - REST API fetcher
  */
 export function createDeveloperRepository(fetcher: RestFetcher): DeveloperRepository {
+    async function listVerifiedDevelopers(): Promise<{ id: number; name: string }[]> {
+        const { data, error } = await fetcher<{ id: number; name: string }[]>('/api/developer/list');
+        if (error) throw error;
+        return data || [];
+    }
+
     async function getAllProfiles(): Promise<DeveloperProfile[]> {
         const { data, error } = await fetcher<DeveloperProfile[]>('/api/admin/developer/profiles');
 

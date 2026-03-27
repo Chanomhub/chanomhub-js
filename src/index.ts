@@ -44,6 +44,7 @@ import {
     createStorageRepository,
     createCheckoutRepository,
     createDeveloperRepository,
+    createPatreonRepository,
     type ArticleRepository,
     type FavoritesRepository,
     type UsersRepository,
@@ -55,6 +56,7 @@ import {
     type StorageRepository,
     type CheckoutRepository,
     type DeveloperRepository,
+    type PatreonRepository,
 } from './repositories';
 import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
 
@@ -89,6 +91,8 @@ export interface ChanomhubClient {
     checkout: CheckoutRepository;
     /** Developer operations */
     developer: DeveloperRepository;
+    /** Patreon operations */
+    patreon: PatreonRepository;
     /** Raw GraphQL fetcher for custom queries */
     graphql: GraphQLFetcher;
     /** SDK configuration */
@@ -136,6 +140,7 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
     const storage = createStorageRepository(fullConfig);
     const checkout = createCheckoutRepository(graphql);
     const developer = createDeveloperRepository(rest);
+    const patreon = createPatreonRepository(rest);
 
     return {
         articles,
@@ -149,6 +154,7 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
         storage,
         checkout,
         developer,
+        patreon,
         graphql,
         config: fullConfig,
     };

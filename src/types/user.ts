@@ -37,6 +37,19 @@ export interface DeveloperProfile {
     citizenId?: string;
     isVerified: boolean;
     verifiedAt?: string;
+    patreonCampaignId?: string | null;
+    createdAt: string;
+    updatedAt: string;
+}
+
+/** Patreon connection info */
+export interface PatreonAccount {
+    id: number;
+    userId: number;
+    patreonId: string;
+    accessToken: string;
+    refreshToken: string;
+    expiresAt: string;
     createdAt: string;
     updatedAt: string;
 }

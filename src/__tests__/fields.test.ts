@@ -4,7 +4,7 @@ import { buildFieldsQuery, FIELD_PRESETS, FIELD_MAPPINGS } from '../utils/fields
 describe('Field Query Utilities', () => {
     describe('FIELD_PRESETS', () => {
         it('should have minimal preset with basic fields', () => {
-            expect(FIELD_PRESETS.minimal).toEqual(['id', 'title', 'slug', 'mainImage']);
+            expect(FIELD_PRESETS.minimal).toEqual(['id', 'title', 'slug', 'mainImage', 'viewsCount']);
         });
 
         it('should have standard preset with common fields', () => {
