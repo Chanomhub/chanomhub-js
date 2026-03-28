@@ -273,4 +273,15 @@ describe('Repositories Integration Tests', () => {
             expect((article as any).checkoutUrl).toContain('https://mysite.com/success');
         });
     });
+
+    describe('DeveloperRepository', () => {
+        it('should list verified developers', async () => {
+            const client = createChanomhubClient();
+            const developers = await client.developer.listVerifiedDevelopers();
+
+            expect(developers).toHaveLength(2);
+            expect(developers[0].name).toBe('Developer 1');
+            expect(developers[1].id).toBe(2);
+        });
+    });
 });

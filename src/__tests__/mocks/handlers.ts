@@ -678,4 +678,12 @@ export const handlers = [
             },
         });
     }),
+
+    // Developers - List Verified
+    http.get(`${BASE_URL}/api/developer/list`, () => {
+        return HttpResponse.json([
+            { id: 1, name: 'Developer 1' },
+            { id: 2, name: 'Developer 2' },
+        ]);
+    }),
 ];
