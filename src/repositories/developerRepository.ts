@@ -194,5 +194,6 @@ export function createDeveloperRepository(fetcher: RestFetcher): DeveloperReposi
         getProfile,
         updateProfile,
         getAllProfiles,
+        listVerifiedDevelopers,
     };
 }
