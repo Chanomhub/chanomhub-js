@@ -78,7 +78,7 @@ export interface Mod {
 }
 /** Named entity (tag, category, platform, etc.) */
 export interface NamedEntity {
-    id: string; // Changed to string as ID is usually string in GraphQL
+    id: number | string;
     name: string;
 }
 

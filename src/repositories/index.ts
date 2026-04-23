@@ -41,3 +41,6 @@ export {
     createPatreonRepository,
     type PatreonRepository,
 } from './patreonRepository';
+export { createTagsRepository, type TagsRepository } from './tagsRepository';
+export { createCategoriesRepository, type CategoriesRepository } from './categoriesRepository';
+export { createPlatformsRepository, type PlatformsRepository } from './platformsRepository';
