@@ -266,6 +266,8 @@ export function createArticleRepository(
         if (filter.engine) filterParts.push(`engine: "${filter.engine}"`);
         if (filter.sequentialCode) filterParts.push(`sequentialCode: "${filter.sequentialCode}"`);
         if (filter.q) filterParts.push(`q: "${filter.q.replace(/"/g, '\\"')}"`);
+        if (filter.sortBy) filterParts.push(`sortBy: "${filter.sortBy}"`);
+        if (filter.sortOrder) filterParts.push(`sortOrder: "${filter.sortOrder}"`);
 
         const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
         const fieldsQuery = buildFieldsQuery({ preset, fields });
@@ -317,6 +319,8 @@ export function createArticleRepository(
         if (filter.engine) filterParts.push(`engine: "${filter.engine}"`);
         if (filter.sequentialCode) filterParts.push(`sequentialCode: "${filter.sequentialCode}"`);
         if (filter.q) filterParts.push(`q: "${filter.q.replace(/"/g, '\\"')}"`);
+        if (filter.sortBy) filterParts.push(`sortBy: "${filter.sortBy}"`);
+        if (filter.sortOrder) filterParts.push(`sortOrder: "${filter.sortOrder}"`);
 
         const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
         const countFilterArg =

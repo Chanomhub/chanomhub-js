@@ -137,6 +137,10 @@ export interface ArticleFilter {
     sequentialCode?: string;
     /** Full-text search query */
     q?: string;
+    /** Sort by field (e.g., 'updatedAt', 'createdAt', 'viewsCount', 'title') */
+    sortBy?: 'updatedAt' | 'createdAt' | 'viewsCount' | 'title';
+    /** Sort order ('asc' or 'desc') */
+    sortOrder?: 'asc' | 'desc';
 }
 
 /** Article list options */
