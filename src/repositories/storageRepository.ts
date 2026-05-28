@@ -330,8 +330,19 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
     }
 
     async function uploadMultipart(file: File | Blob, options: UploadOptions = {}): Promise<UploadResponse> {
+        // Calculate a smart default chunk size:
+        // - Files < 100MB: 5MB (minimum S3 requirement)
+        // - Files 100MB - 500MB: 10MB
+        // - Files > 500MB: 20MB
+        let defaultChunkSize = 5 * 1024 * 1024;
+        if (file.size > 500 * 1024 * 1024) {
+            defaultChunkSize = 20 * 1024 * 1024;
+        } else if (file.size > 100 * 1024 * 1024) {
+            defaultChunkSize = 10 * 1024 * 1024;
+        }
+
         const { 
-            chunkSize = 5 * 1024 * 1024, // 5MB default chunk size
+            chunkSize = defaultChunkSize,
             onProgress,
             concurrentUploads = 3 
         } = options;
@@ -347,14 +358,39 @@ export function createStorageRepository(config: ChanomhubConfig): StorageReposit
             const completedParts: CompletedPart[] = [];
             let uploadedBytes = 0;
 
-            // Simple worker-pool approach for concurrent uploads
+            // Simple worker-pool approach for concurrent uploads with automatic retries
             const uploadChunk = async (chunkIndex: number) => {
                 const start = chunkIndex * chunkSize;
                 const end = Math.min(start + chunkSize, file.size);
                 const chunk = file.slice(start, end);
-                
                 const partNumber = chunkIndex + 1;
-                const { etag } = await uploadPart(chunk, partNumber, initiateData, options);
+                
+                const maxRetries = 3;
+                let etag = '';
+                let lastError: any = null;
+                
+                for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                    try {
+                        const response = await uploadPart(chunk, partNumber, initiateData, options);
+                        etag = response.etag;
+                        break; // Success!
+                    } catch (err) {
+                        lastError = err;
+                        console.warn(
+                            `[Storage SDK] Part ${partNumber} upload attempt ${attempt}/${maxRetries} failed:`,
+                            err
+                        );
+                        if (attempt < maxRetries) {
+                            // Exponential backoff: 1s, 2s, 4s...
+                            const delay = Math.pow(2, attempt) * 1000;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        }
+                    }
+                }
+
+                if (!etag) {
+                    throw lastError || new Error(`Failed to upload part ${partNumber} after ${maxRetries} attempts`);
+                }
                 
                 completedParts.push({ partNumber, etag });
                 
