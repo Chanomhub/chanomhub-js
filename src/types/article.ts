@@ -55,7 +55,8 @@ export type ArticleField =
     | 'price'
     | 'isPaid'
     | 'isUnlocked'
-    | 'viewsCount';
+    | 'viewsCount'
+    | 'related';
 
 /** Full Article type */
 export interface Article {
@@ -91,6 +92,7 @@ export interface Article {
     isPaid: boolean;
     isUnlocked: boolean;
     viewsCount: number;
+    related?: ArticleListItem[];
 }
 
 /** Partial article for list views */

@@ -96,6 +96,7 @@ export const FIELD_PRESETS: Record<ArticlePreset, ArticleField[]> = {
         'isPaid',
         'isUnlocked',
         'viewsCount',
+        'related',
     ],
 };
 
@@ -191,6 +192,28 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
     isPaid: 'isPaid',
     isUnlocked: 'isUnlocked',
     viewsCount: 'viewsCount',
+    related: `related {
+    id
+    slug
+    title
+    description
+    mainImage
+    coverImage
+    backgroundImage
+    author {
+      id
+      name
+      image
+    }
+    tags {
+      id
+      name
+    }
+    price
+    isPaid
+    isUnlocked
+    viewsCount
+  }`,
 };
 
 export interface FieldQueryOptions {
