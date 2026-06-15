@@ -230,6 +230,7 @@ export function createRestClient(config: ChanomhubConfig) {
             method,
             headers,
             cache: 'no-store',
+            credentials: 'include',
         };
 
         if (body) {

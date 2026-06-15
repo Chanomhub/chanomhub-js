@@ -76,114 +76,41 @@ export interface AuthRepository {
 }
 
 /**
- * Try to dynamically import @supabase/supabase-js
- * Returns null if not installed
- */
-async function tryGetSupabaseClient(config: ChanomhubConfig): Promise<SupabaseClient | null> {
-    if (!config.supabaseUrl || !config.supabaseAnonKey) {
-        return null;
-    }
-
-    try {
-        // Dynamic import to handle optional dependency
-        const { createClient } = await import('@supabase/supabase-js');
-        return createClient(
-            config.supabaseUrl,
-            config.supabaseAnonKey,
-        ) as unknown as SupabaseClient;
-    } catch {
-        console.warn(
-            'Supabase client not available. Install @supabase/supabase-js to enable OAuth.',
-        );
-        return null;
-    }
-}
-
-/**
- * Creates an auth repository for OAuth operations
+ * Creates an auth repository for OAuth operations using Better Auth
  *
  * @param fetcher - REST API fetcher
- * @param config - SDK configuration with optional Supabase settings
+ * @param config - SDK configuration
  */
 export function createAuthRepository(
     fetcher: RestFetcher,
     config: ChanomhubConfig,
 ): AuthRepository {
-    // Cache the Supabase client promise
-    let supabaseClientPromise: Promise<SupabaseClient | null> | null = null;
-
-    async function getSupabaseClient(): Promise<SupabaseClient | null> {
-        if (!supabaseClientPromise) {
-            supabaseClientPromise = tryGetSupabaseClient(config);
-        }
-        return supabaseClientPromise;
-    }
-
     function isOAuthEnabled(): boolean {
-        return Boolean(config.supabaseUrl && config.supabaseAnonKey);
+        // Better Auth OAuth is always considered enabled on the client as it falls back to backend configs
+        return true;
     }
 
     async function getOAuthUrl(
         provider: OAuthProvider,
         options: OAuthOptions = {},
     ): Promise<string | null> {
-        const client = await getSupabaseClient();
-
-        if (!client) {
-            throw new Error(
-                'Supabase is not configured. Please provide supabaseUrl and supabaseAnonKey in config.',
-            );
-        }
-
-        const { data, error } = await client.auth.signInWithOAuth({
-            provider,
-            options: {
-                redirectTo: options.redirectTo,
-                scopes: options.scopes,
-                queryParams: options.queryParams,
-                skipBrowserRedirect: true,
-            },
-        });
-
-        if (error) {
-            console.error(`Get OAuth URL error (${provider}):`, error.message);
-            throw error;
-        }
-
-        return data.url || null;
+        const apiBaseUrl = config.apiUrl || 'https://api.chanomhub.com';
+        const redirectUrl = options.redirectTo || '';
+        return `${apiBaseUrl}/api/auth/login/social?provider=${provider}&callbackURL=${encodeURIComponent(redirectUrl)}`;
     }
 
     async function signInWithProvider(
         provider: OAuthProvider,
         options: OAuthOptions = {},
     ): Promise<{ url: string | null }> {
-        const client = await getSupabaseClient();
+        const url = await getOAuthUrl(provider, options);
 
-        if (!client) {
-            throw new Error(
-                'Supabase is not configured. Please provide supabaseUrl and supabaseAnonKey in config, ' +
-                    'and install @supabase/supabase-js package.',
-            );
+        if (options.skipBrowserRedirect && url) {
+            return { url };
         }
 
-        const { data, error } = await client.auth.signInWithOAuth({
-            provider,
-            options: {
-                redirectTo: options.redirectTo,
-                scopes: options.scopes,
-                queryParams: options.queryParams,
-                skipBrowserRedirect: options.skipBrowserRedirect,
-            },
-        });
-
-        if (error) {
-            console.error(`OAuth sign-in error (${provider}):`, error.message);
-            throw error;
-        }
-
-        // If skipBrowserRedirect is true, return the URL
-        if (options.skipBrowserRedirect && data.url) {
-            return { url: data.url };
+        if (typeof window !== 'undefined' && url) {
+            window.location.href = url;
         }
 
         return { url: null };
@@ -194,38 +121,16 @@ export function createAuthRepository(
     }
 
     async function handleCallback(): Promise<LoginResponse | null> {
-        const client = await getSupabaseClient();
-
-        if (!client) {
-            throw new Error('Supabase is not configured for OAuth callback handling.');
-        }
-
-        // Get the session that Supabase created from the OAuth callback
-        const { data, error } = await client.auth.getSession();
-
-        if (error) {
-            console.error('Failed to get Supabase session:', error.message);
-            return null;
-        }
-
-        if (!data.session) {
-            console.error('No Supabase session found. User may not have completed OAuth flow.');
-            return null;
-        }
-
-        // Exchange Supabase token for backend JWT
+        // Exchange Better Auth session for backend JWT
         const { data: loginData, error: loginError } = await fetcher<LoginResponse>(
-            '/api/users/login-supabase',
+            '/api/auth/exchange',
             {
                 method: 'POST',
-                body: {
-                    accessToken: data.session.access_token,
-                },
             },
         );
 
         if (loginError) {
-            console.error('Failed to exchange token with backend:', loginError);
+            console.error('Failed to exchange Better Auth session with backend:', loginError);
             return null;
         }
 
@@ -233,17 +138,15 @@ export function createAuthRepository(
     }
 
     async function signOut(): Promise<void> {
-        const client = await getSupabaseClient();
-
-        if (client) {
-            const { error } = await client.auth.signOut();
-            if (error) {
-                console.error('Supabase sign-out error:', error.message);
-            }
+        const apiBaseUrl = config.apiUrl || 'https://api.chanomhub.com';
+        try {
+            await fetch(`${apiBaseUrl}/api/auth/sign-out`, {
+                method: 'POST',
+                credentials: 'include',
+            });
+        } catch (error) {
+            console.error('Better Auth sign-out error:', error);
         }
-
-        // Note: This only clears Supabase session.
-        // The frontend is responsible for clearing backend tokens from cookies/storage.
     }
 
     async function refreshToken(refreshToken: string): Promise<RefreshResponse | null> {
@@ -261,20 +164,7 @@ export function createAuthRepository(
     }
 
     async function getSupabaseSession(): Promise<SupabaseSession | null> {
-        const client = await getSupabaseClient();
-
-        if (!client) {
-            return null;
-        }
-
-        const { data, error } = await client.auth.getSession();
-
-        if (error) {
-            console.error('Failed to get Supabase session:', error.message);
-            return null;
-        }
-
-        return data.session;
+        return null;
     }
 
     return {
