@@ -96,7 +96,7 @@ export function createAuthRepository(
     ): Promise<string | null> {
         const apiBaseUrl = config.apiUrl || 'https://api.chanomhub.com';
         const redirectUrl = options.redirectTo || '';
-        return `${apiBaseUrl}/api/auth/login/social?provider=${provider}&callbackURL=${encodeURIComponent(redirectUrl)}`;
+        return `${apiBaseUrl}/api/auth/sign-in/social?provider=${provider}&callbackURL=${encodeURIComponent(redirectUrl)}`;
     }
 
     async function signInWithProvider(

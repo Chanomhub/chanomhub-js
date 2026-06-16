@@ -20,40 +20,31 @@ describe('authRepository', () => {
     });
 
     describe('isOAuthEnabled', () => {
-        it('should return false when Supabase is not configured', () => {
-            const auth = createAuthRepository(mockFetcher as RestFetcher, config);
-            expect(auth.isOAuthEnabled()).toBe(false);
-        });
-
-        it('should return true when Supabase URL and key are provided', () => {
-            config.supabaseUrl = 'https://test.supabase.co';
-            config.supabaseAnonKey = 'test-anon-key';
+        it('should always return true for Better Auth', () => {
             const auth = createAuthRepository(mockFetcher as RestFetcher, config);
             expect(auth.isOAuthEnabled()).toBe(true);
-        });
-
-        it('should return false when only URL is provided', () => {
-            config.supabaseUrl = 'https://test.supabase.co';
-            const auth = createAuthRepository(mockFetcher as RestFetcher, config);
-            expect(auth.isOAuthEnabled()).toBe(false);
         });
     });
 
     describe('signInWithProvider', () => {
-        it('should throw error when Supabase is not configured', async () => {
+        it('should return the sign-in URL when skipBrowserRedirect is true', async () => {
             const auth = createAuthRepository(mockFetcher as RestFetcher, config);
+            const result = await auth.signInWithProvider('google', { skipBrowserRedirect: true });
+            expect(result.url).toContain('/api/auth/sign-in/social?provider=google');
+        });
 
-            await expect(auth.signInWithProvider('google')).rejects.toThrow(
-                'Supabase is not configured',
-            );
+        it('should return url null when skipBrowserRedirect is not true', async () => {
+            const auth = createAuthRepository(mockFetcher as RestFetcher, config);
+            const result = await auth.signInWithProvider('google');
+            expect(result).toEqual({ url: null });
         });
     });
 
     describe('signInWithGoogle', () => {
-        it('should throw error when Supabase is not configured', async () => {
+        it('should return the google sign-in URL when skipBrowserRedirect is true', async () => {
             const auth = createAuthRepository(mockFetcher as RestFetcher, config);
-
-            await expect(auth.signInWithGoogle()).rejects.toThrow('Supabase is not configured');
+            const result = await auth.signInWithGoogle({ skipBrowserRedirect: true });
+            expect(result.url).toContain('/api/auth/sign-in/social?provider=google');
         });
     });
 
