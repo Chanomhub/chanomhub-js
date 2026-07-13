@@ -173,7 +173,6 @@ export function createDownloadsRepository(
             name
             url
             isActive
-            vipOnly
             forVersion
             createdAt
             updatedAt

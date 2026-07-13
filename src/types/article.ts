@@ -229,6 +229,7 @@ export interface Revision {
     version: number;
     author: RevisionAuthor;
     message?: string;
+    notes?: string;
     createdAt: string;
     stats: DiffStats;
     summary: string;

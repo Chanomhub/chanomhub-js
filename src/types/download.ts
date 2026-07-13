@@ -14,7 +14,7 @@ export interface DownloadLink {
     url: string;
     isActive: boolean;
     status: SourceStatus;
-    vipOnly: boolean;
+    vipOnly?: boolean;
     forVersion?: string | null;
     createdAt: string;
     updatedAt: string;

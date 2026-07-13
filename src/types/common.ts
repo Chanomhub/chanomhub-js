@@ -42,7 +42,7 @@ export interface Download {
     name: string;
     url: string;
     isActive: boolean;
-    vipOnly: boolean;
+    vipOnly?: boolean;
     createdAt?: string;
     /** Type of download determined by the backend */
     type: 'DIRECT_FILE' | 'EXTERNAL_MIRROR' | 'PURCHASE_REDIRECT';

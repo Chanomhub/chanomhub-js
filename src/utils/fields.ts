@@ -171,7 +171,6 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
     name
     url
     isActive
-    vipOnly
     forVersion
     createdAt
     updatedAt
@@ -179,7 +178,6 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
     downloadLinks: `downloads {
     id
     url
-    vipOnly
   }`,
     officialDownloadSources: `officialDownloadSources {
     id
