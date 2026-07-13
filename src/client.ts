@@ -180,7 +180,10 @@ export function createGraphQLClient(config: ChanomhubConfig) {
 
             return { data: json.data as T };
         } catch (error) {
-            console.error('GraphQL fetch exception:', error);
+            const isAbort = error instanceof Error && error.name === 'AbortError';
+            if (!isAbort) {
+                console.error('GraphQL fetch exception:', error);
+            }
             return {
                 data: null,
                 errors: [{ message: error instanceof Error ? error.message : 'Unknown error' }],
@@ -273,7 +276,10 @@ export function createRestClient(config: ChanomhubConfig) {
 
             return { data: responseData as T };
         } catch (error) {
-            console.error('REST fetch exception:', error);
+            const isAbort = error instanceof Error && error.name === 'AbortError';
+            if (!isAbort) {
+                console.error('REST fetch exception:', error);
+            }
             return {
                 data: null,
                 error: error instanceof Error ? error.message : 'Unknown error',
