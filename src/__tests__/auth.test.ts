@@ -78,35 +78,12 @@ describe('authRepository', () => {
         });
     });
 
-    describe('getSupabaseSession', () => {
-        it('should return null when Supabase is not configured', async () => {
-            const auth = createAuthRepository(mockFetcher as RestFetcher, config);
-            const session = await auth.getSupabaseSession();
-
-            expect(session).toBeNull();
-        });
-    });
-
-    // Note: React Native OAuth tests (signInWithGoogleNative, signInWithProviderNative, exchangeOAuthToken)
-    // are now tested in auth.native.test.ts since those methods moved to @chanomhub/sdk/native
-
-    // ============================================
-    // Electron / Server-side OAuth Tests
-    // ============================================
-
     describe('getOAuthUrl', () => {
-        it('should return OAuth URL when Supabase is configured', async () => {
-            config.supabaseUrl = 'https://test.supabase.co';
-            config.supabaseAnonKey = 'test-key';
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        it('should have getOAuthUrl method returning correct URL', async () => {
             const auth = createAuthRepository(mockFetcher as RestFetcher, config);
-
-            // Mock Supabase client setup would go here
+            expect(typeof auth.getOAuthUrl).toBe('function');
+            const url = await auth.getOAuthUrl('google', { redirectTo: 'https://chanomhub.com' });
+            expect(url).toContain('/api/auth/sign-in/social?provider=google');
         });
-    });
-
-    it('should have getOAuthUrl method', () => {
-        const auth = createAuthRepository(mockFetcher as RestFetcher, config);
-        expect(typeof auth.getOAuthUrl).toBe('function');
     });
 });

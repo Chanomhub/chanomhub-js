@@ -23,12 +23,6 @@
  *   token: 'jwt-token',
  * });
  * ```
- *
- * For Next.js server components, use the helper from './next':
- * ```typescript
- * import { createServerClient } from '@/lib/chanomhub-sdk/next';
- * const sdk = await createServerClient(); // Reads token from cookies
- * ```
  */
 
 import { createGraphQLClient, createRestClient, type GraphQLFetcher } from './client';
@@ -85,7 +79,7 @@ export interface ChanomhubClient {
     users: UsersRepository;
     /** Search operations */
     search: SearchRepository;
-    /** Authentication operations (requires Supabase config for OAuth) */
+    /** Authentication operations (Better Auth) */
     auth: AuthRepository;
     /** Downloads management operations */
     downloads: DownloadsRepository;

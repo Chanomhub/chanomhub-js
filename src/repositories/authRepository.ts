@@ -1,10 +1,7 @@
 /**
  * Chanomhub SDK - Auth Repository
  *
- * Handles OAuth authentication via Supabase and token exchange with backend.
- *
- * For React Native apps, use the native auth repository from '@chanomhub/sdk/native'
- * which includes methods like signInWithGoogleNative and signInWithProviderNative.
+ * Handles OAuth authentication and token management via Better Auth.
  */
 
 import type { ChanomhubConfig } from '../config';
@@ -14,31 +11,10 @@ import type {
     OAuthOptions,
     LoginResponse,
     RefreshResponse,
-    SupabaseSession,
 } from '../types/auth';
 
-// Type for Supabase client (optional dependency)
-type SupabaseClient = {
-    auth: {
-        signInWithOAuth: (options: {
-            provider: OAuthProvider;
-            options?: {
-                redirectTo?: string;
-                scopes?: string;
-                queryParams?: { [key: string]: string };
-                skipBrowserRedirect?: boolean;
-            };
-        }) => Promise<{ data: { url: string | null }; error: Error | null }>;
-        signOut: () => Promise<{ error: Error | null }>;
-        getSession: () => Promise<{
-            data: { session: SupabaseSession | null };
-            error: Error | null;
-        }>;
-    };
-};
-
 export interface AuthRepository {
-    /** Check if Supabase OAuth is configured and available */
+    /** Check if OAuth is configured and available */
     isOAuthEnabled(): boolean;
 
     /** Sign in with Google OAuth - redirects to Google login page (Web only) */
@@ -60,19 +36,16 @@ export interface AuthRepository {
 
     /**
      * Handle OAuth callback after redirect back from provider.
-     * Exchanges Supabase access token for backend JWT.
+     * Exchanges Better Auth session for backend JWT.
      * Call this on your OAuth callback page (Web only).
      */
     handleCallback(): Promise<LoginResponse | null>;
 
-    /** Sign out from Supabase (clears Supabase session only) */
+    /** Sign out from Better Auth session */
     signOut(): Promise<void>;
 
     /** Refresh the backend access token using refresh token */
     refreshToken(refreshToken: string): Promise<RefreshResponse | null>;
-
-    /** Get current Supabase session (if any) */
-    getSupabaseSession(): Promise<SupabaseSession | null>;
 }
 
 /**
@@ -163,10 +136,6 @@ export function createAuthRepository(
         return data;
     }
 
-    async function getSupabaseSession(): Promise<SupabaseSession | null> {
-        return null;
-    }
-
     return {
         isOAuthEnabled,
         signInWithGoogle,
@@ -175,6 +144,5 @@ export function createAuthRepository(
         handleCallback,
         signOut,
         refreshToken,
-        getSupabaseSession,
     };
 }

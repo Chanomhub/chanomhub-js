@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Chanomhub/chanomhub-sdk.git"
+    "url": "git+https://github.com/Chanomhub/chanomhub-js.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
@@ -19,14 +19,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    },
-    "./next": {
-      "types": "./dist/next.d.ts",
-      "default": "./dist/next.js"
-    },
-    "./native": {
-      "types": "./dist/native.d.ts",
-      "default": "./dist/native.js"
     }
   },
   "scripts": {
@@ -48,38 +40,20 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@supabase/supabase-js": "^2.93.2",
-    "@types/node": "^25.0.10",
-    "@typescript-eslint/eslint-plugin": "^8.54.0",
-    "@typescript-eslint/parser": "^8.54.0",
-    "@vitest/coverage-v8": "^4.0.18",
-    "eslint": "^9.39.2",
+    "@types/node": "^25.9.8",
+    "@typescript-eslint/eslint-plugin": "^8.70.0",
+    "@typescript-eslint/parser": "^8.70.0",
+    "@vitest/coverage-v8": "^4.1.11",
+    "eslint": "^9.39.5",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "msw": "^2.12.7",
-    "next": "^16.1.6",
-    "prettier": "^3.8.1",
+    "eslint-plugin-prettier": "^5.5.6",
+    "msw": "^2.15.0",
+    "prettier": "^3.9.8",
     "starlight-typedoc": "^0.21.5",
-    "typedoc": "^0.28.16",
-    "typedoc-plugin-markdown": "^4.9.0",
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-markdown": "^4.13.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.54.0",
-    "vitest": "^4.0.18"
-  },
-  "peerDependencies": {
-    "@supabase/supabase-js": ">=2.0.0",
-    "next": ">=13.0.0",
-    "react-native-app-auth": ">=7.0.0"
-  },
-  "peerDependenciesMeta": {
-    "next": {
-      "optional": true
-    },
-    "@supabase/supabase-js": {
-      "optional": true
-    },
-    "react-native-app-auth": {
-      "optional": true
-    }
+    "typescript-eslint": "^8.70.0",
+    "vitest": "^4.1.11"
   }
 }

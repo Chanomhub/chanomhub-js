@@ -686,4 +686,164 @@ export const handlers = [
             { id: 2, name: 'Developer 2' },
         ]);
     }),
+
+    // REST: Get Mods by Article Slug
+    http.get(`${BASE_URL}/api/mods/article/:slug`, ({ request }) => {
+        const url = new URL(request.url);
+        const status = url.searchParams.get('status');
+        return HttpResponse.json({
+            mods: [
+                {
+                    id: 101,
+                    articleId: 1,
+                    creatorId: 10,
+                    name: 'Test Mod',
+                    type: 'TRANSLATION',
+                    status: status || 'APPROVED',
+                    downloadLink: 'https://storage.chanomhub.com/mod.zip',
+                    articleVersion: 1,
+                    createdAt: '2026-01-01T00:00:00Z',
+                    updatedAt: '2026-01-01T00:00:00Z',
+                },
+            ],
+            modsCount: 1,
+        });
+    }),
+
+    // REST: Get All Mods
+    http.get(`${BASE_URL}/api/mods`, ({ request }) => {
+        const url = new URL(request.url);
+        const status = url.searchParams.get('status');
+        return HttpResponse.json({
+            mods: [
+                {
+                    id: 101,
+                    articleId: 1,
+                    creatorId: 10,
+                    name: 'All Mods Item',
+                    type: 'TRANSLATION',
+                    status: status || 'APPROVED',
+                    downloadLink: 'https://storage.chanomhub.com/mod.zip',
+                    articleVersion: 1,
+                    createdAt: '2026-01-01T00:00:00Z',
+                    updatedAt: '2026-01-01T00:00:00Z',
+                },
+            ],
+            modsCount: 1,
+        });
+    }),
+
+    // REST: Create Mod
+    http.post(`${BASE_URL}/api/mods/article/:slug`, async ({ request }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        const body = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json({
+            mod: {
+                id: 102,
+                articleId: 1,
+                creatorId: 10,
+                name: body.name || 'New Mod',
+                type: body.type || 'MOD',
+                status: 'PENDING',
+                downloadLink: body.downloadLink,
+                articleVersion: 1,
+                createdAt: '2026-01-01T00:00:00Z',
+                updatedAt: '2026-01-01T00:00:00Z',
+            },
+        });
+    }),
+
+    // REST: Submit NST Translation
+    http.post(`${BASE_URL}/api/mods/article/:slug/nst-submission`, async ({ request }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        const body = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json({
+            mod: {
+                id: 103,
+                articleId: 1,
+                creatorId: 10,
+                name: body.name || `NST ${body.language} Translation`,
+                type: 'TRANSLATION',
+                status: 'PENDING',
+                downloadLink: body.downloadLink,
+                sha256: body.sha256,
+                articleVersion: 1,
+                createdAt: '2026-01-01T00:00:00Z',
+                updatedAt: '2026-01-01T00:00:00Z',
+            },
+        });
+    }),
+
+    // REST: Update Mod
+    http.patch(`${BASE_URL}/api/mods/:id`, async ({ request, params }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        const body = (await request.json()) as Record<string, unknown>;
+        return HttpResponse.json({
+            mod: {
+                id: Number(params.id),
+                articleId: 1,
+                creatorId: 10,
+                name: body.name || 'Updated Mod',
+                type: 'MOD',
+                status: 'APPROVED',
+                downloadLink: body.downloadLink || 'https://storage.chanomhub.com/updated.zip',
+                articleVersion: 1,
+                createdAt: '2026-01-01T00:00:00Z',
+                updatedAt: '2026-01-02T00:00:00Z',
+            },
+        });
+    }),
+
+    // REST: Update Mod Status
+    http.patch(`${BASE_URL}/api/mods/:id/status`, async ({ request, params }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        const body = (await request.json()) as { status: string };
+        return HttpResponse.json({
+            mod: {
+                id: Number(params.id),
+                articleId: 1,
+                creatorId: 10,
+                name: 'Status Updated Mod',
+                type: 'MOD',
+                status: body.status,
+                articleVersion: 1,
+                createdAt: '2026-01-01T00:00:00Z',
+                updatedAt: '2026-01-02T00:00:00Z',
+            },
+        });
+    }),
+
+    // REST: Delete Mod
+    http.delete(`${BASE_URL}/api/mods/:id`, ({ request }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        return new HttpResponse(null, { status: 204 });
+    }),
+
+    // Storage: Upload Translation Pack
+    http.post('https://oi.chanomhub.com/upload', ({ request }) => {
+        const auth = request.headers.get('Authorization');
+        if (!auth) {
+            return new HttpResponse(null, { status: 401 });
+        }
+        return HttpResponse.json({
+            url: 'https://oi.chanomhub.com/storage/test-article/translation_pack.zip',
+            full_url: 'https://oi.chanomhub.com/storage/test-article/translation_pack.zip',
+            filename: 'translation_pack.zip',
+        });
+    }),
 ];

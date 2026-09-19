@@ -75,10 +75,6 @@ export interface ChanomhubConfig {
     onTokenRefreshed?: (token: string, refreshToken: string) => void;
     /** Default cache duration in seconds (0 = no cache) */
     defaultCacheSeconds?: number;
-    /** Supabase project URL (required for OAuth) */
-    supabaseUrl?: string;
-    /** Supabase anon key (required for OAuth) */
-    supabaseAnonKey?: string;
     /** Storage service URL (GOR2) */
     storageServiceUrl?: string;
     /** Download gateway URL (Worker) */

@@ -146,55 +146,36 @@ export default async function Page() {
 }
 ```
 
-### OAuth Authentication (Supabase)
+### OAuth Authentication (Better Auth)
 
-The SDK supports OAuth authentication via Supabase. First, install the Supabase client:
-
-```bash
-npm install @supabase/supabase-js
-```
-
-Configure the SDK with your Supabase credentials:
+The SDK supports OAuth authentication via Better Auth:
 
 ```typescript
 import { createChanomhubClient } from '@chanomhub/sdk';
 
 const sdk = createChanomhubClient({
-  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  apiUrl: 'https://api.chanomhub.com',
 });
 
-// Check if OAuth is available
-if (sdk.auth.isOAuthEnabled()) {
-  // Start Google sign-in (redirects to Google)
-  await sdk.auth.signInWithGoogle({
-    redirectTo: 'http://localhost:3000/login/callback',
-  });
-}
+// Start Google sign-in (redirects to Google)
+await sdk.auth.signInWithGoogle({
+  redirectTo: 'http://localhost:3000/login/callback',
+});
 ```
 
 Handle the OAuth callback:
 
 ```typescript
-// app/login/callback/page.tsx
 import { createChanomhubClient } from '@chanomhub/sdk';
-import Cookies from 'js-cookie';
 
-export default async function CallbackPage() {
-  const sdk = createChanomhubClient({
-    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  });
+const sdk = createChanomhubClient();
 
-  // Exchange Supabase token for backend JWT
-  const result = await sdk.auth.handleCallback();
+// Exchange Better Auth session for backend JWT
+const result = await sdk.auth.handleCallback();
 
-  if (result) {
-    // Store tokens (you manage storage)
-    Cookies.set('token', result.token, { secure: true, sameSite: 'strict' });
-    Cookies.set('refreshToken', result.refreshToken);
-    // Redirect to home or dashboard
-  }
+if (result) {
+  console.log('Logged in as:', result.user.username);
+  // Store tokens
 }
 ```
 
@@ -209,67 +190,8 @@ await sdk.auth.signInWithProvider('github');
 // Refresh backend token
 const newTokens = await sdk.auth.refreshToken(refreshToken);
 
-// Sign out (clears Supabase session)
+// Sign out
 await sdk.auth.signOut();
-
-// Get current Supabase session
-const session = await sdk.auth.getSupabaseSession();
-```
-
-### OAuth for React Native (Pure RN / Without Expo)
-
-For React Native apps, install `react-native-app-auth`:
-
-```bash
-npm install @chanomhub/sdk react-native-app-auth
-```
-
-Configure and use native OAuth:
-
-```typescript
-import { createChanomhubClient } from '@chanomhub/sdk';
-
-const sdk = createChanomhubClient();
-
-// Google Sign-In for React Native
-const result = await sdk.auth.signInWithGoogleNative({
-  googleClientId: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
-  googleIosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com', // Optional
-  redirectUri: 'com.yourapp://oauth',
-});
-
-if (result) {
-  // result contains: { user, token, refreshToken }
-  console.log('Logged in as:', result.user.username);
-}
-```
-
-Other providers:
-
-```typescript
-// Discord
-await sdk.auth.signInWithProviderNative('discord', {
-  discordClientId: 'YOUR_DISCORD_CLIENT_ID',
-  redirectUri: 'com.yourapp://oauth',
-});
-
-// GitHub
-await sdk.auth.signInWithProviderNative('github', {
-  githubClientId: 'YOUR_GITHUB_CLIENT_ID',
-  redirectUri: 'com.yourapp://oauth',
-});
-```
-
-If you handle OAuth flow yourself:
-
-```typescript
-import { authorize } from 'react-native-app-auth';
-
-// Use your own OAuth config
-const oauthResult = await authorize(myConfig);
-
-// Exchange with backend
-const loginResult = await sdk.auth.exchangeOAuthToken(oauthResult);
 ```
 
 ### Electron / Server-side OAuth

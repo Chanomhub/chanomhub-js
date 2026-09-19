@@ -284,4 +284,95 @@ describe('Repositories Integration Tests', () => {
             expect(developers[1].id).toBe(2);
         });
     });
+
+    describe('ModsRepository', () => {
+        it('should get mods by article slug', async () => {
+            const client = createChanomhubClient();
+            const mods = await client.mods.getByArticle('test-game', { status: 'APPROVED' });
+
+            expect(mods).toHaveLength(1);
+            expect(mods[0].id).toBe(101);
+            expect(mods[0].name).toBe('Test Mod');
+            expect(mods[0].status).toBe('APPROVED');
+        });
+
+        it('should get all mods with pagination', async () => {
+            const client = createChanomhubClient();
+            const result = await client.mods.getAll({ skip: 0, take: 10, status: 'APPROVED' });
+
+            expect(result.mods).toHaveLength(1);
+            expect(result.modsCount).toBe(1);
+            expect(result.mods[0].name).toBe('All Mods Item');
+        });
+
+        it('should require authentication to create a mod', async () => {
+            const unauthenticated = createChanomhubClient();
+            await expect(
+                unauthenticated.mods.create('test-game', { downloadLink: 'https://example.com/mod.zip' }),
+            ).rejects.toThrow('Authentication required');
+        });
+
+        it('should create a mod with authenticated client', async () => {
+            const client = createAuthenticatedClient('test-token');
+            const mod = await client.mods.create('test-game', {
+                name: 'Custom Mod',
+                downloadLink: 'https://example.com/mod.zip',
+                type: 'MOD',
+            });
+
+            expect(mod.id).toBe(102);
+            expect(mod.name).toBe('Custom Mod');
+            expect(mod.status).toBe('PENDING');
+        });
+
+        it('should submit an NST translation pack', async () => {
+            const client = createAuthenticatedClient('test-token');
+            const mod = await client.mods.submitNstTranslation('test-game', {
+                downloadLink: 'https://storage.chanomhub.com/trans.zip',
+                language: 'Thai',
+                engine: 'renpy',
+                sha256: 'abc123hash',
+            });
+
+            expect(mod.id).toBe(103);
+            expect(mod.name).toBe('NST Thai Translation');
+            expect(mod.type).toBe('TRANSLATION');
+        });
+
+        it('should update a mod', async () => {
+            const client = createAuthenticatedClient('test-token');
+            const updated = await client.mods.update(101, {
+                name: 'Updated Mod Name',
+            });
+
+            expect(updated.id).toBe(101);
+            expect(updated.name).toBe('Updated Mod Name');
+        });
+
+        it('should update mod status', async () => {
+            const client = createAuthenticatedClient('test-token');
+            const updated = await client.mods.updateStatus(101, 'APPROVED');
+
+            expect(updated.id).toBe(101);
+            expect(updated.status).toBe('APPROVED');
+        });
+
+        it('should delete a mod', async () => {
+            const client = createAuthenticatedClient('test-token');
+            await expect(client.mods.delete(101)).resolves.toBeUndefined();
+        });
+
+        it('should publish translation pack (upload + submit)', async () => {
+            const client = createAuthenticatedClient('test-token');
+            const fileData = new Uint8Array([80, 75, 3, 4]); // Zip magic bytes
+            const mod = await client.mods.publishTranslationPack('test-game', fileData, {
+                language: 'Thai',
+                engine: 'renpy',
+                filename: 'pack.zip',
+            });
+
+            expect(mod.id).toBe(103);
+            expect(mod.downloadLink).toContain('oi.chanomhub.com');
+        });
+    });
 });
