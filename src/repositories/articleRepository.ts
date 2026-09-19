@@ -268,6 +268,8 @@ export function createArticleRepository(
         if (filter.q) filterParts.push(`q: "${filter.q.replace(/"/g, '\\"')}"`);
         if (filter.sortBy) filterParts.push(`sortBy: "${filter.sortBy}"`);
         if (filter.sortOrder) filterParts.push(`sortOrder: "${filter.sortOrder}"`);
+        const effectiveLanguage = options.language || filter.language;
+        if (effectiveLanguage) filterParts.push(`language: "${effectiveLanguage}"`);
 
         const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
         const fieldsQuery = buildFieldsQuery({ preset, fields });
@@ -321,6 +323,8 @@ export function createArticleRepository(
         if (filter.q) filterParts.push(`q: "${filter.q.replace(/"/g, '\\"')}"`);
         if (filter.sortBy) filterParts.push(`sortBy: "${filter.sortBy}"`);
         if (filter.sortOrder) filterParts.push(`sortOrder: "${filter.sortOrder}"`);
+        const effectiveLanguage = options.language || filter.language;
+        if (effectiveLanguage) filterParts.push(`language: "${effectiveLanguage}"`);
 
         const filterArg = filterParts.length > 0 ? `filter: { ${filterParts.join(', ')} }, ` : '';
         const countFilterArg =
@@ -369,11 +373,12 @@ export function createArticleRepository(
         tag: string,
         options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { preset = 'standard', fields, limit = 50, offset = 0 } = options;
+        const { preset = 'standard', fields, limit = 50, offset = 0, language } = options;
+        const langFilter = language ? `, language: "${language}"` : '';
 
         const query = `query GetArticlesByTag($tag: String!) {
       public {
-        articles(filter: { tag: $tag }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
+        articles(filter: { tag: $tag${langFilter} }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
           ${buildFieldsQuery({ preset, fields })}
         }
       }
@@ -400,11 +405,12 @@ export function createArticleRepository(
         platform: string,
         options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { preset = 'standard', fields, limit = 50, offset = 0 } = options;
+        const { preset = 'standard', fields, limit = 50, offset = 0, language } = options;
+        const langFilter = language ? `, language: "${language}"` : '';
 
         const query = `query GetArticlesByPlatform($platform: String!) {
       public {
-        articles(filter: { platform: $platform }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
+        articles(filter: { platform: $platform${langFilter} }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
           ${buildFieldsQuery({ preset, fields })}
         }
       }
@@ -431,11 +437,12 @@ export function createArticleRepository(
         category: string,
         options: ArticleQueryOptions = {},
     ): Promise<ArticleListItem[]> {
-        const { preset = 'standard', fields, limit = 50, offset = 0 } = options;
+        const { preset = 'standard', fields, limit = 50, offset = 0, language } = options;
+        const langFilter = language ? `, language: "${language}"` : '';
 
         const query = `query GetArticlesByCategory($category: String!) {
       public {
-        articles(filter: { category: $category }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
+        articles(filter: { category: $category${langFilter} }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
           ${buildFieldsQuery({ preset, fields })}
         }
       }

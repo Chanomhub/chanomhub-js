@@ -146,6 +146,8 @@ export interface ArticleFilter {
     sortBy?: 'updatedAt' | 'createdAt' | 'viewsCount' | 'title';
     /** Sort order ('asc' or 'desc') */
     sortOrder?: 'asc' | 'desc';
+    /** Target language for translated title/description (e.g., 'th', 'es') */
+    language?: string;
 }
 
 /** Article list options */
@@ -158,6 +160,8 @@ export interface ArticleListOptions {
     preset?: ArticlePreset;
     /** Custom field selection (overrides preset) */
     fields?: ArticleField[];
+    /** Target language for translated title/description (e.g., 'th', 'es') */
+    language?: string;
 }
 
 /** DTO for creating a new article */
