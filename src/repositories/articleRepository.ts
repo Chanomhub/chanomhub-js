@@ -513,7 +513,36 @@ export function createArticleRepository(
     }
 
     async function getMods(articleId: number, options: ModListOptions = {}): Promise<Mod[]> {
-        const query = `query GetArticleMods($articleId: Int!) {
+        const hasFilter =
+            options.type !== undefined ||
+            options.language !== undefined ||
+            options.status !== undefined ||
+            options.limit !== undefined ||
+            options.offset !== undefined;
+
+        let query: string;
+        let variables: Record<string, unknown>;
+
+        if (hasFilter) {
+            query = `query GetArticleMods($articleId: Int!, $type: String, $language: String, $status: String, $limit: Int, $offset: Int) {
+      public {
+        article(id: $articleId) {
+          mods(type: $type, language: $language, status: $status, limit: $limit, offset: $offset) {
+            ${buildModFieldsQuery(options)}
+          }
+        }
+      }
+    }`;
+            variables = {
+                articleId,
+                type: options.type,
+                language: options.language,
+                status: options.status,
+                limit: options.limit,
+                offset: options.offset,
+            };
+        } else {
+            query = `query GetArticleMods($articleId: Int!) {
       public {
         article(id: $articleId) {
           mods {
@@ -522,10 +551,12 @@ export function createArticleRepository(
         }
       }
     }`;
+            variables = { articleId };
+        }
 
         const { data, errors } = await fetcher<{ public: { article: { mods: Mod[] } } }>(
             query,
-            { articleId },
+            variables,
             { operationName: 'GetArticleMods' },
         );
 

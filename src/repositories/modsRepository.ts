@@ -31,6 +31,12 @@ export interface ModsRepository {
     getAll(options?: GetAllModsOptions): Promise<ModListResponse>;
 
     /**
+     * Get a mod by ID
+     * @param id - Mod ID
+     */
+    getById(id: number): Promise<ModItem>;
+
+    /**
      * Create a new mod for an article
      * @param slug - Article slug
      * @param data - Mod data
@@ -98,6 +104,8 @@ export function createModsRepository(
     async function getByArticle(slug: string, options: ModQueryOptions = {}): Promise<ModItem[]> {
         const queryParams = new URLSearchParams();
         if (options.status) queryParams.set('status', options.status);
+        if (options.type) queryParams.set('type', options.type);
+        if (options.language) queryParams.set('language', options.language);
         const qs = queryParams.toString();
         const endpoint = `/api/mods/article/${encodeURIComponent(slug)}${qs ? `?${qs}` : ''}`;
 
@@ -111,6 +119,12 @@ export function createModsRepository(
     async function getAll(options: GetAllModsOptions = {}): Promise<ModListResponse> {
         const queryParams = new URLSearchParams();
         if (options.status) queryParams.set('status', options.status);
+        if (options.type) queryParams.set('type', options.type);
+        if (options.language) queryParams.set('language', options.language);
+        if (options.search) queryParams.set('search', options.search);
+        if (options.articleId !== undefined) queryParams.set('articleId', String(options.articleId));
+        if (options.articleSlug) queryParams.set('articleSlug', options.articleSlug);
+        if (options.creatorId !== undefined) queryParams.set('creatorId', String(options.creatorId));
         if (options.skip !== undefined) queryParams.set('skip', String(options.skip));
         if (options.take !== undefined) queryParams.set('take', String(options.take));
         const qs = queryParams.toString();
@@ -124,6 +138,14 @@ export function createModsRepository(
             mods: data.mods || [],
             modsCount: data.modsCount || 0,
         };
+    }
+
+    async function getById(id: number): Promise<ModItem> {
+        const { data, error } = await fetcher<{ mod: ModItem }>(`/api/mods/${id}`);
+        if (error || !data) {
+            throw new Error(error || `Failed to fetch mod #${id}`);
+        }
+        return data.mod;
     }
 
     async function create(slug: string, data: CreateModDTO): Promise<ModItem> {
@@ -301,6 +323,7 @@ export function createModsRepository(
     return {
         getByArticle,
         getAll,
+        getById,
         create,
         submitNstTranslation,
         update,

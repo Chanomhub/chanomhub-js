@@ -67,11 +67,19 @@ export interface Mod {
     description: string;
     creditTo: string;
     downloadLink: string;
+    fileUrl?: string;
+    sha256?: string;
+    fileSizeBytes?: number;
+    type?: string;
+    language?: string;
+    languages?: string[];
+    forVersion?: string;
     version: string;
     status: string;
     categories: NamedEntity[];
     images: ImageObject[];
     creator: {
+        id?: number;
         name: string;
         image: string | null;
     };
@@ -95,6 +103,13 @@ export type ModField =
     | 'description'
     | 'creditTo'
     | 'downloadLink'
+    | 'fileUrl'
+    | 'sha256'
+    | 'fileSizeBytes'
+    | 'type'
+    | 'language'
+    | 'languages'
+    | 'forVersion'
     | 'version'
     | 'status'
     | 'categories'
@@ -103,6 +118,11 @@ export type ModField =
 
 export interface ModListOptions {
     fields?: ModField[];
+    type?: string;
+    language?: string;
+    status?: string;
+    limit?: number;
+    offset?: number;
 }
 
 /** Type of item for purchase/checkout */

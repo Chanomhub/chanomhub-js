@@ -247,6 +247,13 @@ export const FIELD_MAPPINGS_MOD: Record<ModField, string> = {
     description: 'description',
     creditTo: 'creditTo',
     downloadLink: 'downloadLink',
+    fileUrl: 'fileUrl',
+    sha256: 'sha256',
+    fileSizeBytes: 'fileSizeBytes',
+    type: 'type',
+    language: 'language',
+    languages: 'languages',
+    forVersion: 'forVersion',
     version: 'version',
     status: 'status',
     categories: `categories {
@@ -258,6 +265,7 @@ export const FIELD_MAPPINGS_MOD: Record<ModField, string> = {
     url
   }`,
     creator: `creator {
+    id
     name
     image
   }`,
@@ -269,15 +277,17 @@ export const FIELD_MAPPINGS_MOD: Record<ModField, string> = {
 export function buildModFieldsQuery(options: ModListOptions = {}): string {
     const { fields } = options;
 
-    // Default fields if none provided (all except creator to be safe, or just all?)
-    // User complaint was "always gets creator". So let's default to all, but allow overriding.
-    // If fields is undefined, we return default set.
     const defaultFields: ModField[] = [
         'id',
         'name',
         'version',
         'downloadLink',
-        // 'creator' removed as default per request, add explicitly if needed
+        'sha256',
+        'fileSizeBytes',
+        'type',
+        'language',
+        'languages',
+        'forVersion',
     ];
 
     const selectedFields = fields ?? defaultFields;

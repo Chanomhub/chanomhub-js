@@ -47,6 +47,10 @@ export interface ModItem {
     creator?: ModCreator;
     images?: ModImage[];
     sha256?: string;
+    fileSizeBytes?: number;
+    language?: string;
+    languages?: string[];
+    forVersion?: string;
 }
 
 /** DTO for creating a new mod */
@@ -57,6 +61,9 @@ export interface CreateModDTO {
     downloadLink: string;
     creditTo?: string;
     type?: 'MOD' | 'TRANSLATION' | 'PATCH' | string;
+    language?: string;
+    languages?: string[];
+    forVersion?: string;
     images?: string[];
     categoryIds?: number[];
     categories?: string[];
@@ -75,6 +82,9 @@ export interface UpdateModDTO {
     downloadLink?: string;
     creditTo?: string;
     type?: 'MOD' | 'TRANSLATION' | 'PATCH' | string;
+    language?: string;
+    languages?: string[];
+    forVersion?: string;
     images?: string[];
     categoryIds?: number[];
     categories?: string[];
@@ -124,6 +134,12 @@ export interface NstTranslationSubmissionDTO {
 /** Options when fetching all mods */
 export interface GetAllModsOptions {
     status?: 'PENDING' | 'APPROVED' | 'REJECTED' | string;
+    type?: string;
+    language?: string;
+    articleId?: number;
+    articleSlug?: string;
+    creatorId?: number;
+    search?: string;
     skip?: number;
     take?: number;
 }
@@ -131,6 +147,8 @@ export interface GetAllModsOptions {
 /** Query options when fetching mods by article slug */
 export interface ModQueryOptions {
     status?: 'PENDING' | 'APPROVED' | 'REJECTED' | string;
+    type?: string;
+    language?: string;
 }
 
 /** Response when fetching multiple mods */

@@ -296,13 +296,30 @@ describe('Repositories Integration Tests', () => {
             expect(mods[0].status).toBe('APPROVED');
         });
 
-        it('should get all mods with pagination', async () => {
+        it('should get all mods with pagination and filters', async () => {
             const client = createChanomhubClient();
-            const result = await client.mods.getAll({ skip: 0, take: 10, status: 'APPROVED' });
+            const result = await client.mods.getAll({
+                skip: 0,
+                take: 10,
+                status: 'APPROVED',
+                type: 'TRANSLATION',
+                language: 'th',
+            });
 
             expect(result.mods).toHaveLength(1);
             expect(result.modsCount).toBe(1);
             expect(result.mods[0].name).toBe('All Mods Item');
+        });
+
+        it('should get mod by id', async () => {
+            const client = createChanomhubClient();
+            const mod = await client.mods.getById(42);
+
+            expect(mod.id).toBe(42);
+            expect(mod.name).toBe('Mod by ID');
+            expect(mod.languages).toEqual(['th', 'en']);
+            expect(mod.sha256).toBeDefined();
+            expect(mod.fileSizeBytes).toBe(1024);
         });
 
         it('should require authentication to create a mod', async () => {

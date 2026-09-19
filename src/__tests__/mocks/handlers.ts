@@ -733,6 +733,29 @@ export const handlers = [
         });
     }),
 
+    // REST: Get Mod by ID
+    http.get(`${BASE_URL}/api/mods/:id`, ({ params }) => {
+        const id = Number(params.id);
+        return HttpResponse.json({
+            mod: {
+                id,
+                articleId: 1,
+                creatorId: 10,
+                name: 'Mod by ID',
+                type: 'MOD',
+                status: 'APPROVED',
+                downloadLink: 'https://storage.chanomhub.com/mod.zip',
+                language: 'th',
+                languages: ['th', 'en'],
+                sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+                fileSizeBytes: 1024,
+                articleVersion: 1,
+                createdAt: '2026-01-01T00:00:00Z',
+                updatedAt: '2026-01-01T00:00:00Z',
+            },
+        });
+    }),
+
     // REST: Create Mod
     http.post(`${BASE_URL}/api/mods/article/:slug`, async ({ request }) => {
         const auth = request.headers.get('Authorization');
