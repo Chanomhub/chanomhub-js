@@ -869,4 +869,88 @@ export const handlers = [
             filename: 'translation_pack.zip',
         });
     }),
+
+    // Comments: List
+    http.get(`${BASE_URL}/api/articles/:slug/comments`, () => {
+        return HttpResponse.json({
+            data: {
+                comments: [
+                    {
+                        id: 1,
+                        parentId: null,
+                        body: 'Great article!',
+                        createdAt: '2026-10-01T00:00:00Z',
+                        updatedAt: '2026-10-01T00:00:00Z',
+                        author: {
+                            username: 'testuser',
+                            bio: 'Dev',
+                            image: null,
+                            following: false,
+                        },
+                        replies: [
+                            {
+                                id: 2,
+                                parentId: 1,
+                                body: 'Thanks!',
+                                createdAt: '2026-10-01T01:00:00Z',
+                                updatedAt: '2026-10-01T01:00:00Z',
+                                author: {
+                                    username: 'author',
+                                    bio: null,
+                                    image: null,
+                                    following: false,
+                                },
+                                replies: [],
+                            },
+                        ],
+                    },
+                ],
+                commentsCount: 2,
+            },
+            statusCode: 200,
+        });
+    }),
+
+    // Comments: Create
+    http.post(`${BASE_URL}/api/articles/:slug/comments`, async ({ request }) => {
+        const body = (await request.json()) as { body: string; parentId?: number };
+        return HttpResponse.json({
+            data: {
+                id: 3,
+                parentId: body.parentId || null,
+                body: body.body,
+                createdAt: '2026-10-01T02:00:00Z',
+                updatedAt: '2026-10-01T02:00:00Z',
+                author: {
+                    username: 'commenter',
+                    bio: null,
+                    image: null,
+                    following: false,
+                },
+                replies: [],
+            },
+            statusCode: 200,
+        });
+    }),
+
+    // Comments: Delete
+    http.delete(`${BASE_URL}/api/articles/:slug/comments/:id`, ({ params }) => {
+        return HttpResponse.json({
+            data: {
+                id: Number(params.id),
+                parentId: null,
+                body: 'Deleted comment',
+                createdAt: '2026-10-01T00:00:00Z',
+                updatedAt: '2026-10-01T00:00:00Z',
+                author: {
+                    username: 'testuser',
+                    bio: null,
+                    image: null,
+                    following: false,
+                },
+                replies: [],
+            },
+            statusCode: 200,
+        });
+    }),
 ];

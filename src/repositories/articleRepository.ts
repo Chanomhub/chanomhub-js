@@ -22,6 +22,12 @@ import type {
     OfficialDownloadSource,
     NamedEntity,
 } from '../types/common';
+import type {
+    Comment,
+    CommentListResponse,
+    CreateCommentDTO,
+    CommentListOptions,
+} from '../types/comment';
 import { buildFieldsQuery, buildModFieldsQuery } from '../utils/fields';
 import { resolveDownloadUrl } from '../transforms/downloadUrl';
 import { transformImageUrlsDeep } from '../transforms/imageUrl';
@@ -98,6 +104,15 @@ export interface ArticleRepository {
 
     /** Increment article view count */
     incrementView(slug: string): Promise<void>;
+
+    /** Get comments for an article */
+    getComments(slug: string, options?: CommentListOptions): Promise<CommentListResponse>;
+
+    /** Add a comment or reply to an article */
+    addComment(slug: string, data: CreateCommentDTO): Promise<Comment>;
+
+    /** Delete a comment from an article */
+    deleteComment(slug: string, commentId: number): Promise<Comment>;
 }
 
 /**
@@ -709,6 +724,41 @@ export function createArticleRepository(
         }
     }
 
+    async function getComments(slug: string, options: CommentListOptions = {}): Promise<CommentListResponse> {
+        const { page = 1, limit = 50 } = options;
+        const params = new URLSearchParams();
+        if (page) params.set('page', String(page));
+        if (limit) params.set('limit', String(limit));
+        const query = params.toString() ? `?${params.toString()}` : '';
+
+        const res = await rest<CommentListResponse>(`/api/articles/${slug}/comments${query}`);
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to fetch comments');
+        }
+        return res.data;
+    }
+
+    async function addComment(slug: string, data: CreateCommentDTO): Promise<Comment> {
+        const res = await rest<Comment>(`/api/articles/${slug}/comments`, {
+            method: 'POST',
+            body: data as unknown as Record<string, unknown>,
+        });
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to create comment');
+        }
+        return res.data;
+    }
+
+    async function deleteComment(slug: string, commentId: number): Promise<Comment> {
+        const res = await rest<Comment>(`/api/articles/${slug}/comments/${commentId}`, {
+            method: 'DELETE',
+        });
+        if (res.error || !res.data) {
+            throw new Error(res.error || 'Failed to delete comment');
+        }
+        return res.data;
+    }
+
     return {
         getAll,
         getAllPaginated,
@@ -735,5 +785,8 @@ export function createArticleRepository(
         purchase,
         reserveSlug,
         incrementView,
+        getComments,
+        addComment,
+        deleteComment,
     };
 }

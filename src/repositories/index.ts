@@ -45,3 +45,4 @@ export { createTagsRepository, type TagsRepository } from './tagsRepository';
 export { createCategoriesRepository, type CategoriesRepository } from './categoriesRepository';
 export { createPlatformsRepository, type PlatformsRepository } from './platformsRepository';
 export { createFontsRepository, type FontsRepository, type FontRegistry, type FontAsset, type GetFontsParams } from './fontsRepository';
+export { createCommentsRepository, type CommentsRepository } from './commentsRepository';

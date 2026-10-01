@@ -43,6 +43,7 @@ import {
     createCategoriesRepository,
     createPlatformsRepository,
     createFontsRepository,
+    createCommentsRepository,
     type ArticleRepository,
     type FavoritesRepository,
     type UsersRepository,
@@ -59,6 +60,7 @@ import {
     type CategoriesRepository,
     type PlatformsRepository,
     type FontsRepository,
+    type CommentsRepository,
 } from './repositories';
 import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
 
@@ -73,6 +75,8 @@ export { resolveDownloadUrl } from './transforms/downloadUrl';
 export interface ChanomhubClient {
     /** Article operations */
     articles: ArticleRepository;
+    /** Comments operations */
+    comments: CommentsRepository;
     /** Favorites operations */
     favorites: FavoritesRepository;
     /** User/Profile operations */
@@ -155,9 +159,11 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
     const categories = createCategoriesRepository(rest);
     const platforms = createPlatformsRepository(rest);
     const fonts = createFontsRepository(rest);
+    const comments = createCommentsRepository(rest);
 
     return {
         articles,
+        comments,
         favorites,
         users,
         search,
