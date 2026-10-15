@@ -257,6 +257,11 @@ export interface RevisionDetail extends Revision {
     descriptionDiff?: string;
     bodyDiff?: string;
     parsedBodyDiff?: DiffLine[];
+    content?: {
+        title: string;
+        description: string;
+        body: string;
+    };
 }
 
 /** Comparison result between two versions */
