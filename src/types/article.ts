@@ -29,6 +29,7 @@ export type ArticleField =
     | 'slug'
     | 'description'
     | 'body'
+    | 'devlog'
     | 'ver'
     | 'mainImage'
     | 'coverImage'
@@ -66,6 +67,7 @@ export interface Article {
     slug: string;
     description: string;
     body: string;
+    devlog?: string | null;
     ver: string | null;
     creators: NamedEntity[];
     tags: NamedEntity[];
@@ -170,6 +172,7 @@ export interface NewArticleDTO {
     slug: string;
     description: string;
     body: string;
+    devlog?: string | null;
     language: string;
     /** Game version */
     ver?: string;
@@ -197,6 +200,7 @@ export interface UpdateArticleDTO {
     slug?: string;
     description?: string;
     body?: string;
+    devlog?: string | null;
     ver?: string;
     /** Sequential code (e.g., 'HJ218') */
     sequentialCode?: string;
