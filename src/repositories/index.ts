@@ -46,3 +46,5 @@ export { createCategoriesRepository, type CategoriesRepository } from './categor
 export { createPlatformsRepository, type PlatformsRepository } from './platformsRepository';
 export { createFontsRepository, type FontsRepository, type FontRegistry, type FontAsset, type GetFontsParams } from './fontsRepository';
 export { createCommentsRepository, type CommentsRepository } from './commentsRepository';
+export { createEnginesRepository, type EnginesRepository, type EngineDetectResult, type NamedEntity } from './enginesRepository';
+export { createOfficialSourcesRepository, type OfficialSourcesRepository, type OfficialSource } from './officialSourcesRepository';
