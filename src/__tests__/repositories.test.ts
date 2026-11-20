@@ -29,6 +29,14 @@ describe('Repositories Integration Tests', () => {
             expect(articles[0].title).toBe('Platform Article');
         });
 
+        it('should get articles by engine', async () => {
+            const client = createChanomhubClient();
+            const articles = await client.articles.getByEngine('tyranobuilder');
+
+            expect(articles).toHaveLength(1);
+            expect(articles[0].title).toBe('Engine Article');
+        });
+
         it('should get articles by category', async () => {
             const client = createChanomhubClient();
             const articles = await client.articles.getByCategory('action');

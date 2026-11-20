@@ -53,12 +53,7 @@ export type ArticleField =
     | 'downloads'
     | 'downloadLinks'
     | 'officialDownloadSources'
-    | 'version'
-    | 'price'
-    | 'isPaid'
-    | 'isUnlocked'
-    | 'viewsCount'
-    | 'related';
+    | 'viewsCount';
 
 /** Full Article type */
 export interface Article {

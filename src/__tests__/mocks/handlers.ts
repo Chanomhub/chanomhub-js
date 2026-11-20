@@ -149,6 +149,29 @@ export const handlers = [
         });
     }),
 
+    graphql.query('GetArticlesByEngine', () => {
+        return HttpResponse.json({
+            data: {
+                public: {
+                    articles: [
+                        {
+                            id: 1,
+                            title: 'Engine Article',
+                            slug: 'engine',
+                            mainImage: null,
+                            author: { name: 'A', image: null },
+                            tags: [],
+                            platforms: [],
+                            categories: [],
+                            creators: [],
+                            images: [],
+                        },
+                    ],
+                },
+            },
+        });
+    }),
+
     graphql.query('GetArticlesByCategory', () => {
         return HttpResponse.json({
             data: {

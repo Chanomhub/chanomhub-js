@@ -16,6 +16,8 @@ export interface DownloadLink {
     status: SourceStatus;
     vipOnly?: boolean;
     forVersion?: string | null;
+    /** Platforms this download supports (structured; legacy rows parse it from the name prefix) */
+    platforms?: string[];
     createdAt: string;
     updatedAt: string;
     /** Whether this is a redirect link to purchase the article (pseudo-download) */
@@ -29,7 +31,7 @@ export interface DownloadLink {
     } | null;
 }
 
-/** Request to create a new download link */
+/** Request to create a download link */
 export interface CreateDownloadLinkRequest {
     [key: string]: unknown;
     articleId: number;
@@ -37,6 +39,7 @@ export interface CreateDownloadLinkRequest {
     url: string;
     vipOnly?: boolean;
     forVersion?: string;
+    platforms?: string[];
 }
 
 /** Request to update a download link */
@@ -47,6 +50,7 @@ export interface UpdateDownloadLinkRequest {
     isActive?: boolean;
     vipOnly?: boolean;
     forVersion?: string;
+    platforms?: string[];
 }
 
 /** Request to moderate a download link */

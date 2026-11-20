@@ -43,6 +43,8 @@ import {
     createCategoriesRepository,
     createPlatformsRepository,
     createFontsRepository,
+    createEnginesRepository,
+    createOfficialSourcesRepository,
     createCommentsRepository,
     type ArticleRepository,
     type FavoritesRepository,
@@ -60,6 +62,8 @@ import {
     type CategoriesRepository,
     type PlatformsRepository,
     type FontsRepository,
+    type EnginesRepository,
+    type OfficialSourcesRepository,
     type CommentsRepository,
 } from './repositories';
 import { DEFAULT_CONFIG, type ChanomhubConfig } from './config';
@@ -107,6 +111,10 @@ export interface ChanomhubClient {
     platforms: PlatformsRepository;
     /** Fonts Registry operations */
     fonts: FontsRepository;
+    /** Engine taxonomy + file-based engine detection */
+    engines: EnginesRepository;
+    /** Publisher-provided official purchase/download links for articles */
+    officialSources: OfficialSourcesRepository;
     /** Raw GraphQL fetcher for custom queries */
     graphql: GraphQLFetcher;
     /** SDK configuration */
@@ -160,6 +168,8 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
     const platforms = createPlatformsRepository(rest);
     const fonts = createFontsRepository(rest);
     const comments = createCommentsRepository(rest);
+    const engines = createEnginesRepository(rest);
+    const officialSources = createOfficialSourcesRepository(rest);
 
     return {
         articles,
@@ -179,6 +189,8 @@ export function createChanomhubClient(config: Partial<ChanomhubConfig> = {}): Ch
         categories,
         platforms,
         fonts,
+        engines,
+        officialSources,
         graphql,
         config: fullConfig,
     };
