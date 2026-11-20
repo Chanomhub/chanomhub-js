@@ -53,7 +53,6 @@ export type ArticleField =
     | 'downloads'
     | 'downloadLinks'
     | 'officialDownloadSources'
-    | 'version'
     | 'viewsCount';
 
 /** Full Article type */

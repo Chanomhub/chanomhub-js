@@ -182,7 +182,6 @@ export const FIELD_MAPPINGS: Record<ArticleField, string> = {
     url
     status
   }`,
-    version: 'version',
     viewsCount: 'viewsCount',
 };
 
