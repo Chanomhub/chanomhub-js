@@ -45,6 +45,9 @@ export interface ArticleRepository {
     /** Get articles by platform */
     getByPlatform(platform: string, options?: ArticleQueryOptions): Promise<ArticleListItem[]>;
 
+    /** Get articles by engine */
+    getByEngine(engine: string, options?: ArticleQueryOptions): Promise<ArticleListItem[]>;
+
     /** Get articles by category */
     getByCategory(category: string, options?: ArticleQueryOptions): Promise<ArticleListItem[]>;
 
@@ -448,6 +451,38 @@ export function createArticleRepository(
         return transformImageUrlsDeep(articles, cdnUrl);
     }
 
+    async function getByEngine(
+        engine: string,
+        options: ArticleQueryOptions = {},
+    ): Promise<ArticleListItem[]> {
+        const { preset = 'standard', fields, limit = 50, offset = 0, language } = options;
+        const langFilter = language ? `, language: "${language}"` : '';
+
+        const query = `query GetArticlesByEngine($engine: String!) {
+      public {
+        articles(filter: { engine: $engine${langFilter} }, status: PUBLISHED, limit: ${limit}, offset: ${offset}) {
+          ${buildFieldsQuery({ preset, fields })}
+        }
+      }
+    }`;
+
+        const { data, errors } = await fetcher<{ public: { articles: ArticleListItem[] } }>(
+            query,
+            { engine },
+            {
+                operationName: 'GetArticlesByEngine',
+            },
+        );
+
+        if (errors || !data) {
+            console.error('Failed to fetch articles by engine:', errors);
+            return [];
+        }
+
+        const articles = data.public.articles || [];
+        return transformImageUrlsDeep(articles, cdnUrl);
+    }
+
     async function getByCategory(
         category: string,
         options: ArticleQueryOptions = {},
@@ -764,6 +799,7 @@ export function createArticleRepository(
         getAllPaginated,
         getByTag,
         getByPlatform,
+        getByEngine,
         getByCategory,
         getBySlug,
 
