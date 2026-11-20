@@ -132,6 +132,8 @@ export interface ArticleFilter {
     platform?: string;
     category?: string;
     author?: string;
+    /** Filter by creator (studio) name */
+    creator?: string;
     favorited?: boolean;
     /** Filter by engine (e.g., 'RenPy', 'Unity') */
     engine?: string;

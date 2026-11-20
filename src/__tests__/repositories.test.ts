@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createChanomhubClient, createAuthenticatedClient } from '../index';
+import { graphql, HttpResponse } from 'msw';
+import { server } from './mocks/server';
 
 describe('Repositories Integration Tests', () => {
     describe('ArticleRepository', () => {
@@ -106,6 +108,36 @@ describe('Repositories Integration Tests', () => {
 
             expect(result.items).toHaveLength(1);
             expect(result.pageSize).toBe(5);
+        });
+
+        it('should send creator filter with escaped quotes', async () => {
+            const client = createChanomhubClient({ apiUrl: 'https://api.example.com' });
+            let captured = '';
+            server.use(
+                graphql.query('SearchArticles', async ({ request }) => {
+                    captured = await request.text();
+                    return HttpResponse.json({
+                        data: { public: { articles: [], articlesCount: 0 } },
+                    });
+                }),
+            );
+            await client.search.articles('game', { creator: 'Team "Quote"' });
+            expect(JSON.parse(captured).query).toContain('creator: "Team \\"Quote\\""');
+        });
+
+        it('should send creator filter in getAllPaginated', async () => {
+            const client = createChanomhubClient({ apiUrl: 'https://api.example.com' });
+            let captured = '';
+            server.use(
+                graphql.query('GetArticlesPaginated', async ({ request }) => {
+                    captured = await request.text();
+                    return HttpResponse.json({
+                        data: { public: { articles: [], articlesCount: 0 } },
+                    });
+                }),
+            );
+            await client.articles.getAllPaginated({ filter: { creator: 'Majalis' } });
+            expect(JSON.parse(captured).query).toContain('creator: "Majalis"');
         });
     });
 

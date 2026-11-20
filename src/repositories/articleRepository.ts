@@ -280,6 +280,7 @@ export function createArticleRepository(
         if (filter.platform) filterParts.push(`platform: "${filter.platform}"`);
         if (filter.category) filterParts.push(`category: "${filter.category}"`);
         if (filter.author) filterParts.push(`author: "${filter.author}"`);
+        if (filter.creator) filterParts.push(`creator: "${filter.creator.replace(/"/g, '\\"')}"`);
         if (filter.favorited !== undefined) filterParts.push(`favorited: ${filter.favorited}`);
         if (filter.engine) filterParts.push(`engine: "${filter.engine}"`);
         if (filter.sequentialCode) filterParts.push(`sequentialCode: "${filter.sequentialCode}"`);
@@ -335,6 +336,7 @@ export function createArticleRepository(
         if (filter.platform) filterParts.push(`platform: "${filter.platform}"`);
         if (filter.category) filterParts.push(`category: "${filter.category}"`);
         if (filter.author) filterParts.push(`author: "${filter.author}"`);
+        if (filter.creator) filterParts.push(`creator: "${filter.creator.replace(/"/g, '\\"')}"`);
         if (filter.favorited !== undefined) filterParts.push(`favorited: ${filter.favorited}`);
         if (filter.engine) filterParts.push(`engine: "${filter.engine}"`);
         if (filter.sequentialCode) filterParts.push(`sequentialCode: "${filter.sequentialCode}"`);

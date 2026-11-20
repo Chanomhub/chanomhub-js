@@ -23,6 +23,8 @@ export interface SearchOptions {
     sequentialCode?: string;
     /** Filter by author name */
     author?: string;
+    /** Filter by creator (studio) name */
+    creator?: string;
     /** Results per page */
     limit?: number;
     /** Page offset */
@@ -60,6 +62,7 @@ export function createSearchRepository(
             engine,
             sequentialCode,
             author,
+            creator,
             preset = 'standard',
             fields,
         } = options;
@@ -76,6 +79,7 @@ export function createSearchRepository(
         if (engine) filterParts.push(`engine: "${engine}"`);
         if (sequentialCode) filterParts.push(`sequentialCode: "${sequentialCode}"`);
         if (author) filterParts.push(`author: "${author}"`);
+        if (creator) filterParts.push(`creator: "${creator.replace(/"/g, '\\"')}"`);
 
         const filterArg = `filter: { ${filterParts.join(', ')} }`;
 
